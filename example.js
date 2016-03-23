@@ -1,6 +1,7 @@
 var fs = require('fs');
 var csv = require('csv');
 var express = require('express');
+var engines = require('consolidate');
 
 var transformers = {
 	'QuestionNo': parseInt,
@@ -29,6 +30,10 @@ var studentScores = {1: 2,
 };
 
 var app = express();
+app.engine('html', engines.hogan);
+app.set('views', __dirname + '/templates');
+app.use(express.static(__dirname + '/templates'));
+
 var parser = csv.parse({columns:true});
 var transformer = csv.transform(function(data){
 	for (var key in transformers) {
@@ -40,12 +45,14 @@ var transformer = csv.transform(function(data){
 });
 
 app.post('/examInput', function(req, res) {
+	console.log('here');
 	fs.createReadStream('example.csv').pipe(parser).pipe(transformer);
 	res.send('Calculating...');
 });
 
 app.get('*', function(req, res) {
-	res.send('<form action="/examInput" method="POST"><input type="submit" value="EXAM"></form>');
+	res.render('upload_categories.html');
+	//res.send('<form action="/examInput" method="POST"><input type="submit" value="EXAM"></form>');
 });
 
 app.listen(8080, function(){
