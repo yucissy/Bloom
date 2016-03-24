@@ -9,14 +9,13 @@ $(function() {
     		//this variable holds the csv data!
     		var dataURL = reader.result;
     		console.log(dataURL);
+            var toSend = {data: dataURL};
+
+            var request = new XMLHttpRequest();
+            request.open('POST', '/examInput', true);
+            request.setRequestHeader('Content-Type', 'application/json');
+            request.send(JSON.stringify(toSend));
     	};
     	reader.readAsText(selected);
-
-    	// var request = new XMLHttpRequest();
-    	// request.open('POST', '/examInput', true);
-    	// request.setRequestHeader('Content-Type', 'multipart/form-data');
-    	// var data = $("#categories").prop('files');
-    	// console.log(data);
-    	// request.send(data);
 	});
 });

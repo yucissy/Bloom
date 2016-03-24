@@ -2,6 +2,7 @@ var fs = require('fs');
 var csv = require('csv');
 var express = require('express');
 var engines = require('consolidate');
+var bodyParser = require('body-parser');
 
 var transformers = {
 	'QuestionNo': parseInt,
@@ -32,7 +33,12 @@ var studentScores = {1: 2,
 var app = express();
 app.engine('html', engines.hogan);
 app.set('views', __dirname + '/templates');
-app.use(express.static(__dirname + '/templates'));
+app.use(express.static(__dirname + '/static'));
+
+app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({
+//   extended: true
+// }));
 
 var parser = csv.parse({columns:true});
 var transformer = csv.transform(function(data){
@@ -46,7 +52,9 @@ var transformer = csv.transform(function(data){
 
 app.post('/examInput', function(req, res) {
 	console.log('here');
-	fs.createReadStream('example.csv').pipe(parser).pipe(transformer);
+	console.log(req.body.data);
+	var data = req.body.data;
+	csv.parse(data, {columns:true}).pipe(transformer);
 	res.send('Calculating...');
 });
 
