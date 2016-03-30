@@ -149,3 +149,8 @@ input {
 .btn-success {
 	background-color:gray;
 }
+#signup_wrapper {
+	background-color:#8e8787;
+	width:400px;
+	height:300px;
+}

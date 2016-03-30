@@ -149,3 +149,51 @@ input {
 .btn-success {
 	background-color:gray;
 }
+#signup_wrapper {
+	width:500px;
+	text-align:left;
+	margin-left:-10%;
+	margin-top:-30px;
+}
+#signup_wrapper h1 {
+	color:#2fd846;
+	font-size:3em;
+}
+#signup_wrapper p {
+	font-size:1.3em;
+}
+#signup_input input {
+	margin:10px;
+	width:365px;
+	padding:8px;
+}
+#first, #last {
+	width:170px !important;
+}
+.btn-default {
+	width:365px;
+	margin-left:10px;
+	text-align:left;
+	padding:8px;
+	margin-bottom:8px;
+	height:40px;
+}
+#signup_submit {
+	background-color:#37c435;
+	font-weight:bold;
+	color:white;
+}
+.dropdown-menu {
+	margin-left:10px;
+	width:365px;
+	margin-top:-8px;
+}
+.login {
+	color:#EE3E35;
+}
+.login:hover {
+	cursor:pointer;
+	cursor:hand;
+	text-decoration:underline;
+	color:#EE3E35;
+}
