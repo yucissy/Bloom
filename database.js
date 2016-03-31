@@ -29,23 +29,27 @@ db.once('open', function() {
 
     var testSchema = new mongoose.Schema({
             _id: String,
+            name: String,
             questions: [    
                 {
                     qid: String,
                     max_points: Number,
-                    content_area: String,
-                    chapters: [String],
-                    category: String
+                    categories: [
+                        {
+                            main_cat_id: Number,
+                            sub_cat_id: Number
+                        }
+                    ]
                 }
             ]
     });
 
     var reportSchema = new mongoose.Schema({
             _id: {student_id: String, test_id: String},
-            questions: [    
+            sub_categories: [    
                 {
-                    qid: String,
-                    points: Number
+                    cid: Number,
+                    percentage: Number
                 }
             ]
     });
@@ -60,77 +64,137 @@ db.once('open', function() {
         tests: [String]
     });
 
+    var categorySchema = new mongoose.Schema({
+        _id: String,
+        name: String,
+        sub_categories: [
+            {
+                _id: Number,
+                name: String
+            }
+        ]
+    });
+
     var Student = mongoose.model('Student', studentSchema);
     var Test = mongoose.model('Test', testSchema);    
     var Report = mongoose.model('Report', reportSchema);
     var Professor = mongoose.model('Professor', professorSchema);    
     var TA = mongoose.model('TA', taSchema);
     var Course = mongoose.model('Course', courseSchema);
+    var Category = mongoose.model('Category', categorySchema);
+});
 
-    /*
-    var testReport = new Report({
-        _id: {student_id: 'B013214113', test_id: 'test_cs132'},
-        questions: [
-            {
-                qid: "Q1",
-                points: 3
-            },
-            {
-                qid: "Q2",
-                points: 3
-            }
-        ]
+function insertStudent(studentId, studentName, studentEmail, studentCourses) {
+    var studentToInsert = new Student({
+        _id: studentId,
+        name: studentName,
+        email: studentEmail,
+        courses: studentCourses
     });
 
-    testReport.save(function(err, report) {
-        if (err)
-            return console.error(err);
-        else
-            console.dir(report);
-    });
-
-    var testStudent = new Student({
-        _id: 'B013214113',
-        name: 'Josiah Carberry',
-        email: 'test@brown.edu',
-        courses: ['test', 'test2']
-    });
-
-    
-    testStudent.save(function(err, student) {
+    studentToInsert.save(function(err, student) {
         if (err)
             return console.error(err);
         else
             console.dir(student);
     });
+}
 
-    var testTest = new Test({
-        _id: 'test_cs132',
-        questions: [
-            {
-                qid: "Q1",
-                max_points: 4,
-                content_area: "Brain",
-                chapters: ['3', '4'],
-                category: "Memorizing"
-            },
-            {
-                qid: "Q2",
-                max_points: 4,
-                content_area: "Brain",
-                chapters: ['3', '4'],
-                category: "Memorizing"
-            },        
-        ]
+function insertProfessor(professorId, professorName, professorEmail, professorCourses) {
+    var professorToInsert = new Professor({
+        _id: professorId,
+        name: professorName,
+        email: professorEmail,
+        courses: professorCourses
     });
 
-    testTest.save(function(err, test) {
+    professorToInsert.save(function(err, professor) {
+        if (err)
+            return console.error(err);
+        else
+            console.dir(professor);
+    });
+}
+
+function insertTA(taId, taName, taEmail, taCourses) {
+    var taToInsert = new Professor({
+        _id: taId,
+        name: taName,
+        email: taEmail,
+        courses: taCourses
+    });
+
+    taToInsert.save(function(err, ta) {
+        if (err)
+            return console.error(err);
+        else
+            console.dir(ta);
+    });
+}
+
+function insertTest(testId, testName, testQuestions) {
+    var testToInsert = new Test({
+        _id: testId,
+        name: testName,
+        email: testQuestions
+    });
+
+    testToInsert.save(function(err, test) {
         if (err)
             return console.error(err);
         else
             console.dir(test);
-    }); */
+    });
+}
 
+function insertReport(reportId, reportSubcategories) {
+    var reportToInsert = new Report({
+        _id: reportId,
+        sub_categories: reportSubcategories
+    });
+
+    reportToInsert.save(function(err, report) {
+        if (err)
+            return console.error(err);
+        else
+            console.dir(report);
+    });
+}
+
+function insertCategory(categoryId, categoryName, categorySubcategories) {
+    var categoryToInsert = new Category({
+        _id: categoryId,
+        name: categoryName,
+        sub_categories: categorySubcategories
+    });
+
+    categoryToInsert.save(function(err, category) {
+        if (err)
+            return console.error(err);
+        else
+            console.dir(category);
+    });
+}
+
+function insertCourse(courseId, courseTitle, courseSemester, courseStudents, courseProfessors, courseTAs, courseTests) {
+    var courseToInsert = new Course({
+        _id: courseId,
+        title: courseTitle,
+        semester: courseSemester,
+        students: courseStudents,
+        professors: courseProfessors,
+        tas: courseTAs,
+        tests: courseTests
+    });
+
+    courseToInsert.save(function(err, course) {
+        if (err)
+            return console.error(err);
+        else
+            console.dir(course);
+    });
+}
+
+mongoose.connect('mongodb://bloom-admin:bloomwebappCS132@ds021989.mlab.com:21989/bloom', function(err, db) {
+    console.log(db);
 });
-
-mongoose.connect('mongodb://bloom-admin:bloomwebappCS132@ds021989.mlab.com:21989/bloom');
