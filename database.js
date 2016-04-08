@@ -223,6 +223,8 @@ function insertCourse(courseId, courseTitle, courseSemester, courseStudents, cou
     });
 }
 
+module.exports = insertStudent;
+
 /*
     example of how to insert a document
 */
@@ -234,4 +236,4 @@ function insertCourse(courseId, courseTitle, courseSemester, courseStudents, cou
             console.log("successfully disconnected from database");
         });
     });        
-}
+}*/
