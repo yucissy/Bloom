@@ -90,8 +90,10 @@ var aggregateDataSchema = new mongoose.Schema({
     test_id: String,
     count: Number,
     questions: [
-        qid: String,
-        sum_points: Number
+        {
+            qid: String,
+            sum_points: Number
+        }
     ]
 });
 
