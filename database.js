@@ -85,14 +85,25 @@ var categorySchema = new mongoose.Schema({
     ]
 });
 
-var Student = mongoose.model('Student', studentSchema);
-//var User = mongoose.model('User', userSchema);
+var aggregateDataSchema = new mongoose.Schema({
+    _id: String,
+    test_id: String,
+    count: Number,
+    questions: [
+        qid: String,
+        sum_points: Number
+    ]
+});
+
+//var Student = mongoose.model('Student', studentSchema);
+var User = mongoose.model('User', userSchema);
 var Test = mongoose.model('Test', testSchema);    
 var Report = mongoose.model('Report', reportSchema);
-var Professor = mongoose.model('Professor', professorSchema);    
-var TA = mongoose.model('TA', taSchema);
+//var Professor = mongoose.model('Professor', professorSchema);    
+//var TA = mongoose.model('TA', taSchema);
 var Course = mongoose.model('Course', courseSchema);
 var Category = mongoose.model('Category', categorySchema);
+var AggregateData = mongoose.model('Aggregate Data', aggregateDataSchema);
 
 function insertUser(userId, userName, userEmail, userPassword, userCourses, user, callback) {
     var userToInsert = new User({
@@ -250,6 +261,25 @@ function insertCourse(courseId, courseTitle, courseSemester, courseStudents, cou
         }
         else {
             console.dir(course);
+            callback(null, "success");
+        }
+    });
+}
+
+function insertAggregateData(testId, studentCount, testQuestions) {
+    var aggregateDataToInsert = new AggregateData({
+        test_id: testId,
+        count: studentCount,
+        questions: testQuestions
+    });
+
+    aggregateDataToInsert.save(function(err, aggregateData) {
+        if (err) {
+            console.error(err);
+            callback(err, null);
+        }
+        else {
+            console.dir(aggregateData);
             callback(null, "success");
         }
     });
