@@ -269,3 +269,14 @@ module.exports = insertUser;
         });
     });        
 }*/
+
+
+/*
+if already connected to a database:
+
+function testInsert(id, name, email, courses) {
+    insertStudent(id, name, email, courses, function(err, status) {
+    console.log(status);
+});
+}
+*/
