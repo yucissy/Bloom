@@ -255,7 +255,7 @@ function insertCourse(courseId, courseTitle, courseSemester, courseStudents, cou
     });
 }
 
-module.exports = insertStudent;
+module.exports = insertUser;
 
 /*
     example of how to insert a document
