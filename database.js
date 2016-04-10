@@ -7,7 +7,7 @@ db.once('open', function() {
     console.log("Connected to DB!");
 });
 
-var studentSchema = new mongoose.Schema({
+/*var studentSchema = new mongoose.Schema({
         _id: String,
         name: String,
         email: String,
@@ -26,6 +26,15 @@ var taSchema = new mongoose.Schema({
         name: String,
         email: String,
         courses: [String]
+}); */
+
+var userSchema = new mongoose.Schema({
+        _id: String,
+        name: String,
+        email: String,
+        password: String,
+        courses: [String],
+        type: String,    
 });
 
 var testSchema = new mongoose.Schema({
@@ -77,6 +86,7 @@ var categorySchema = new mongoose.Schema({
 });
 
 var Student = mongoose.model('Student', studentSchema);
+//var User = mongoose.model('User', userSchema);
 var Test = mongoose.model('Test', testSchema);    
 var Report = mongoose.model('Report', reportSchema);
 var Professor = mongoose.model('Professor', professorSchema);    
@@ -84,7 +94,29 @@ var TA = mongoose.model('TA', taSchema);
 var Course = mongoose.model('Course', courseSchema);
 var Category = mongoose.model('Category', categorySchema);
 
-function insertStudent(studentId, studentName, studentEmail, studentCourses, callback) {
+function insertUser(userId, userName, userEmail, userPassword, userCourses, user, callback) {
+    var userToInsert = new User({
+        _id: userId,
+        name: userName,
+        email: userEmail,
+        password: userPassword,
+        courses: userCourses,
+        type: user
+    });
+
+    userToInsert.save(function(err, user) {
+        if (err) {
+            console.error(err);
+            callback(err, null);
+        }
+        else {
+            console.dir(user);
+            callback(null, "success");
+        }
+    });
+}
+
+/*function insertStudent(studentId, studentName, studentEmail, studentCourses, callback) {
     var studentToInsert = new Student({
         _id: studentId,
         name: studentName,
@@ -142,7 +174,7 @@ function insertTA(taId, taName, taEmail, taCourses, callback) {
             callback(null, "success");
         }
     });
-}
+} */
 
 function insertTest(testId, testName, testQuestions, callback) {
     var testToInsert = new Test({
