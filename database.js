@@ -100,11 +100,11 @@ function Database() {
         userToInsert.save(function(err, user) {
             if (err) {
                 console.error(err);
-                callback(err, null);
+                //callback(err, null);
             }
             else {
                 console.dir(user);
-                callback(null, "success");
+                //callback(null, "success");
             }
         });
     }
@@ -119,11 +119,11 @@ function Database() {
         testToInsert.save(function(err, test) {
             if (err) {
                 console.error(err);
-                callback(err, null);
+                //callback(err, null);
             }
             else {
                 console.dir(test);
-                callback(null, "success");
+                //callback(null, "success");
             }
         });
     }
@@ -137,11 +137,11 @@ function Database() {
         reportToInsert.save(function(err, report) {
             if (err) {
                 console.error(err);
-                callback(err, null);
+                //callback(err, null);
             }
             else {
                 console.dir(report);
-                callback(null, "success");
+                //callback(null, "success");
             }
         });
     }
@@ -156,11 +156,11 @@ function Database() {
         categoryToInsert.save(function(err, category) {
             if (err) {
                 console.error(err);
-                callback(err, null);
+                //callback(err, null);
             }
             else {
                 console.dir(category);
-                callback(null, "success");
+                //callback(null, "success");
             }
         });
     }
@@ -179,11 +179,11 @@ function Database() {
         courseToInsert.save(function(err, course) {
             if (err) {
                 console.error(err);
-                callback(err, null);
+                //callback(err, null);
             }
             else {
                 console.dir(course);
-                callback(null, "success");
+                //callback(null, "success");
             }
         });
     }
@@ -198,38 +198,40 @@ function Database() {
         aggregateDataToInsert.save(function(err, aggregateData) {
             if (err) {
                 console.error(err);
-                callback(err, null);
+                //callback(err, null);
             }
             else {
                 console.dir(aggregateData);
-                callback(null, "success");
+                //callback(null, "success");
             }
         });
     }
 
-    this.findUser = function (criteria) {
-        return User.findOne(criteria);
+    this.findUser = function (criteria, callback) {
+        callback(User.findOne(criteria));
     }
 
-    this.findTest = function (criteria) {
-        return Test.findOne(criteria);
+    this.findTest = function (criteria, callback) {
+        callback(Test.findOne(criteria));
     }
 
-    this.findReport = function (criteria) {
-        return Report.findOne(criteria);
+    this.findReport = function (criteria, callback) {
+        callback(Report.findOne(criteria));
     }
 
-    this.findCourse = function (criteria) {
-        return Course.findOne(criteria);
+    this.findCourse = function (criteria, callback) {
+        callback(Course.findOne(criteria));
     }
 
-    this.findCategory = function (criteria) {
-        return Category.findOne(criteria);
+    this.findCategory = function (criteria, callback) {
+        callback(Category.findOne(criteria));
     }
 
-    this.findAggregateData = function (criteria) {
-        return AggregateData.findOne(criteria);
+    this.findAggregateData = function (criteria, callback) {
+        callback(AggregateData.findOne(criteria));
     }
+
+    
 }
 
 module.exports = Database;
