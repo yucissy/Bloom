@@ -219,8 +219,8 @@ function Database() {
         return Report.findOne(criteria);
     }
 
-    this.findCourse = function (criteria) {
-        return Course.findOne(criteria);
+    this.findCourse = function (criteria, callback) {
+        callback(Course.findOne(criteria));
     }
 
     this.findCategory = function (criteria) {
