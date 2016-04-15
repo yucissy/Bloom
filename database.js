@@ -211,6 +211,10 @@ function Database() {
         callback(User.findOne(criteria));
     }
 
+    this.findUserWithField = function (criteria, field, callback) {
+        callback(User.findOne(criteria, field));
+    }
+
     this.findTest = function (criteria, callback) {
         callback(Test.findOne(criteria));
     }
@@ -223,19 +227,33 @@ function Database() {
         callback(Report.findOne(criteria));
     }
 
+    this.findReportWithField = function (criteria, field, callback) {
+        callback(Report.findOne(criteria, field));
+    }
+
     this.findCourse = function (criteria, callback) {
         callback(Course.findOne(criteria));
+    }
+
+    this.findCourseWithField = function (criteria, field, callback) {
+        callback(Course.findOne(criteria, field));
     }
 
     this.findCategory = function (criteria, callback) {
         callback(Category.findOne(criteria));
     }
 
+    this.findCategoryWithField = function (criteria, field, callback) {
+        callback(Category.findOne(criteria, field));
+    }
+
     this.findAggregateData = function (criteria, callback) {
         callback(AggregateData.findOne(criteria));
     }
 
-    
+    this.findAggregateDataWithField = function (criteria, field, callback) {
+        callback(AggregateData.findOne(criteria, field));
+    }    
 }
 
 module.exports = Database;
