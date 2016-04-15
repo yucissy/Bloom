@@ -111,7 +111,7 @@ function Database() {
     var Category = mongoose.model('Category', categorySchema);
     var AggregateData = mongoose.model('Aggregate Data', aggregateDataSchema);
 
-    function insertUser(userId, userName, userEmail, userPassword, userCourses, user, callback) {
+    this.insertUser = function(userId, userName, userEmail, userPassword, userCourses, user) {
         var userToInsert = new User({
             _id: userId,
             name: userName,
@@ -124,11 +124,11 @@ function Database() {
         userToInsert.save(function(err, user) {
             if (err) {
                 console.error(err);
-                callback(err, null);
+                //callback(err, null);
             }
             else {
                 console.dir(user);
-                callback(null, "success");
+                //callback(null, "success");
             }
         });
     }
@@ -230,7 +230,7 @@ function Database() {
         });
     }
 
-    function insertCategory(categoryId, categoryName, categorySubcategories, callback) {
+    this.insertCategory = function(categoryId, categoryName, categorySubcategories) {
         var categoryToInsert = new Category({
             _id: categoryId,
             name: categoryName,
@@ -240,16 +240,16 @@ function Database() {
         categoryToInsert.save(function(err, category) {
             if (err) {
                 console.error(err);
-                callback(err, null);
+                //callback(err, null);
             }
             else {
                 console.dir(category);
-                callback(null, "success");
+                //callback(null, "success");
             }
         });
     }
 
-    function insertCourse(courseId, courseTitle, courseSemester, courseStudents, courseProfessors, courseTAs, courseTests, callback) {
+    this.insertCourse = function(courseId, courseTitle, courseSemester, courseStudents, courseProfessors, courseTAs, courseTests) {
         var courseToInsert = new Course({
             _id: courseId,
             title: courseTitle,
@@ -263,11 +263,11 @@ function Database() {
         courseToInsert.save(function(err, course) {
             if (err) {
                 console.error(err);
-                callback(err, null);
+                //callback(err, null);
             }
             else {
                 console.dir(course);
-                callback(null, "success");
+                //callback(null, "success");
             }
         });
     }
