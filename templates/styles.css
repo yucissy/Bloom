@@ -90,8 +90,6 @@ input {
 #header_top {
 	text-align:left;
 	width:100%;
-	height:120px;
-	overflow:hidden;
 }
 #header_top img {
 	margin-left:-30px;
@@ -102,7 +100,7 @@ input {
 	background-color:#0c0703;
 	width:100%;
 	position:fixed;
-	top:180px;
+	top:150px;
 	bottom:0px;
 	left:0px;
 	right:0px;
@@ -150,114 +148,4 @@ input {
 }
 .btn-success {
 	background-color:gray;
-}
-#signup_wrapper {
-	width:500px;
-	text-align:left;
-	margin-left:-10%;
-	margin-top:-30px;
-}
-#signup_wrapper h1 {
-	color:#2fd846;
-	font-size:3em;
-}
-#signup_wrapper p {
-	font-size:1.3em;
-}
-#signup_input input {
-	margin:10px;
-	width:365px;
-	padding:8px;
-}
-#first, #last {
-	width:170px !important;
-}
-.btn-default {
-	width:365px;
-	margin-left:10px;
-	text-align:left;
-	padding:8px;
-	margin-bottom:8px;
-	height:40px;
-}
-#close {
-	width:71px;
-	margin:0px;
-	height:35px;
-	text-align:center;
-	padding:0;
-}
-#signup_submit {
-	background-color:#37c435;
-	font-weight:bold;
-	color:white;
-}
-.dropdown-menu {
-	margin-left:10px;
-	width:365px;
-	margin-top:-8px;
-}
-.login {
-	color:#EE3E35;
-}
-.login:hover {
-	cursor:pointer;
-	cursor:hand;
-	text-decoration:underline;
-	color:#EE3E35;
-}
-#navbar {
-	height:70px;
-/* IE10+ */ 
-background-image: -ms-linear-gradient(bottom, #505052 0%, #9E9E9E 100%);
-
-/* Mozilla Firefox */ 
-background-image: -moz-linear-gradient(bottom, #505052 0%, #9E9E9E 100%);
-
-/* Opera */ 
-background-image: -o-linear-gradient(bottom, #505052 0%, #9E9E9E 100%);
-
-/* Webkit (Safari/Chrome 10) */ 
-background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #505052), color-stop(100, #9E9E9E));
-
-/* Webkit (Chrome 11+) */ 
-background-image: -webkit-linear-gradient(bottom, #505052 0%, #9E9E9E 100%);
-
-/* W3C Markup */ 
-background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
-}
-#user_banner {
-	text-align:left;
-	height:70px;
-	width:400px;
-}
-#user_banner img {
-	height:50px;
-	width:90px;
-	margin-top:5px;
-}
-#courses {
-	background-color:#23211f;
-	text-align:left;
-}
-#courses h2 {
-	font-size:1.4em;
-	color:#b3b3b3;
-}
-#new_exam {
-	height:50px;
-}
-#new_exam img {
-	height:50px;
-	width:70px;
-	color:white;
-}
-#main_content {
-	text-align:left;
-	margin:40px;
-	font-size:2em;
-	color:#9b9393;
-}
-#questions {
-	display:none;
 }
