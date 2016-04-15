@@ -9,28 +9,7 @@ var mongoose = require('mongoose');
 
 function Database() {
     
-    var db =mongoose.connect('mongodb://bloom-admin:bloomwebappCS132@ds021989.mlab.com:21989/bloom');
-
-    /*var studentSchema = new mongoose.Schema({
-            _id: String,
-            name: String,
-            email: String,
-            courses: [String]
-    });
-
-    var professorSchema = new mongoose.Schema({
-            _id: String,
-            name: String,
-            email: String,
-            courses: [String]
-    });
-
-    var taSchema = new mongoose.Schema({
-            _id: String,
-            name: String,
-            email: String,
-            courses: [String]
-    }); */
+    var db = mongoose.connect('mongodb://bloom-admin:bloomwebappCS132@ds021989.mlab.com:21989/bloom');
 
     var userSchema = new mongoose.Schema({
             _id: String,
@@ -101,17 +80,14 @@ function Database() {
         ]
     });
 
-    //var Student = mongoose.model('Student', studentSchema);
     var User = mongoose.model('User', userSchema);
     var Test = mongoose.model('Test', testSchema);    
     var Report = mongoose.model('Report', reportSchema);
-    //var Professor = mongoose.model('Professor', professorSchema);    
-    //var TA = mongoose.model('TA', taSchema);
     var Course = mongoose.model('Course', courseSchema);
     var Category = mongoose.model('Category', categorySchema);
     var AggregateData = mongoose.model('Aggregate Data', aggregateDataSchema);
 
-    this.insertUser = function(userId, userName, userEmail, userPassword, userCourses, user) {
+    this.insertUser = function (userId, userName, userEmail, userPassword, userCourses, user, callback) {
         var userToInsert = new User({
             _id: userId,
             name: userName,
@@ -133,66 +109,6 @@ function Database() {
         });
     }
 
-    /*function insertStudent(studentId, studentName, studentEmail, studentCourses, callback) {
-        var studentToInsert = new Student({
-            _id: studentId,
-            name: studentName,
-            email: studentEmail,
-            courses: studentCourses
-        });
-
-        studentToInsert.save(function(err, student) {
-            if (err) {
-                console.error(err);
-                callback(err, null);
-            }
-            else {
-                console.dir(student);
-                callback(null, "success");
-            }
-        });
-    }
-
-    function insertProfessor(professorId, professorName, professorEmail, professorCourses, callback) {
-        var professorToInsert = new Professor({
-            _id: professorId,
-            name: professorName,
-            email: professorEmail,
-            courses: professorCourses
-        });
-
-        professorToInsert.save(function(err, professor) {
-            if (err) {
-                console.error(err);
-                callback(err, null);
-            }
-            else {
-                console.dir(professor);
-                callback(null, "success");
-            }
-        });
-    }
-
-    function insertTA(taId, taName, taEmail, taCourses, callback) {
-        var taToInsert = new Professor({
-            _id: taId,
-            name: taName,
-            email: taEmail,
-            courses: taCourses
-        });
-
-        taToInsert.save(function(err, ta) {
-            if (err) {
-                console.error(err);
-                callback(err, null);
-            }
-            else {
-                console.dir(ta);
-                callback(null, "success");
-            }
-        });
-    } */
-
     this.insertTest = function(testId, testName, testQuestions, callback) {
         var testToInsert = new Test({
             _id: testId,
@@ -203,16 +119,16 @@ function Database() {
         testToInsert.save(function(err, test) {
             if (err) {
                 console.error(err);
-                callback(err, null);
+                //callback(err, null);
             }
             else {
                 console.dir(test);
-                callback(null, "success");
+                //callback(null, "success");
             }
         });
     }
 
-    function insertReport(reportId, reportSubcategories, callback) {
+    this.insertReport = function(reportId, reportSubcategories, callback) {
         var reportToInsert = new Report({
             _id: reportId,
             sub_categories: reportSubcategories
@@ -221,16 +137,16 @@ function Database() {
         reportToInsert.save(function(err, report) {
             if (err) {
                 console.error(err);
-                callback(err, null);
+                //callback(err, null);
             }
             else {
                 console.dir(report);
-                callback(null, "success");
+                //callback(null, "success");
             }
         });
     }
 
-    this.insertCategory = function(categoryId, categoryName, categorySubcategories) {
+    this.insertCategory = function(categoryId, categoryName, categorySubcategories, callback) {
         var categoryToInsert = new Category({
             _id: categoryId,
             name: categoryName,
@@ -249,7 +165,7 @@ function Database() {
         });
     }
 
-    this.insertCourse = function(courseId, courseTitle, courseSemester, courseStudents, courseProfessors, courseTAs, courseTests) {
+    this.insertCourse = function(courseId, courseTitle, courseSemester, courseStudents, courseProfessors, courseTAs, courseTests, callback) {
         var courseToInsert = new Course({
             _id: courseId,
             title: courseTitle,
@@ -272,7 +188,7 @@ function Database() {
         });
     }
 
-    function insertAggregateData(testId, studentCount, testQuestions) {
+    this.insertAggregateData = function(testId, studentCount, testQuestions) {
         var aggregateDataToInsert = new AggregateData({
             test_id: testId,
             count: studentCount,
@@ -282,13 +198,37 @@ function Database() {
         aggregateDataToInsert.save(function(err, aggregateData) {
             if (err) {
                 console.error(err);
-                callback(err, null);
+                //callback(err, null);
             }
             else {
                 console.dir(aggregateData);
-                callback(null, "success");
+                //callback(null, "success");
             }
         });
+    }
+
+    this.findUser = function (criteria) {
+        return User.findOne(criteria);
+    }
+
+    this.findTest = function (criteria) {
+        return Test.findOne(criteria);
+    }
+
+    this.findReport = function (criteria) {
+        return Report.findOne(criteria);
+    }
+
+    this.findCourse = function (criteria) {
+        return Course.findOne(criteria);
+    }
+
+    this.findCategory = function (criteria) {
+        return Category.findOne(criteria);
+    }
+
+    this.findAggregateData = function (criteria) {
+        return AggregateData.findOne(criteria);
     }
 }
 

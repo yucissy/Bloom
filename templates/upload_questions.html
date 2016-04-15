@@ -15,7 +15,7 @@
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="../static/styles.css"></link>
-    <title>Upload Categories</title>
+    <title>Upload Questions</title>
   </head>
   <body>
 
@@ -36,7 +36,7 @@
           New Course
         </div>
         <h2>EXAMS</h2>
-        <div id="new_exam" data-toggle="modal" data-target="#newExam">
+        <div id="new_exam" data-toggle="modal" data-target="#newExam1">
           <img src="../static/images/new_button.gif">
           New Exam
         </div>
@@ -50,7 +50,7 @@
     </div>
 
 
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+<div class="modal fade" id="newExam1" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -59,18 +59,35 @@
         
       </div>
       <div class="modal-body">
-        <p>1. Enter the Exam Title:</p>
-        <input type="text" name="exam" placeholder="e.g. Midterm 1" id="title"><br>
-        <p>2. Upload an Excel Sheet in the following format:</p>
-        <img src="../static/images/categories.png">
-        <input type="file" name="file" id="categories">
-      </div>
-      <div class="modal-footer">
+        <p>1. Select the Exam:</p>
+        <div class="dropdown">
+        <button id="button" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">None</button>
+        <ul class="dropdown-menu">
+          <li><a href="#" class="s">Midterm 1</a></li>
+        </ul>
+        </div>
+
+        <div id="questions">
+        <p>2. Submit your scores:</p>
+        </div>
+        </div>
+
+
+
+              <div class="modal-footer">
         <button type="button" id="close" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button id="upload" type="button" class="btn btn-success">Upload</button>
+        <button id="submit" type="button" class="btn btn-success">Submit</button>
       </div>
+
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+    <script>
+      $('.s').on('click', function() {
+        $('#button').html($(this).text());
+        $('#questions').show();
+      });
+    </script>
   </body>
 </html>
