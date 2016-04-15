@@ -128,7 +128,7 @@ function Database() {
         });
     }
 
-    function insertReport(reportId, reportSubcategories, callback) {
+    this.insertReport = function(reportId, reportSubcategories, callback) {
         var reportToInsert = new Report({
             _id: reportId,
             sub_categories: reportSubcategories
@@ -146,7 +146,7 @@ function Database() {
         });
     }
 
-    function insertCategory(categoryId, categoryName, categorySubcategories, callback) {
+    this.insertCategory = function(categoryId, categoryName, categorySubcategories, callback) {
         var categoryToInsert = new Category({
             _id: categoryId,
             name: categoryName,
@@ -165,7 +165,7 @@ function Database() {
         });
     }
 
-    function insertCourse(courseId, courseTitle, courseSemester, courseStudents, courseProfessors, courseTAs, courseTests, callback) {
+    this.insertCourse = function(courseId, courseTitle, courseSemester, courseStudents, courseProfessors, courseTAs, courseTests, callback) {
         var courseToInsert = new Course({
             _id: courseId,
             title: courseTitle,
@@ -188,7 +188,7 @@ function Database() {
         });
     }
 
-    function insertAggregateData(testId, studentCount, testQuestions) {
+    this.insertAggregateData = function(testId, studentCount, testQuestions) {
         var aggregateDataToInsert = new AggregateData({
             test_id: testId,
             count: studentCount,
