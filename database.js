@@ -207,29 +207,31 @@ function Database() {
         });
     }
 
-    this.findUser = function (criteria) {
-        return User.findOne(criteria);
+    this.findUser = function (criteria, callback) {
+        callback(User.findOne(criteria));
     }
 
-    this.findTest = function (criteria) {
-        return Test.findOne(criteria);
+    this.findTest = function (criteria, callback) {
+        callback(Test.findOne(criteria));
     }
 
-    this.findReport = function (criteria) {
-        return Report.findOne(criteria);
+    this.findReport = function (criteria, callback) {
+        callback(Report.findOne(criteria));
     }
 
     this.findCourse = function (criteria, callback) {
         callback(Course.findOne(criteria));
     }
 
-    this.findCategory = function (criteria) {
-        return Category.findOne(criteria);
+    this.findCategory = function (criteria, callback) {
+        callback(Category.findOne(criteria));
     }
 
-    this.findAggregateData = function (criteria) {
-        return AggregateData.findOne(criteria);
+    this.findAggregateData = function (criteria, callback) {
+        callback(AggregateData.findOne(criteria));
     }
+
+    
 }
 
 module.exports = Database;
