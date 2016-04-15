@@ -223,6 +223,10 @@ function Database() {
         callback(Course.findOne(criteria));
     }
 
+    this.findTestWithField = function (criteria, field, callback) {
+        callback(Test.findOne(criteria, field));
+    }
+
     this.findCategory = function (criteria) {
         return Category.findOne(criteria);
     }
