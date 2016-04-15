@@ -212,50 +212,31 @@ function Database() {
     }
 
     this.findTest = function (criteria, field, callback) {
-        callback(Test.findOne(criteria, field, callback));
+        Test.findOne(criteria, field, callback);
     }
 
-    this.findReport = function (criteria, callback) {
-        callback(Report.findOne(criteria));
-    }
-
-    this.findReportWithField = function (criteria, field, callback) {
-        callback(Report.findOne(criteria, field));
+    this.findReport = function (criteria, field, callback) {
+        Report.findOne(criteria, field, callback);
     }
 
     this.findCourse = function (criteria, field, callback) {
         Course.findOne(criteria, field, callback);
     }
 
-    this.findCategory = function (criteria, callback) {
-        callback(Category.findOne(criteria));
+    this.findCategory = function (criteria, field, callback) {
+        Category.findOne(criteria, field, callback);
     }
 
-    this.findCategoryWithField = function (criteria, field, callback) {
-        callback(Category.findOne(criteria, field));
+    this.findAggregateData = function (criteria, field, callback) {
+        AggregateData.findOne(criteria, field, callback);
     }
 
-    this.findAggregateData = function (criteria, callback) {
-        callback(AggregateData.findOne(criteria));
-    }
-
-    this.findAggregateDataWithField = function (criteria, field, callback) {
-        callback(AggregateData.findOne(criteria, field));
-    }
-
-    this.updateAggregateData = function (criteria, aggregateDataQuestions) { //criteria should be the same format as the criteria in the find functions
+    /*this.updateAggregateData = function (criteria, aggregateDataQuestions) { //criteria should be the same format as the criteria in the find functions
         AggregateData.findOne(aggregateDataId, function(err, doc) {
             doc.questions = aggregateDataQuestions;
             doc.save();
         });
-    }
-
-    this.updateAggregateData = function (criteria, aggregateDataQuestions) { //criteria should be the same format as the criteria in the find functions
-        AggregateData.findOne(aggregateDataId, function(err, doc) {
-            doc.questions = aggregateDataQuestions;
-            doc.save();
-        });
-    }
+    }*/
 }
 
 module.exports = Database;
