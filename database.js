@@ -215,6 +215,10 @@ function Database() {
         callback(Test.findOne(criteria));
     }
 
+    this.findTestWithField = function (criteria, field, callback) {
+        callback(Test.findOne(criteria, field));
+    }
+
     this.findReport = function (criteria, callback) {
         callback(Report.findOne(criteria));
     }
