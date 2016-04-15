@@ -207,20 +207,12 @@ function Database() {
         });
     }
 
-    this.findUser = function (criteria, callback) {
-        callback(User.findOne(criteria));
+    this.findUser = function (criteria, field, callback) {
+        User.findOne(criteria, field, callback);
     }
 
-    this.findUserWithField = function (criteria, field, callback) {
-        callback(User.findOne(criteria, field));
-    }
-
-    this.findTest = function (criteria, callback) {
-        callback(Test.findOne(criteria));
-    }
-
-    this.findTestWithField = function (criteria, field, callback) {
-        callback(Test.findOne(criteria, field));
+    this.findTest = function (criteria, field, callback) {
+        callback(Test.findOne(criteria, field, callback));
     }
 
     this.findReport = function (criteria, callback) {
@@ -231,12 +223,8 @@ function Database() {
         callback(Report.findOne(criteria, field));
     }
 
-    this.findCourse = function (criteria, callback) {
-        callback(Course.findOne(criteria));
-    }
-
-    this.findCourseWithField = function (criteria, field, callback) {
-        callback(Course.findOne(criteria, field));
+    this.findCourse = function (criteria, field, callback) {
+        Course.findOne(criteria, field, callback);
     }
 
     this.findCategory = function (criteria, callback) {
@@ -253,7 +241,21 @@ function Database() {
 
     this.findAggregateDataWithField = function (criteria, field, callback) {
         callback(AggregateData.findOne(criteria, field));
-    }    
+    }
+
+    this.updateAggregateData = function (criteria, aggregateDataQuestions) { //criteria should be the same format as the criteria in the find functions
+        AggregateData.findOne(aggregateDataId, function(err, doc) {
+            doc.questions = aggregateDataQuestions;
+            doc.save();
+        });
+    }
+
+    this.updateAggregateData = function (criteria, aggregateDataQuestions) { //criteria should be the same format as the criteria in the find functions
+        AggregateData.findOne(aggregateDataId, function(err, doc) {
+            doc.questions = aggregateDataQuestions;
+            doc.save();
+        });
+    }
 }
 
 module.exports = Database;
