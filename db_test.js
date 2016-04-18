@@ -22,7 +22,7 @@ function DatabaseTest() {
                 categories: [
                     {
                         main_cat_id: { type: String, ref: 'Category' },
-                        sub_cat: Number
+                        sub_cat_id: Number
                     }
                 ],
                 sum_points: Number
