@@ -196,7 +196,7 @@ function DatabaseTest() {
                 var questionId = questions[i].qid;
                 Test.update({'_id': testId, 'questions.qid': questionId}, {'$set': {
                     'questions.$.sum_points': userPoints + testQuestionSumPoints
-                }});
+                }}, function(error, success){console.log(success);});
             }
         });
     }
