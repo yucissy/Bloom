@@ -16,8 +16,8 @@ function Database() {
             name: String,
             email: String,
             password: String,
-            courses: [String],
-            type: String,    
+            courses: [{type: mongoose.Schema.Types.String, ref: 'Course'}],
+            type: String,
     });
 
     var testSchema = new mongoose.Schema({
@@ -51,10 +51,10 @@ function Database() {
         _id: String,
         title: String,
         semester: String,
-        students: [String],
-        professors: [String],
-        tas: [String],
-        tests: [String]
+        students: [{type: mongoose.Schema.Types.String, ref: 'User'}],
+        professors: [{type: mongoose.Schema.Types.String, ref: 'User'}],
+        tas: [{type: mongoose.Schema.Types.String, ref: 'User'}],
+        tests: [{type: mongoose.Schema.Types.String, ref: 'Test'}]
     });
 
     var categorySchema = new mongoose.Schema({
@@ -176,7 +176,7 @@ function Database() {
             tests: courseTests
         });
 
-        courseToInsert.save(function(err, course) {
+        courseToInsert.save(function(err, course) {-
             if (err) {
                 console.error(err);
                 //callback(err, null);
