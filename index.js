@@ -8,7 +8,7 @@ var Data = require('./database.js');
 var handlers = require('./handlers.js');
 
 var app = express();
-app.engine('html', engines.hogan);
+app.engine('html', require('hogan-engine'));
 app.set('views', __dirname + '/templates');
 app.use(express.static(__dirname + '/static'));
 

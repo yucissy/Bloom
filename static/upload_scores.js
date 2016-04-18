@@ -12,9 +12,11 @@ $(document).ready(function() {
         request.setRequestHeader('Content-Type', 'application/json');
         request.send(JSON.stringify(toSend));
         request.onreadystatechange = function() {
-		  if (request.readyState == 4 && request.status == 200) 
-		    var response = request.responseText;
-            console.log(response);
+		  if (request.readyState == 4 && request.status == 200) {
+            var response = request.responseText;
+            console.log(response);   
+          }
+
 		}
 
 
@@ -25,5 +27,12 @@ $(document).ready(function() {
     	$('#questions').show();
     });
 
-    
+    $('#user_settings').hover(
+        function() {
+        $('#user_banner').css('background-image', "url('images/user_banner2.gif')");
+        },
+        function() {
+            $('#user_banner').css('background-image', "url('images/user_banner.gif')");
+        }
+    );
 });
