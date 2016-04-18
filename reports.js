@@ -7,19 +7,6 @@ function Reports(db) {
 	};
 
 	this.makeExam = function(course, name, data) {
-		questions: [
-            {
-                qid: Number,
-                max_points: Number,
-                categories: [
-                    {
-                        main_cat_id: { type: String, ref: 'Category' },
-                        sub_cat: String
-                    }
-                ],
-                sum_points: Number
-            }
-        ]
 		csv.parse(data, {columns:true}, function(err, output) {
 			var test = [];
 			for (var i=0; i<output.length; i++) {
