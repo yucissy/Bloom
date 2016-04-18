@@ -22,7 +22,7 @@ function DatabaseTest() {
                 categories: [
                     {
                         main_cat_id: { type: String, ref: 'Category' },
-                        sub_cat: String
+                        sub_cat: Number
                     }
                 ],
                 sum_points: Number
@@ -36,7 +36,7 @@ function DatabaseTest() {
         categories: [
             {
                 main_cat_id: { type: String, ref: 'Category' },
-                sub_cats: [{name: String, percentage: Number}]
+                sub_cats: [{name: Number, percentage: Number}]
             }
         ]
     });
@@ -63,6 +63,30 @@ function DatabaseTest() {
     var Course = mongoose.model('Course', courseSchema);
     var Category = mongoose.model('Category', categorySchema);
 
+    this.insertTestForCourse = function(courseId, testName, qs) {
+        var testToInsert = new Test({
+                title: testName,
+                questions: qs
+            });
+
+        test.save(function(err) {
+            if (err) console.error(err);
+
+            Course.findOne({_id: courseId}).exec(function(err, course) {
+                course.tests.push(test);
+
+                course.save(function(err) {
+                    if (err) console.error(err);
+                })
+            });
+        });
+    }
+
+    this.findTestFromCourse = function(course, callback){
+        Course.findOne({_id: course}).populate('tests', 'title').exec(function(err, course) {
+            callback(course.tests);
+        })
+    }
     // var csci = new Course({
     //     _id: 'CSCI1230',
     //     title: "Creating Modern Web Apps",
@@ -152,4 +176,4 @@ function DatabaseTest() {
     
 }
 
-var dbTest = new DatabaseTest();
+module.exports = DatabaseTest;
