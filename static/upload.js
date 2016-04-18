@@ -1,5 +1,7 @@
 $(function() {
     $("#upload").click(function(e) {
+        var cID = 'CSCI1230';
+
     	var input = e.target;
         var examName = $("#title").val()
     	var selected = $("#categories").get(0).files[0];
@@ -9,7 +11,7 @@ $(function() {
 
     		//this variable holds the csv data!
     		var dataURL = reader.result;
-            var toSend = {exam: examName, data: dataURL};
+            var toSend = {courseID: cID, exam: examName, data: dataURL};
 
             var request = new XMLHttpRequest();
             request.open('POST', '/sendExam', true);
