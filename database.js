@@ -29,7 +29,7 @@ function Database() {
                 categories: [
                     {
                         main_cat_id: { type: String, ref: 'Category' },
-                        sub_cat: String
+                        sub_cat: Number
                     }
                 ],
                 sum_points: Number
@@ -188,6 +188,17 @@ function Database() {
     this.findCategory = function (criteria, field, callback) {
         Category.findOne(criteria, field, callback);
     }
+
+    this.updateTestAggregateData = function (testId, questions) { //questions {[qid: Number, points: Number]}   
+        Test.findOne({_id: testId}, function(err, test) {
+            for (var i = 0; i < questions.length; i++) {
+                var userPoints = questions[i].points;
+                var questionId = questions[i].qid;
+                Test.update({'_id': testId, 'questions.qid': questionId}, {'$set': {
+                    'questions.$.sum_points': userPoints + test.questions.sum_points;
+                }}
+            }
+        });
 }
 
 module.exports = Database;
