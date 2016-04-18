@@ -4,11 +4,11 @@ var engines = require('consolidate');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-var Data = require('./database.js');
+var Data = require('./db_test.js');
 var handlers = require('./handlers.js');
 
 var app = express();
-app.engine('html', engines.hogan);
+app.engine('html', require('hogan-engine'));
 app.set('views', __dirname + '/templates');
 app.use(express.static(__dirname + '/static'));
 

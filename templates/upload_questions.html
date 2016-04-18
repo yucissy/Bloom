@@ -14,6 +14,7 @@
     <script src="upload_scores.js"></script>
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="styles.css"></link>
     <title>Upload Questions</title>
   </head>
@@ -25,20 +26,22 @@
     </div>
     <div class="row" id="navbar">
       <div id="user_banner">
-      <img src="images/user_banner.gif">
+        <div id="user_settings">
+        Hi, Monica
+        </div>
       </div>
-    </div>
     <div class="row" id="content_body">
       <div class="col-md-2" id="courses">
         <h2>COURSES</h2>
-        <div id="new_exam">
-          <img src="images/new_button.gif">
-          New Course
+        <div class="curr course">
+        <p>CSCI1230</p>
+        </div>
+        <div class="new_exam">
+          <p>New Course</p>
         </div>
         <h2>EXAMS</h2>
-        <div id="new_exam" data-toggle="modal" data-target="#newExam1">
-          <img src="images/new_button.gif">
-          New Exam
+        <div class="new_exam" data-toggle="modal" data-target="#newExam1">
+          <p>New Exam</p>
         </div>
       </div>
       <div class="col-md-10" id="main">

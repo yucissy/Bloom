@@ -39,18 +39,9 @@ var exports = function(app, db) {
 	app.post('/getExams', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
-		db.findCourse({_id : course}, 'tests', function(err, data) {
-			var toSend = [];
-			var tests = data.tests;
-			for (var i=0; i<tests.length; i++) {
-				console.log(tests[i]);
-				db.findTest({_id : tests[i]}, 'name', function(err, tdata) {
-					console.log(tdata);
-					toSend.push();
-				});
-			}
+		db.findTestFromCourse(course, function(err, data) {
 			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({exams : toSend}));
+			res.send(JSON.stringify({exams : data}));
 		});
 	});
 }

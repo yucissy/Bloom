@@ -22,7 +22,7 @@ function DatabaseTest() {
                 categories: [
                     {
                         main_cat_id: { type: String, ref: 'Category' },
-                        sub_cat: String
+                        sub_cat: Number
                     }
                 ],
                 sum_points: Number
@@ -31,14 +31,14 @@ function DatabaseTest() {
     });
 
     var reportSchema = new mongoose.Schema({
-            student_id: { type: String, ref: 'User' }, 
-            test_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Test' },
-            categories: [
-                {
-                    main_cat_id: { type: String, ref: 'Category' },
-                    sub_cats: [{name: String, percentage: Number}]
-                }
-            ]
+        student_id: { type: String, ref: 'User' }, 
+        test_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Test' },
+        categories: [
+            {
+                main_cat_id: { type: String, ref: 'Category' },
+                sub_cats: [{name: Number, percentage: Number}]
+            }
+        ]
     });
 
     var courseSchema = new mongoose.Schema({
@@ -63,6 +63,30 @@ function DatabaseTest() {
     var Course = mongoose.model('Course', courseSchema);
     var Category = mongoose.model('Category', categorySchema);
 
+    this.insertTestForCourse = function(courseId, testName, qs) {
+        var testToInsert = new Test({
+                title: testName,
+                questions: qs
+            });
+
+        test.save(function(err) {
+            if (err) console.error(err);
+
+            Course.findOne({_id: courseId}).exec(function(err, course) {
+                course.tests.push(test);
+
+                course.save(function(err) {
+                    if (err) console.error(err);
+                })
+            });
+        });
+    }
+
+    this.findTestFromCourse = function(course, callback){
+        Course.findOne({_id: course}).populate('tests', 'title').exec(function(err, course) {
+            callback(course.tests);
+        })
+    }
     // var csci = new Course({
     //     _id: 'CSCI1230',
     //     title: "Creating Modern Web Apps",
@@ -122,23 +146,34 @@ function DatabaseTest() {
 
     // });
 
-    User.findOne({name:'Katie Han'}).populate('courses', 'title').exec(function(err, user){
-        if (err) console.error(err);
+    // User.findOne({name:'Katie Han'}).populate('courses', 'title').exec(function(err, user){
+    //     if (err) console.error(err);
 
-        console.log('%s is taking %s', user.name, user.courses[0].title);
-    });
+    //     console.log('%s is taking %s', user.name, user.courses[0].title);
+    // });
     
-    Course.findOne({_id:'CSCI1230'}).exec(function(err, course) {
-        User.find({courses:['CSCI1230'], type:'student'}).exec(function(err, users) {
-            console.log(users);
-            course.students.concat(users);
-            course.save(function(err) {
-                if (err) console.error(err);
-            });
-        });
-    });
+    // Course.findOne({_id:'CSCI1230'}).exec(function(err, course) {
+    //     User.find({courses:['CSCI1230'], type:'professor'}).exec(function(err, users) {
+    //         console.log(users);
+    //         for (var i=0; i<users.length; i++) {
+    //             course.professors.push(users[i]._id);
+    //         }
+    //         course.save(function(err) {
+    //             if (err) console.error(err);
+    //         });
+    //     });
+    // });
+    
+    // var bloom = new Category({
+    //     _id: 'blooms',
+    //     name: "Bloom's Taxonomy",
+    //     sub_categories: ['Remembering', 'Understanding', 'Applying', 'Analyzing', 'Evaluating', 'Creating']
+    // });
 
+    // bloom.save(function(err) {
+    //     if (err) console.error(err);
+    // });
     
 }
 
-var dbTest = new DatabaseTest();
+module.exports = DatabaseTest;

@@ -16,14 +16,12 @@ function Reports(db) {
 						insert[key] = transformers[key](output[i][key]);
 					} else {
 						// find category id from db
-						var cat_id = 0;
-						insert['categories'].push({'main_cat_id': cat_id, 'sub_cat_id': parseInt(output[i][key])});
+						insert['categories'].push({'main_cat_id': key, 'sub_cat_id': parseInt(output[i][key])});
 					}
 				}
 				test.push(insert);
 			}
-			db.insertTest("TEST_ID", name, test, function(err, status){console.log(status)});
-			db.updateCourse({_id : course}, "TEST_ID");
+			db.insertTestForCourse(course, name, test);
 		});
 	};
 
