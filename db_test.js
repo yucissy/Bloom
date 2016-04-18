@@ -69,11 +69,13 @@ function DatabaseTest() {
                 questions: qs
             });
 
-        test.save(function(err) {
+        testToInsert.save(function(err) {
             if (err) console.error(err);
 
             Course.findOne({_id: courseId}).exec(function(err, course) {
-                course.tests.push(test);
+                if (err) console.error(err);
+                
+                course.tests.push(testToInsert);
 
                 course.save(function(err) {
                     if (err) console.error(err);
@@ -82,10 +84,20 @@ function DatabaseTest() {
         });
     }
 
-    this.findTestFromCourse = function(course, callback){
+    this.findTestFromCourse = function(course, callback){        
         Course.findOne({_id: course}).populate('tests', 'title').exec(function(err, course) {
+            if (err) console.error(err);
+
             callback(course.tests);
-        })
+        });
+    }
+
+    this.findTest = function(testId, callback) {
+        Test.findOne({_id: testId}).exec(function(err, test) {
+            if (err) console.error(err);
+
+            callback(test);
+        });
     }
     // var csci = new Course({
     //     _id: 'CSCI1230',

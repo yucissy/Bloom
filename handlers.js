@@ -30,7 +30,7 @@ var exports = function(app, db) {
 	app.post('/getExam', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
-		db.findTest({_id : exam}, '', function(err, data){
+		db.findTest({_id : exam}, '', function(data){
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({exam : data}));
 		});
@@ -39,7 +39,7 @@ var exports = function(app, db) {
 	app.post('/getExams', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
-		db.findTestFromCourse(course, function(err, data) {
+		db.findTestFromCourse(course, function(data) {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({exams : data}));
 		});
