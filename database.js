@@ -16,8 +16,8 @@ function Database() {
             name: String,
             email: String,
             password: String,
-            courses: [String],
-            type: String,    
+            courses: [{type: mongoose.Schema.Types.String, ref: 'Course'}],
+            type: String,
     });
 
     var testSchema = new mongoose.Schema({
@@ -51,10 +51,10 @@ function Database() {
         _id: String,
         title: String,
         semester: String,
-        students: [String],
-        professors: [String],
-        tas: [String],
-        tests: [String]
+        students: [{type: mongoose.Schema.Types.String, ref: 'User'}],
+        professors: [{type: mongoose.Schema.Types.String, ref: 'User'}],
+        tas: [{type: mongoose.Schema.Types.String, ref: 'User'}],
+        tests: [{type: mongoose.Schema.Types.String, ref: 'Test'}]
     });
 
     var categorySchema = new mongoose.Schema({
@@ -176,7 +176,7 @@ function Database() {
             tests: courseTests
         });
 
-        courseToInsert.save(function(err, course) {
+        courseToInsert.save(function(err, course) {-
             if (err) {
                 console.error(err);
                 //callback(err, null);
@@ -207,53 +207,36 @@ function Database() {
         });
     }
 
-    this.findUser = function (criteria, callback) {
-        callback(User.findOne(criteria));
+    this.findUser = function (criteria, field, callback) {
+        User.findOne(criteria, field, callback);
     }
 
-    this.findUserWithField = function (criteria, field, callback) {
-        callback(User.findOne(criteria, field));
+    this.findTest = function (criteria, field, callback) {
+        Test.findOne(criteria, field, callback);
     }
 
-    this.findTest = function (criteria, callback) {
-        callback(Test.findOne(criteria));
+    this.findReport = function (criteria, field, callback) {
+        Report.findOne(criteria, field, callback);
     }
 
-    this.findTestWithField = function (criteria, field, callback) {
-        callback(Test.findOne(criteria, field));
+    this.findCourse = function (criteria, field, callback) {
+        Course.findOne(criteria, field, callback);
     }
 
-    this.findReport = function (criteria, callback) {
-        callback(Report.findOne(criteria));
+    this.findCategory = function (criteria, field, callback) {
+        Category.findOne(criteria, field, callback);
     }
 
-    this.findReportWithField = function (criteria, field, callback) {
-        callback(Report.findOne(criteria, field));
+    this.findAggregateData = function (criteria, field, callback) {
+        AggregateData.findOne(criteria, field, callback);
     }
 
-    this.findCourse = function (criteria, callback) {
-        callback(Course.findOne(criteria));
-    }
-
-    this.findCourseWithField = function (criteria, field, callback) {
-        callback(Course.findOne(criteria, field));
-    }
-
-    this.findCategory = function (criteria, callback) {
-        callback(Category.findOne(criteria));
-    }
-
-    this.findCategoryWithField = function (criteria, field, callback) {
-        callback(Category.findOne(criteria, field));
-    }
-
-    this.findAggregateData = function (criteria, callback) {
-        callback(AggregateData.findOne(criteria));
-    }
-
-    this.findAggregateDataWithField = function (criteria, field, callback) {
-        callback(AggregateData.findOne(criteria, field));
-    }    
+    /*this.updateAggregateData = function (criteria, aggregateDataQuestions) { //criteria should be the same format as the criteria in the find functions
+        AggregateData.findOne(aggregateDataId, function(err, doc) {
+            doc.questions = aggregateDataQuestions;
+            doc.save();
+        });
+    }*/
 }
 
 module.exports = Database;

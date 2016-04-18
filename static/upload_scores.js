@@ -2,7 +2,7 @@ $(document).ready(function() {
 
     //dummy data
     var course_ID = 'CSCI1230';
-    var user_ID = 'test_prof_1';
+    var user_ID = 'B0004567';
 	//first dropdown button behavior
     $('#select_exams').on('click', function() {
 		var toSend = {userID: user_ID, courseID: course_ID};
