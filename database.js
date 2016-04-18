@@ -12,37 +12,38 @@ function Database() {
     var db = mongoose.connect('mongodb://bloom-admin:bloomwebappCS132@ds021989.mlab.com:21989/bloom');
 
     var userSchema = new mongoose.Schema({
-            _id: String,
-            name: String,
-            email: String,
-            password: String,
-            courses: [{type: mongoose.Schema.Types.String, ref: 'Course'}],
-            type: String,
+        _id: String,
+        name: String,
+        email: String,
+        courses: [{ type: String, ref: 'Course' }],
+        type: String
     });
 
     var testSchema = new mongoose.Schema({
-            _id: String,
-            name: String,
-            questions: [    
-                {
-                    qid: String,
-                    max_points: Number,
-                    categories: [
-                        {
-                            main_cat_id: Number,
-                            sub_cat_id: Number
-                        }
-                    ]
-                }
-            ]
+        title: String,
+        count: Number,
+        questions: [
+            {
+                qid: Number,
+                max_points: Number,
+                categories: [
+                    {
+                        main_cat_id: { type: String, ref: 'Category' },
+                        sub_cat: String
+                    }
+                ],
+                sum_points: Number
+            }
+        ]
     });
 
     var reportSchema = new mongoose.Schema({
-            _id: {student_id: String, test_id: String},
-            sub_categories: [    
+            student_id: { type: String, ref: 'User' }, 
+            test_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Test' },
+            categories: [
                 {
-                    cid: Number,
-                    percentage: Number
+                    main_cat_id: { type: String, ref: 'Category' },
+                    sub_cats: [{name: String, percentage: Number}]
                 }
             ]
     });
@@ -51,33 +52,15 @@ function Database() {
         _id: String,
         title: String,
         semester: String,
-        students: [{type: mongoose.Schema.Types.String, ref: 'User'}],
-        professors: [{type: mongoose.Schema.Types.String, ref: 'User'}],
-        tas: [{type: mongoose.Schema.Types.String, ref: 'User'}],
-        tests: [{type: mongoose.Schema.Types.String, ref: 'Test'}]
+        students: [{ type: String, ref: 'User' }],
+        professors: [{ type: String, ref: 'User' }],
+        tests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Test' }]
     });
 
     var categorySchema = new mongoose.Schema({
         _id: String,
         name: String,
-        sub_categories: [
-            {
-                _id: Number,
-                name: String
-            }
-        ]
-    });
-
-    var aggregateDataSchema = new mongoose.Schema({
-        _id: String,
-        test_id: String,
-        count: Number,
-        questions: [
-            {
-                qid: String,
-                sum_points: Number
-            }
-        ]
+        sub_categories: [String]
     });
 
     var User = mongoose.model('User', userSchema);
@@ -85,14 +68,12 @@ function Database() {
     var Report = mongoose.model('Report', reportSchema);
     var Course = mongoose.model('Course', courseSchema);
     var Category = mongoose.model('Category', categorySchema);
-    var AggregateData = mongoose.model('Aggregate Data', aggregateDataSchema);
 
-    this.insertUser = function (userId, userName, userEmail, userPassword, userCourses, user, callback) {
+    this.insertUser = function (userId, userName, userEmail, userCourses, user, callback) {
         var userToInsert = new User({
             _id: userId,
             name: userName,
             email: userEmail,
-            password: userPassword,
             courses: userCourses,
             type: user
         });
@@ -109,10 +90,10 @@ function Database() {
         });
     }
 
-    this.insertTest = function(testId, testName, testQuestions, callback) {
+    this.insertTest = function(testTitle, testCount, testQuestions, callback) {
         var testToInsert = new Test({
-            _id: testId,
-            name: testName,
+            title: testTitle,
+            count: testCount,
             questions: testQuestions
         });
 
@@ -128,9 +109,10 @@ function Database() {
         });
     }
 
-    this.insertReport = function(reportId, reportSubcategories, callback) {
+    this.insertReport = function(reportStudentId, reportTestId, reportSubcategories, callback) {
         var reportToInsert = new Report({
-            _id: reportId,
+            student_id: reportId,
+            test_id: testId,
             sub_categories: reportSubcategories
         });
 
@@ -165,14 +147,13 @@ function Database() {
         });
     }
 
-    this.insertCourse = function(courseId, courseTitle, courseSemester, courseStudents, courseProfessors, courseTAs, courseTests, callback) {
+    this.insertCourse = function(courseId, courseTitle, courseSemester, courseStudents, courseProfessors, courseTests, callback) {
         var courseToInsert = new Course({
             _id: courseId,
-            title: courseTitle,
+            title: courseTitsle,
             semester: courseSemester,
             students: courseStudents,
             professors: courseProfessors,
-            tas: courseTAs,
             tests: courseTests
         });
 
@@ -183,25 +164,6 @@ function Database() {
             }
             else {
                 console.dir(course);
-                //callback(null, "success");
-            }
-        });
-    }
-
-    this.insertAggregateData = function(testId, studentCount, testQuestions) {
-        var aggregateDataToInsert = new AggregateData({
-            test_id: testId,
-            count: studentCount,
-            questions: testQuestions
-        });
-
-        aggregateDataToInsert.save(function(err, aggregateData) {
-            if (err) {
-                console.error(err);
-                //callback(err, null);
-            }
-            else {
-                console.dir(aggregateData);
                 //callback(null, "success");
             }
         });
@@ -226,17 +188,6 @@ function Database() {
     this.findCategory = function (criteria, field, callback) {
         Category.findOne(criteria, field, callback);
     }
-
-    this.findAggregateData = function (criteria, field, callback) {
-        AggregateData.findOne(criteria, field, callback);
-    }
-
-    /*this.updateAggregateData = function (criteria, aggregateDataQuestions) { //criteria should be the same format as the criteria in the find functions
-        AggregateData.findOne(aggregateDataId, function(err, doc) {
-            doc.questions = aggregateDataQuestions;
-            doc.save();
-        });
-    }*/
 }
 
 module.exports = Database;
