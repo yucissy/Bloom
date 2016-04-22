@@ -28,10 +28,13 @@ function Reports(db) {
 	this.calculateReport = function(userId, exam, scores) {
 		var qs = exam.questions;
 		var catToReturn = [];
+
+		// loop thru each category
 		for (i = 0; i < qs[0].categories.length; i++) {
 			var catToAppend = {main_cat_id: qs[0].categories[i].main_cat_id, sub_cats: []};
 			var numQs = {};
 			var totalPer = {};
+			// for each question, add score and increment number of Q for the sub category it belongs to
 			for (j = 0; j < qs.length; j++) {
 				var qid = qs[j].qid;
 				var fullPoints = qs[j].max_points;
@@ -39,14 +42,18 @@ function Reports(db) {
 				numQs[subCat] = (numQs[subCat] || 0) + 1;
 				totalPer[subCat] = (totalPer[subCat] || 0) + (scores[qid] / fullPoints);
 			}
-
+			// calculate percentage for each sub category
 			for (var key in totalPer) {
 				var per = Math.round(totalPer[key] / numQs[key] * 10000)/100;
-				catToAppend.sub_cats.push({_id: key, percentage: per});
+				catToAppend[sub_cats].push({_id: key, percentage: per});
 			}
 			catToReturn.push(catToAppend);
 		}
 		db.insertStudentReport(userId, exam._id, catToReturn);
+
+		// UPDATING TEST DB DOCUMENT FOR AGGREGATE DATA
+		db.updateTestAggregateData(exam._id, scores);
+		db.updateTestCount(exam._id);
 	}
 }
 
