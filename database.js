@@ -208,30 +208,13 @@ function Database() {
             }}, function(error, success){console.log(success);});
         });
     }
+
+    this.insertUserCourse = function (userId, course) {
+        User.findOne({_id: userId}, function(err, user) {
+            user.courses.push(course);
+            user.save(function(error, success){console.log(success);});
+        });
+    }
 }
 
 module.exports = Database;
-
-/*
-    example of how to insert a document
-*/
-
-/*function testInsert(id, name, email, courses) {
-    mongoose.connect('mongodb://bloom-admin:bloomwebappCS132@ds021989.mlab.com:21989/bloom', function(err, db) { //connect to the db
-        insertStudent(id, name, email, courses, function(err, status) {
-            mongoose.connection.close(); //once it's finished, disconnect from the db
-            console.log("successfully disconnected from database");
-        });
-    });        
-}*/
-
-
-/*
-if already connected to a database:
-
-function testInsert(id, name, email, courses) {
-    insertStudent(id, name, email, courses, function(err, status) {
-    console.log(status);
-});
-}
-*/
