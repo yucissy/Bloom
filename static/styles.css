@@ -304,9 +304,17 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 	width:70px;
 	color:white;
 }
+.new_exam:hover p{
+	cursor:default;
+	color:white;
+}
+.new_exam:hover {
+	background-image:url("images/new_button_2.gif");
+}
 #main_content {
 	text-align:left;
-	margin:40px;
+	margin-top:80px;
+	margin-left:200px;
 	font-size:2em;
 	color:#9b9393;
 }

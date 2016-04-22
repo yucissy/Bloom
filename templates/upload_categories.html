@@ -11,9 +11,10 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
       
-    <script src="upload.js"></script>
+    <script src="upload_scores.js"></script>
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="styles.css"></link>
     <title>Upload Categories</title>
   </head>
@@ -25,24 +26,31 @@
     </div>
     <div class="row" id="navbar">
       <div id="user_banner">
-      <img src="images/user_banner.gif">
+        <div id="user_settings">
+        Hi, Princess
+        </div>
       </div>
-    </div>
     <div class="row" id="content_body">
       <div class="col-md-2" id="courses">
         <h2>COURSES</h2>
-        <div class="new_exam">
-          New Course
+        <div class="curr course">
+        <p>CSCI1230</p>
         </div>
+        <div class="new_exam">
+          <p>New Course</p>
+        </div>
+        <div id="exam_container">
         <h2>EXAMS</h2>
-        <div id="new_exam"  data-toggle="modal" data-target="#myModal">
-          <img src="images/new_button.gif">
-          New Exam
+        <div class="new_exam" data-toggle="modal" data-target="#myModal">
+          <p>New Exam</p>
+        </div>
         </div>
       </div>
       <div class="col-md-10" id="main">
         <div id="main_content">
-        Welcome! You haven't added any courses yet.
+        <div id="part1">
+        <h1>Monica Linden</h1>
+        </div>
         </div>
       </div>
     </div>
@@ -71,5 +79,6 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+</div>
   </body>
 </html>

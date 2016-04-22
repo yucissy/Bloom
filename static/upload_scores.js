@@ -109,7 +109,7 @@ $(document).ready(function() {
         }
     });
 
-    $("#close").on('click', function() {
+    $(".closebut").on('click', function() {
         $("#questions").empty();
         $("#exams_list").empty();
         $('#select_exams').html("None");
