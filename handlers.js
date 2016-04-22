@@ -40,8 +40,9 @@ var exports = function(app, db) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		db.findTest({_id : exam}, function(data){
+			console.log(data);
 			res.setHeader('Content-Type', 'application/json');
-			res.write(JSON.stringify({exam : data}));
+			res.send(JSON.stringify({exam : data}));
 		});
 	});
 
