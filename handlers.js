@@ -27,10 +27,20 @@ var exports = function(app, db) {
 		reports.makeExam(course, name, data);
 	});
 
+	app.post('/sendScores', function(req, res) {
+		var user = req.body.userID;
+		var exam = req.body.examID;
+		var scores = req.body.scores;
+		db.findText({_id: exam}, function(data) {
+			reports.calculateReport(user, data, scores);
+		})
+	});
+
 	app.post('/getExam', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		db.findTest({_id : exam}, function(data){
+			console.log(data);
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({exam : data}));
 		});
@@ -44,6 +54,12 @@ var exports = function(app, db) {
 			res.send(JSON.stringify({exams : data}));
 		});
 	});
+
+	app.post('/getScores', function(req, res) {
+		var user = req.body.userID;
+		var exam = req.body.examID;
+
+	})
 }
 
 module.exports = exports;

@@ -42,7 +42,6 @@ $(document).ready(function() {
         request.send(JSON.stringify(toSend));
         request.onreadystatechange = function() {
 		  if (request.readyState == 4 && request.status == 200) {
-
             var response = JSON.parse(request.responseText);
             console.log(response);
             console.log(response.exams);   
