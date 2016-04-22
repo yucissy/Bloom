@@ -211,8 +211,8 @@ function Database() {
             if (isNaN(testCount)) {
                 testCount = 0;
             }
-            Test.update({'_id': testId}, {'$set': {
-                'count': testCount + 1
+            Test.update({'_id': testId}, {'$inc': {
+                'count': 1
             }}, function(error, success){console.log(success);});
         });
     }
