@@ -201,10 +201,10 @@ function DatabaseTest() {
         });
     }
 }
-//module.exports = DatabaseTest;
+module.exports = DatabaseTest;
 
-var test = new DatabaseTest();
-var testID = '5715481a29dfb6510595aca3';
-var questions = [{qid: 1, points: 5}];
+// var test = new DatabaseTest();
+// var testID = '5715481a29dfb6510595aca3';
+// var questions = [{qid: 1, points: 5}];
 
-test.updateTestAggregateData(testID, questions);
+// test.updateTestAggregateData(testID, questions);

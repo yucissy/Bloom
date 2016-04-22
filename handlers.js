@@ -30,7 +30,7 @@ var exports = function(app, db) {
 	app.post('/getExam', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
-		db.findTest({_id : exam}, '', function(data){
+		db.findTest({_id : exam}, function(data){
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({exam : data}));
 		});

@@ -16,6 +16,7 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="styles.css"></link>
+    <link rel="stylesheet" href="student_styles.css"></link>
     <title>Upload Questions</title>
   </head>
   <body>
@@ -39,9 +40,11 @@
         <div class="new_exam">
           <p>New Course</p>
         </div>
+        <div id="exam_container">
         <h2>EXAMS</h2>
         <div class="new_exam" data-toggle="modal" data-target="#newExam1">
           <p>New Exam</p>
+        </div>
         </div>
       </div>
       <div class="col-md-10" id="main">
@@ -65,8 +68,7 @@
         <p>1. Select the Exam:</p>
         <div class="dropdown">
         <button id="select_exams" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">None</button>
-        <ul class="dropdown-menu">
-          <!-- <li><a href="#" class="s">Midterm 1</a></li> -->
+        <ul id="exams_list" class="dropdown-menu">
         </ul>
         </div>
 
@@ -77,7 +79,8 @@
 
 
 
-              <div class="modal-footer">
+        <div class="modal-footer">
+        <div id="error"></div>
         <button type="button" id="close" class="btn btn-default" data-dismiss="modal">Close</button>
         <button id="submit" type="button" class="btn btn-success">Submit</button>
       </div>
