@@ -1,3 +1,11 @@
+
+
+// var test = new DatabaseTest();
+// var testID = '5715481a29dfb6510595aca3';
+// var questions = [{qid: 1, points: 5}];
+
+// test.updateTestAggregateData(testID, questions);
+
 var mongoose = require('mongoose');
 
 function DatabaseTest() {
@@ -233,3 +241,4 @@ module.exports = DatabaseTest;
 // var questions = [{qid: 2, points: 5}];
 
 // test.updateTestAggregateData(testID, questions);
+

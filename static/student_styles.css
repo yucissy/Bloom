@@ -1,3 +1,21 @@
 #modal-body {
 	padding-bottom:0px;
 }
+.q {
+	width:30px;
+	padding:5px;
+	margin:10px;
+}
+.question {
+	margin-left:20px;
+}
+#error {
+	float:left;
+	display:inline;
+	color:black;
+}
+#exam_container {
+	background-color:#2f2c29;
+	height:100%;
+	margin-top:10px;
+}
