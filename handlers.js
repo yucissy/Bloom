@@ -31,7 +31,7 @@ var exports = function(app, db) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		var scores = req.body.scores;
-		db.findText({_id: exam}, function(data) {
+		db.findTest({_id: exam}, function(data) {
 			reports.calculateReport(user, data, scores);
 		})
 	});
