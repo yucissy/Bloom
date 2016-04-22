@@ -214,11 +214,11 @@ function DatabaseTest() {
     //     if (err) console.error(err);
     // });
 
-    this.updateTestAggregateData = function (testId, questions) { //questions [{qid: Number, points: Number}]   
+    this.updateTestAggregateData = function (testId, questions) { //questions {1:4, 2:5, 3:6}
         Test.findOne({_id: testId}, function(err, test) {
-            for (var i = 0; i < questions.length; i++) {
-                var userPoints = questions[i].points;
-                var questionId = questions[i].qid;
+            for (var key in questions) {
+                var userPoints = questions[key];
+                var questionId = key;
                 Test.update({'_id': testId, 'questions.qid': questionId}, {'$inc': {
                     'questions.$.sum_points': userPoints
                 }}, function(error, success){console.log(success);});
@@ -233,12 +233,24 @@ function DatabaseTest() {
             }}, function(error, success){console.log(success);});
         });
     }
+
+    this.insertUserCourse = function (userId, course) {
+        User.findOne({_id: userId}, function(err, user) {
+            user.courses.push(course);
+            user.save(function(error, success){console.log(success);});
+        });
+    }
 }
 module.exports = DatabaseTest;
 
-// var test = new DatabaseTest();
-// var testID = '5715481a29dfb6510595aca3';
-// var questions = [{qid: 2, points: 5}];
+//var test = new DatabaseTest();
 
-// test.updateTestAggregateData(testID, questions);
+//var testID = '5715481a29dfb6510595aca3';
+//var questions = {1:4, 2:5}
+
+//var userID = 'B0006789';
+//var course = 'CSCI1320';
+
+//test.updateTestAggregateData(testID, questions);
+//test.insertUserCourse(userID, course);
 
