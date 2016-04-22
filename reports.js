@@ -25,20 +25,28 @@ function Reports(db) {
 		});
 	};
 
-	function calculateReport(exam, scores) {
-		var StudentBloom = {};
-		var numQs = {};
-		var totalPer = {};
-		for (i = 0; i < exam.length; i++) {
-			var key = exam[i].Blooms;
-			numQs[key] = (numQs[key] || 0) + 1;
-			totalPer[key] = (totalPer[key] || 0) + (studentScores[exam[i].QuestionNo] / exam[i].FullPoints);
+	this.calculateReport = function(userId, exam, scores) {
+		var qs = exam.questions;
+		var catToReturn = [];
+		for (i = 0; i < qs[0].categories.length; i++) {
+			var catToAppend = {main_cat_id: qs[0].categories[i].main_cat_id, sub_cats: []};
+			var numQs = {};
+			var totalPer = {};
+			for (j = 0; j < qs.length; j++) {
+				var qid = qs[j].qid;
+				var fullPoints = qs[j].max_points;
+				var subCat = qs[j].categories[i].sub_cat_id;
+				numQs[subCat] = (numQs[subCat] || 0) + 1;
+				totalPer[subCat] = (totalPer[subCat] || 0) + (scores[qid] / fullPoints);
+			}
+
+			for (var key in totalPer) {
+				var per = Math.round(totalPer[key] / numQs[key] * 10000)/100;
+				catToAppend.sub_cats.push({_id: key, percentage: per});
+			}
+			catToReturn.push(catToAppend);
 		}
-		for (var key in totalPer) {
-			studentBloom[key] = Math.round(totalPer[key] / numQs[key] * 10000)/100;
-		}
-		console.log("Student's Blooms Breakdown: ");
-		console.log(studentBloom);
+		db.insertStudentReport(userId, exam._id, catToReturn);
 	}
 }
 

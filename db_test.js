@@ -36,7 +36,7 @@ function DatabaseTest() {
         categories: [
             {
                 main_cat_id: { type: String, ref: 'Category' },
-                sub_cats: [{name: Number, percentage: Number}]
+                sub_cats: [{_id: Number, percentage: Number}]
             }
         ]
     });
@@ -84,6 +84,18 @@ function DatabaseTest() {
         });
     }
 
+    this.insertStudentReport = function(userId, testId, categoriesList) {
+        var reportToInsert = new Report({
+            student_id: userId,
+            test_id: testId,
+            categories: categoriesList
+        });
+
+        reportToInsert.save(function(err) {
+            if (err) console.error(err);            
+        });
+    }
+
     this.findTestFromCourse = function(course, callback){        
         Course.findOne({_id: course}).populate('tests', 'title').exec(function(err, course) {
             if (err) console.error(err);
@@ -93,10 +105,18 @@ function DatabaseTest() {
     }
 
     this.findTest = function(testId, callback) {
-        Test.findOne({_id: testId}).exec(function(err, test) {
+        Test.findOne({_id: testId}).populate('questions.categories.main_cat_id').exec(function(err, test) {
             if (err) console.error(err);
 
             callback(test);
+        });
+    }
+
+    this.findReport = function(userId, testId, callback) {
+        Report.findOne({student_id: userId, test_id: testId}).populate('categories.main_cat_id').exec(function(err, report) {
+            if (err) console.error(err);
+
+            callback(report.categories);
         });
     }
     // var csci = new Course({
@@ -185,7 +205,7 @@ function DatabaseTest() {
     // bloom.save(function(err) {
     //     if (err) console.error(err);
     // });
-    this.updateTestAggregateData = function (testId, questions) { //questions {[qid: Number, points: Number]}   
+    this.updateTestAggregateData = function (testId, questions) { //questions [{qid: 2, points: 5}...]
         Test.findOne({_id: testId}, function(err, test) {
             var testQuestionSumPoints = test.questions.sum_points;
             if (isNaN(testQuestionSumPoints)) {
@@ -201,10 +221,11 @@ function DatabaseTest() {
         });
     }
 }
-//module.exports = DatabaseTest;
+module.exports = DatabaseTest;
 
-var test = new DatabaseTest();
-var testID = '5715481a29dfb6510595aca3';
-var questions = [{qid: 1, points: 5}];
+//var test = new DatabaseTest();
 
-test.updateTestAggregateData(testID, questions);
+// var testID = '5715481a29dfb6510595aca3';
+// var questions = [{qid: 1, points: 5}];
+
+// test.updateTestAggregateData(testID, questions);
