@@ -205,27 +205,31 @@ function DatabaseTest() {
     // bloom.save(function(err) {
     //     if (err) console.error(err);
     // });
-    this.updateTestAggregateData = function (testId, questions) { //questions [{qid: 2, points: 5}...]
+
+    this.updateTestAggregateData = function (testId, questions) { //questions [{qid: Number, points: Number}]   
         Test.findOne({_id: testId}, function(err, test) {
-            var testQuestionSumPoints = test.questions.sum_points;
-            if (isNaN(testQuestionSumPoints)) {
-                testQuestionSumPoints = 0; 
-            }
             for (var i = 0; i < questions.length; i++) {
                 var userPoints = questions[i].points;
                 var questionId = questions[i].qid;
-                Test.update({'_id': testId, 'questions.qid': questionId}, {'$set': {
-                    'questions.$.sum_points': userPoints + testQuestionSumPoints
+                Test.update({'_id': testId, 'questions.qid': questionId}, {'$inc': {
+                    'questions.$.sum_points': userPoints
                 }}, function(error, success){console.log(success);});
             }
+        });
+    }
+
+    this.updateTestCount = function (testId) {
+        Test.findOne({_id: testId}, function(err, test) {
+            Test.update({'_id': testId}, {'$inc': {
+                'count': 1
+            }}, function(error, success){console.log(success);});
         });
     }
 }
 module.exports = DatabaseTest;
 
-//var test = new DatabaseTest();
-
+// var test = new DatabaseTest();
 // var testID = '5715481a29dfb6510595aca3';
-// var questions = [{qid: 1, points: 5}];
+// var questions = [{qid: 2, points: 5}];
 
 // test.updateTestAggregateData(testID, questions);
