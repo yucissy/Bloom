@@ -191,17 +191,21 @@ function Database() {
 
     this.updateTestAggregateData = function (testId, questions) { //questions {[qid: Number, points: Number]}   
         Test.findOne({_id: testId}, function(err, test) {
-            var testQuestionSumPoints = test.questions.sum_points;
-            if (isNaN(testQuestionSumPoints)) {
-                testQuestionSumPoints = 0; 
-            }
             for (var i = 0; i < questions.length; i++) {
                 var userPoints = questions[i].points;
                 var questionId = questions[i].qid;
-                Test.update({'_id': testId, 'questions.qid': questionId}, {'$set': {
-                    'questions.$.sum_points': userPoints + testQuestionSumPoints
+                Test.update({'_id': testId, 'questions.qid': questionId}, {'$inc': {
+                    'questions.$.sum_points': userPoints
                 }}, function(error, success){console.log(success);});
             }
+        });
+    }
+
+    this.updateTestCount = function (testId) {
+        Test.findOne({_id: testId}, function(err, test) {
+            Test.update({'_id': testId}, {'$inc': {
+                'count': 1
+            }}, function(error, success){console.log(success);});
         });
     }
 }
