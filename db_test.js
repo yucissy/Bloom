@@ -214,8 +214,13 @@ function DatabaseTest() {
     //     if (err) console.error(err);
     // });
 
-    this.updateTestAggregateData = function (testId, questions) { //questions [{qid: Number, points: Number}]   
+    this.updateTestAggregateData = function (testId, questions) { //questions {qid: points} {1:4, 2: 3.5, }
         Test.findOne({_id: testId}, function(err, test) {
+
+            for (var key in questions) {
+                // key would be qid
+                questions[key] //would be score
+            }
             for (var i = 0; i < questions.length; i++) {
                 var userPoints = questions[i].points;
                 var questionId = questions[i].qid;
