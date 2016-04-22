@@ -202,11 +202,9 @@ function Database() {
     }
 
     this.updateTestCount = function (testId) {
-        Test.findOne({_id: testId}, function(err, test) {
-            Test.update({'_id': testId}, {'$inc': {
-                'count': 1
-            }}, function(error, success){console.log(success);});
-        });
+        Test.update({'_id': testId}, {'$inc': {
+            'count': 1
+        }}, function(error, success){console.log(success);});
     }
 
     this.insertUserCourse = function (userId, course) {
@@ -214,6 +212,12 @@ function Database() {
             user.courses.push(course);
             user.save(function(error, success){console.log(success);});
         });
+    }
+
+    this.deleteUserCourse = function (userId, course) {
+        User.update({'_id': userId}, {'$pull': {
+            'courses': course
+        }}, function(error, success){console.log(success);});
     }
 }
 

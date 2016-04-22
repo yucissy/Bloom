@@ -227,11 +227,9 @@ function DatabaseTest() {
     }
 
     this.updateTestCount = function (testId) {
-        Test.findOne({_id: testId}, function(err, test) {
-            Test.update({'_id': testId}, {'$inc': {
-                'count': 1
-            }}, function(error, success){console.log(success);});
-        });
+        Test.update({'_id': testId}, {'$inc': {
+            'count': 1
+        }}, function(error, success){console.log(success);});
     }
 
     this.insertUserCourse = function (userId, course) {
@@ -239,6 +237,12 @@ function DatabaseTest() {
             user.courses.push(course);
             user.save(function(error, success){console.log(success);});
         });
+    }
+
+    this.deleteUserCourse = function (userId, course) {
+        User.update({'_id': userId}, {'$pull': {
+            'courses': course
+        }}, function(error, success){console.log(success);});
     }
 }
 module.exports = DatabaseTest;
@@ -252,5 +256,6 @@ module.exports = DatabaseTest;
 //var course = 'CSCI1320';
 
 //test.updateTestAggregateData(testID, questions);
-//test.insertUserCourse(userID, course);
+//test.updateTestCount(testID);
+//test.deleteUserCourse(userID, course);
 
