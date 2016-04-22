@@ -23,6 +23,7 @@ $(document).ready(function() {
                 var response = JSON.parse(request.responseText);
                 var questions = response.exam.questions;
                 console.log(questions);
+                $('#questions').empty();
                 $.each(questions, function(i, v) {
                     $('#questions').append('<div class="question">'+v.qid+'. '+'<input class="q" type="text"></input>'
                         +'/ '+v.max_points+'</div>');
@@ -106,6 +107,13 @@ $(document).ready(function() {
             $("#error").append("<p>Oops. Did you forget to fill out "+
             "a score?</p>");
         }
+    });
+
+    $("#close").on('click', function() {
+        $("#questions").empty();
+        $("#exams_list").empty();
+        $('#select_exams').html("None");
+
     });
 
 });
