@@ -185,7 +185,7 @@ function DatabaseTest() {
     // bloom.save(function(err) {
     //     if (err) console.error(err);
     // });
-    this.updateTestAggregateData = function (testId, questions) { //questions {[qid: Number, points: Number]}   
+    this.updateTestAggregateData = function (testId, questions) { //questions [{qid: Number, points: Number}]   
         Test.findOne({_id: testId}, function(err, test) {
             var testQuestionSumPoints = test.questions.sum_points;
             if (isNaN(testQuestionSumPoints)) {
@@ -200,6 +200,18 @@ function DatabaseTest() {
             }
         });
     }
+
+    this.updateTestCount = function (testId) {
+        Test.findOne({_id: testId}, function(err, test) {
+            var testCount = test.count;
+            if (isNaN(testCount)) {
+                testCount = 0;
+            }
+            Test.update({'_id': testId}, {'$set': {
+                'count': testCount + 1
+            }}, function(error, success){console.log(success);});
+        });
+    }
 }
 //module.exports = DatabaseTest;
 
@@ -207,4 +219,4 @@ var test = new DatabaseTest();
 var testID = '5715481a29dfb6510595aca3';
 var questions = [{qid: 1, points: 5}];
 
-test.updateTestAggregateData(testID, questions);
+test.updateTestCount(testID);
