@@ -190,15 +190,13 @@ function Database() {
     }
 
     this.updateTestAggregateData = function (testId, questions) { //questions {1:4, 2:5, 3:6}
-        Test.findOne({_id: testId}, function(err, test) {
-            for (var key in questions) {
-                var userPoints = questions[key];
-                var questionId = key;
-                Test.update({'_id': testId, 'questions.qid': questionId}, {'$inc': {
-                    'questions.$.sum_points': userPoints
-                }}, function(error, success){console.log(success);});
-            }
-        });
+        for (var key in questions) {
+            var userPoints = questions[key];
+            var questionId = key;
+            Test.update({'_id': testId, 'questions.qid': questionId}, {'$inc': {
+                'questions.$.sum_points': userPoints
+            }}, function(error, success){console.log(success);});
+        }
     }
 
     this.updateTestCount = function (testId) {
