@@ -203,10 +203,6 @@ function DatabaseTest() {
 
     this.updateTestCount = function (testId) {
         Test.findOne({_id: testId}, function(err, test) {
-            var testCount = test.count;
-            if (isNaN(testCount)) {
-                testCount = 0;
-            }
             Test.update({'_id': testId}, {'$inc': {
                 'count': 1
             }}, function(error, success){console.log(success);});
