@@ -190,23 +190,19 @@ function Database() {
     }
 
     this.updateTestAggregateData = function (testId, questions) { //questions {1:4, 2:5, 3:6}
-        Test.findOne({_id: testId}, function(err, test) {
-            for (var key in questions) {
-                var userPoints = questions[key];
-                var questionId = key;
-                Test.update({'_id': testId, 'questions.qid': questionId}, {'$inc': {
-                    'questions.$.sum_points': userPoints
-                }}, function(error, success){console.log(success);});
-            }
-        });
+        for (var key in questions) {
+            var userPoints = questions[key];
+            var questionId = key;
+            Test.update({'_id': testId, 'questions.qid': questionId}, {'$inc': {
+                'questions.$.sum_points': userPoints
+            }}, function(error, success){console.log(success);});
+        }
     }
 
     this.updateTestCount = function (testId) {
-        Test.findOne({_id: testId}, function(err, test) {
-            Test.update({'_id': testId}, {'$inc': {
-                'count': 1
-            }}, function(error, success){console.log(success);});
-        });
+        Test.update({'_id': testId}, {'$inc': {
+            'count': 1
+        }}, function(error, success){console.log(success);});
     }
 
     this.insertUserCourse = function (userId, course) {
@@ -214,6 +210,12 @@ function Database() {
             user.courses.push(course);
             user.save(function(error, success){console.log(success);});
         });
+    }
+
+    this.deleteUserCourse = function (userId, course) {
+        User.update({'_id': userId}, {'$pull': {
+            'courses': course
+        }}, function(error, success){console.log(success);});
     }
 }
 
