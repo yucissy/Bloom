@@ -74,7 +74,6 @@ input {
 
 #signup:hover {
 	cursor:pointer;
-	cursor:hand;
 	text-decoration:underline;
 	border:none;
 }
@@ -84,7 +83,6 @@ input {
 }
 #forgot:hover {
 	cursor:pointer;
-	cursor:hand;
 	text-decoration:underline;
 }
 #header_top {
