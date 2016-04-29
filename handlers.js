@@ -33,14 +33,13 @@ var exports = function(app, db) {
 		var scores = req.body.scores;
 		db.findTest({_id: exam}, function(data) {
 			reports.calculateReport(user, data, scores);
-		})
+		});
 	});
 
 	app.post('/getExam', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		db.findTest({_id : exam}, function(data){
-			console.log(data);
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({exam : data}));
 		});
@@ -55,9 +54,37 @@ var exports = function(app, db) {
 		});
 	});
 
+	app.post('/getPendingExams', function(req, res) {
+		var user = req.body.userID;
+		var course = req.body.courseID;
+		db.findTestFromCourse(course, function(data) {
+			db.findReportForStudent(user, function(reports) {
+				var testsToReturn = [];
+
+				for (i = 0; i < data.length; i++) {
+					var flag = true;
+					for (j = 0; j < reports.length; j++) {
+						if (String(data[i]._id) == String(reports[j].test_id)) {
+							flag = false;
+							break;
+						}
+					}
+					if (flag) {
+						testsToReturn.push(data[i]);
+					}
+				}
+
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({exams : testsToReturn}));
+			});
+		});
+	});
+
 	app.get('/getScores', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
+		// var exam = '5722c08ea598e9931e085fb8'
+		// var user = 'B0004567'
 		db.findReport(user, exam, function(data) {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({report : data}));

@@ -120,6 +120,14 @@ function DatabaseTest() {
         });
     }
 
+    this.findReportForStudent = function(userId, callback) {
+        Report.find({student_id : userId}).exec(function(err, reports) {
+            if (err) console.error(err);
+
+            callback(reports);
+        });
+    }
+
     this.findReport = function(userId, testId, callback) {
         Report.findOne({student_id: userId, test_id: testId}).populate('categories.main_cat_id').exec(function(err, report) {
             if (err) console.error(err);
