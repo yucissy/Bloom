@@ -33,6 +33,22 @@ $(document).ready(function() {
         }
     }
 
+    function getScores(exam_ID) {
+        var toSend = {userID: user_ID, examID: exam_ID};
+        console.log(toSend);
+        var request = new XMLHttpRequest();
+        request.open('POST', '/getScores', true);
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.send(JSON.stringify(toSend));
+        request.onreadystatechange = function() {
+            console.log("got scores");
+           if (request.readyState == 4 && request.status == 200) {
+                var response = JSON.parse(request.responseText);
+                console.log(response);
+            } 
+        }
+    }
+
 	//first dropdown button behavior
     $('#select_exams').on('click', function() {
 		var toSend = {userID: user_ID, courseID: course_ID};
@@ -43,18 +59,18 @@ $(document).ready(function() {
         request.send(JSON.stringify(toSend));
         request.onreadystatechange = function() {
 		  if (request.readyState == 4 && request.status == 200) {
-            var response = JSON.parse(request.responseText);
-            console.log(response);
-            console.log(response.exams);   
+            var response = JSON.parse(request.responseText);   
             $('#exams_list').empty();
             $.each(response.exams, function(i, v) {
 
                 var name = v.title;
                 var id = v._id;
-                var listElement = $("#exams_list").append('<li><a href="#" id="'+id+
+                var listElement = $('<li><a href="#" id="'+id+
                     '">'+name+'</a></li>');
+                $("#exams_list").append(listElement);
                 listElement.on('click', function(e) {
-                    console.log('click');
+
+                    $("#select_exams").empty();
                     $('#select_exams').html($(this).text());
                     getExam(id);
                     $('#questions').show();
@@ -91,7 +107,6 @@ $(document).ready(function() {
         });
         if (valid) {
             var toSend = {userID: user_ID, examID: examID, scores: scores};
-            console.log(toSend);
             var request = new XMLHttpRequest();
             request.open('POST', '/sendScores', true);
             request.setRequestHeader('Content-Type', 'application/json');
@@ -100,6 +115,7 @@ $(document).ready(function() {
                if (request.readyState == 4 && request.status == 200) {
                     var response = JSON.parse(request.responseText);
                     console.log(response);
+                    getScores(examID);
                 } 
             }
         } else {
