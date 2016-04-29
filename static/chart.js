@@ -26,4 +26,5 @@ $('[data-bar-chart]').each(function (i, svg) {
         .delay(function (d, i) { return i*100; })
         .attr("y", function (d, i) { return chartHeight-y(d); })
         .attr("height", function (d) { return y(d); });
+        console.log("ok");
   });
