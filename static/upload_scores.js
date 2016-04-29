@@ -54,7 +54,7 @@ $(document).ready(function() {
 		var toSend = {userID: user_ID, courseID: course_ID};
 		console.log(toSend);
 		var request = new XMLHttpRequest();
-        request.open('POST', '/getExams', true);
+        request.open('POST', '/getPendingExams', true);
         request.setRequestHeader('Content-Type', 'application/json');
         request.send(JSON.stringify(toSend));
         request.onreadystatechange = function() {

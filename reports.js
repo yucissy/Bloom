@@ -23,7 +23,7 @@ function Reports(db) {
 		return test;
 	}
 
-	this.calculateReportHelper = function(questions, scores) {
+	this.calculateHelper = function(questions, scores, count) {
 		var catToReturn = [];
 
 		// loop thru each category
@@ -37,7 +37,7 @@ function Reports(db) {
 				var fullPoints = questions[j].max_points;
 				var subCat = questions[j].categories[i].sub_cat_id;
 				numQs[subCat] = (numQs[subCat] || 0) + 1;
-				totalPer[subCat] = (totalPer[subCat] || 0) + (scores[qid] / fullPoints);
+				totalPer[subCat] = (totalPer[subCat] || 0) + (scores[qid] / (fullPoints*count));
 			}
 			// calculate percentage for each sub category
 			for (var key in totalPer) {
@@ -51,14 +51,15 @@ function Reports(db) {
 	}
 
 	this.makeExam = function(course, name, data) {
+		var make = this.makeExamHelper;
 		csv.parse(data, {columns:true}, function(err, output) {
-			var test = makeExamHelper(output);
+			var test = make(output);
 			db.insertTestForCourse(course, name, test);
 		});
 	}
 
 	this.calculateReport = function(userId, exam, scores) {
-		var cats = calculateReportHelper(exam.questions, scores);
+		var cats = this.calculateHelper(exam.questions, scores, 1);
 
 		db.insertStudentReport(userId, exam._id, cats);
 
@@ -67,7 +68,15 @@ function Reports(db) {
 		db.updateTestCount(exam._id);
 	}
 
-	this.calculateAggregate = function(){}
+	this.calculateAggregate = function(exam){
+		var qs = exam.questions;
+		var scores ={}
+		for (i = 0; i < qs.length; i++){
+			scores[qs[i].qid] = qs[i].sum_points;
+		}
+
+		console.log(JSON.stringify(this.calculateHelper(qs, scores, exam.count)));
+	}
 }
 
 module.exports = Reports;
