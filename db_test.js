@@ -245,15 +245,15 @@ function DatabaseTest() {
 }
 module.exports = DatabaseTest;
 
-var test = new DatabaseTest();
+// var test = new DatabaseTest();
 
-var testID = '5715481a29dfb6510595aca3';
-var questions = {1:4, 2:5}
+// var testID = '5715481a29dfb6510595aca3';
+// var questions = {1:4, 2:5}
 
 //var userID = 'B0006789';
 //var course = 'CSCI1320';
 
-test.updateTestAggregateData(testID, questions);
+// test.updateTestAggregateData(testID, questions);
 //test.updateTestCount(testID);
 //test.deleteUserCourse(userID, course);
 
