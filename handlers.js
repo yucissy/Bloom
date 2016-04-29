@@ -56,12 +56,9 @@ var exports = function(app, db) {
 	});
 
 	app.get('/getScores', function(req, res) {
-		// var user = req.body.userID;
-		// var exam = req.body.examID;
-		var user = 'B0004567'
-		var exam = '5715481a29dfb6510595aca3'
+		var user = req.body.userID;
+		var exam = req.body.examID;
 		db.findReport(user, exam, function(data) {
-			console.log(data);
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({report : data}));
 		});
