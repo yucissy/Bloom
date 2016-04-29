@@ -2,6 +2,16 @@ var Reports = require('./reports.js');
 
 var exports = function(app, db) {
 	var reports = new Reports(db);
+	var loggedIn = {};
+
+	function generateSessionID() {
+		var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+		var result = '';
+		for (var i = 0; i < 10; i++) {
+			result += chars.charAt(Math.floor(Math.random() * chars.length));
+		}
+		return result;
+	}
 
 	app.get('/', function(req, res) {
 		res.render('index.html');
@@ -9,6 +19,9 @@ var exports = function(app, db) {
 
 	app.post('/home', function(req, res) {
 		var user = req.body.userID;
+
+		var sessID = generateSessionID();
+		loggedIn[sessID] = user;
 	});
 
 	app.get('/uploadC', function(req, res) {
@@ -80,7 +93,7 @@ var exports = function(app, db) {
 		});
 	});
 
-	app.get('/getScores', function(req, res) {
+	app.post('/getScores', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		// var exam = '5722c08ea598e9931e085fb8'
@@ -88,6 +101,14 @@ var exports = function(app, db) {
 		db.findReport(user, exam, function(data) {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({report : data}));
+		});
+	});
+
+	app.post('/getAggregate', function(req, res) {
+		var user = req.body.userID;
+		var exam = req.body.examID;
+		db.findTest({_id : exam}, function(data){
+			var results = reports.calculateAggregate(data);
 		});
 	});
 }
