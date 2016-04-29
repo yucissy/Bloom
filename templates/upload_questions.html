@@ -12,18 +12,21 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
       
     <script src="upload_scores.js"></script>
+    <script src="chart.js"></script>
+
+    <script src="http://d3js.org/d3.v3.min.js"></script>
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="styles.css"></link>
-    <link rel="stylesheet" href="student_styles.css"></link>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="student_styles.css">
     <title>Upload Questions</title>
   </head>
   <body>
 
     <div class="container" id="wrapper">
     <div class="row" id="header_top">
-      <img src="images/bloom_logo.png">
+      <img src="images/bloom_logo.png" alt="">
     </div>
     <div class="row" id="navbar">
       <div id="user_banner">
@@ -51,6 +54,13 @@
         <div id="main_content">
         <div id="part1">
         <h1>Princess Peach</h1>
+
+        <div class="category">
+        <h2>BLOOM'S TAXONOMY</h2>
+        <hr color="gray">
+        <svg class="chart" data-bar-chart data-data="23,43,10,13,10" data-bar-width="15"></svg>
+        <svg class="chart" data-bar-chart data-data="19,65,23,31,32,44,5,32,23,23,54,65" data-bar-width="15"></svg>
+        </div>
         </div>
         </div>
       </div>
@@ -63,7 +73,7 @@
     <div class="modal-content">
       <div class="modal-header">
       <h2 class="modal-title">Add New Exam
-        <button type="button" style="color:white; "class="close closebut" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></h2>
+        <button type="button" style="color:white;" class="close closebut" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></h2>
         
       </div>
       <div class="modal-body">

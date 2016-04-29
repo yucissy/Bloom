@@ -19,6 +19,38 @@
 	height:100%;
 	margin-top:10px;
 }
+#part1 {
+	color:black;
+	background-color:#eaeae3;
+	width:700px;
+	height:1000px;
+	
+	padding:40px;
+	border-radius:8px;
+}
+
 #part1 h1 {
-	color:white;
+	font-weight:100;
+	padding-bottom:20px;
+	margin-left:-2px;
+}
+#part1 h2 {
+	color:gray;
+	font-size:.55em;
+	letter-spacing:2px;
+	padding-bottom:0;
+}
+#part1 hr {
+	margin-top:-3px;
+	border-color:gray;
+}
+.chart {
+	height: 70px;
+	width: 300px;
+	border-bottom: 1px solid #ccc;
+	display: block;
+	margin: 1em;
+}
+.chart .bar {
+	fill: #ccc;
 }

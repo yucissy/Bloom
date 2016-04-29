@@ -3,6 +3,7 @@ body {
 	margin:0 auto;
 	padding:0px;
 	font-family: 'Lato', sans-serif;
+	letter-spacing:.8px;
 }
 #wrapper {
 	width:100%;
@@ -75,7 +76,6 @@ input {
 
 #signup:hover {
 	cursor:pointer;
-	cursor:hand;
 	text-decoration:underline;
 	border:none;
 }
@@ -85,7 +85,6 @@ input {
 }
 #forgot:hover {
 	cursor:pointer;
-	cursor:hand;
 	text-decoration:underline;
 }
 #header_top {
@@ -147,7 +146,7 @@ input {
 	background: -moz-linear-gradient(top, #4c4c4c 0%, #666666 0%, #595250 0%, #261d00 100%, #131313 100%); /* FF3.6-15 */
 	background: -webkit-linear-gradient(top, #4c4c4c 0%,#666666 0%,#595250 0%,#261d00 100%,#131313 100%); /* Chrome10-25,Safari5.1-6 */
 	background: linear-gradient(to bottom, #4c4c4c 0%,#666666 0%,#595250 0%,#261d00 100%,#131313 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#131313',GradientType=0 ); /* IE6-9 */
+/*	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#131313',GradientType=0 ); /* IE6-9 */*/
 }
 .btn-success {
 	background-color:gray;
@@ -203,7 +202,6 @@ input {
 }
 .login:hover {
 	cursor:pointer;
-	cursor:hand;
 	text-decoration:underline;
 	color:#EE3E35;
 }
@@ -259,7 +257,6 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 #user_settings:hover {
 	background-color:#494949;
 	cursor:pointer;
-	cursor:hand;
 	box-shadow: 3px 3px 1px #888888;
 }
 #courses {
@@ -313,8 +310,8 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 }
 #main_content {
 	text-align:left;
-	margin-top:80px;
-	margin-left:200px;
+	margin-top:50px;
+	margin-left:70px;
 	font-size:2em;
 	color:#9b9393;
 }
