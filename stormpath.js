@@ -1,5 +1,6 @@
 var stormpath = require('stormpath');
 
+//source ./stormpath.sh
 var apiKey = new stormpath.ApiKey(
   process.env['STORMPATH_CLIENT_APIKEY_ID'],
   process.env['STORMPATH_CLIENT_APIKEY_SECRET']
