@@ -1,14 +1,46 @@
 var Reports = require('./reports.js');
+var Stormpath = require('./config/stormpath.js');
 
 var exports = function(app, db) {
 	var reports = new Reports(db);
+	var storm = new Stormpath();
+	var loggedIn = {};
+
+	function generateSessionID() {
+		var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+		var result = '';
+		for (var i = 0; i < 10; i++) {
+			result += chars.charAt(Math.floor(Math.random() * chars.length));
+		}
+		return result;
+	}
 
 	app.get('/', function(req, res) {
 		res.render('index.html');
 	});
 
+	app.get('/signUp', function(req, res) {
+		var fName = req.body.firstName;
+		var lName = req.body.lastName;
+		var uID = req.body.BID;
+		var email = req.body.email;
+		var pass = req.body.password;
+		// unsalt and unhash password
+
+		var fName = 'Harry';
+		var lName = 'Potter';
+		var uID = 'B0009999';
+		var email = 'harry@brown.edu';
+		var pass = 'theWizardingWorld55';
+		storm.createAccount(fName, lName, uID, email, pass);
+
+	})
+
 	app.post('/home', function(req, res) {
 		var user = req.body.userID;
+
+		var sessID = generateSessionID();
+		loggedIn[sessID] = user;
 	});
 
 	app.get('/uploadC', function(req, res) {
@@ -80,7 +112,7 @@ var exports = function(app, db) {
 		});
 	});
 
-	app.get('/getScores', function(req, res) {
+	app.post('/getScores', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		// var exam = '5722c08ea598e9931e085fb8'
@@ -88,6 +120,14 @@ var exports = function(app, db) {
 		db.findReport(user, exam, function(data) {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({report : data}));
+		});
+	});
+
+	app.post('/getAggregate', function(req, res) {
+		var user = req.body.userID;
+		var exam = req.body.examID;
+		db.findTest({_id : exam}, function(data){
+			var results = reports.calculateAggregate(data);
 		});
 	});
 }

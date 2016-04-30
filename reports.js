@@ -75,7 +75,7 @@ function Reports(db) {
 			scores[qs[i].qid] = qs[i].sum_points;
 		}
 
-		console.log(JSON.stringify(this.calculateHelper(qs, scores, exam.count)));
+		return this.calculateHelper(qs, scores, exam.count);
 	}
 }
 

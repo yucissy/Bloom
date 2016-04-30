@@ -1,11 +1,3 @@
-
-
-// var test = new DatabaseTest();
-// var testID = '5715481a29dfb6510595aca3';
-// var questions = [{qid: 1, points: 5}];
-
-// test.updateTestAggregateData(testID, questions);
-
 var mongoose = require('mongoose');
 
 function DatabaseTest() {
@@ -87,7 +79,7 @@ function DatabaseTest() {
 
                 course.save(function(err) {
                     if (err) console.error(err);
-                })
+                });
             });
         });
     }
@@ -135,92 +127,7 @@ function DatabaseTest() {
             callback(report.categories);
         });
     }
-    // var csci = new Course({
-    //     _id: 'CSCI1230',
-    //     title: "Creating Modern Web Apps",
-    //     semester: "Spring 2016",
-    // });
-
-    // csci.save(function(err) {
-    //     if (err) console.error(err);
-        
-    //     var prof = new User({
-    //         _id: 'B0001234',
-    //         name: 'Monica Linden',
-    //         email: 'monica_linden@brown.edu',
-    //         courses: [csci._id],
-    //         type: 'professor'
-    //     });
-
-    //     var stud1 = new User({
-    //         _id: 'B0004567',
-    //         name: 'Cissy Yu',
-    //         email: 'cissy_yu@brown.edu',
-    //         courses: [csci._id],
-    //         type: 'student'
-    //     });
-
-    //     var stud2 = new User({
-    //         _id: 'B0005678',
-    //         name: 'Katie Han',
-    //         email: 'katie_han@brown.edu',
-    //         courses: [csci._id],
-    //         type: 'student'
-    //     });
-
-    //     var stud3 = new User({
-    //         _id: 'B0006789',
-    //         name: 'Michael Lee',
-    //         email: 'michael_k_lee@brown.edu',
-    //         courses: [csci._id],
-    //         type: 'student'
-    //     });
-
-    //     prof.save(function(err) {
-    //         if (err) console.error(err);
-    //     });
-
-    //     stud1.save(function(err) {
-    //         if (err) console.error(err);
-    //     });
-
-    //     stud2.save(function(err) {
-    //         if (err) console.error(err);
-    //     });
-
-    //     stud3.save(function(err) {
-    //         if (err) console.error(err);
-    //     });
-
-    // });
-
-    // User.findOne({name:'Katie Han'}).populate('courses', 'title').exec(function(err, user){
-    //     if (err) console.error(err);
-
-    //     console.log('%s is taking %s', user.name, user.courses[0].title);
-    // });
     
-    // Course.findOne({_id:'CSCI1230'}).exec(function(err, course) {
-    //     User.find({courses:['CSCI1230'], type:'professor'}).exec(function(err, users) {
-    //         console.log(users);
-    //         for (var i=0; i<users.length; i++) {
-    //             course.professors.push(users[i]._id);
-    //         }
-    //         course.save(function(err) {
-    //             if (err) console.error(err);
-    //         });
-    //     });
-    // });
-    
-    // var bloom = new Category({
-    //     _id: 'blooms',
-    //     name: "Bloom's Taxonomy",
-    //     sub_categories: ['Remembering', 'Understanding', 'Applying', 'Analyzing', 'Evaluating', 'Creating']
-    // });
-
-    // bloom.save(function(err) {
-    //     if (err) console.error(err);
-    // });
 
     this.updateTestAggregateData = function (testId, questions) { //questions {1:4, 2:5, 3:6}
         for (var key in questions) {
@@ -251,7 +158,6 @@ function DatabaseTest() {
         }}, function(error, success){console.log(success);});
     }
 }
-module.exports = DatabaseTest;
 
 // var test = new DatabaseTest();
 
@@ -264,4 +170,11 @@ module.exports = DatabaseTest;
 // test.updateTestAggregateData(testID, questions);
 //test.updateTestCount(testID);
 //test.deleteUserCourse(userID, course);
+
+
+// var test = new DatabaseTest();
+// var testID = '5715481a29dfb6510595aca3';
+// var questions = [{qid: 1, points: 5}];
+
+// test.updateTestAggregateData(testID, questions);
 
