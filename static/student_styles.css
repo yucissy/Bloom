@@ -45,12 +45,19 @@
 	border-color:gray;
 }
 .chart {
-	height: 70px;
-	width: 300px;
-	border-bottom: 1px solid #ccc;
-	display: block;
-	margin: 1em;
+	background-color:gray;
+	margin:5px;
 }
-.chart .bar {
-	fill: #ccc;
+.chart rect {
+  stroke: white;
+  fill: steelblue;
+}
+
+.chart text {
+  font-size:.6em;
+  fill: white;
+}
+
+.chart text.name {
+  fill: #000;
 }
