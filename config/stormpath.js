@@ -1,5 +1,4 @@
 var stormpath = require('stormpath');
-//source ./stormpath.sh
 
 function Stormpath() {
 

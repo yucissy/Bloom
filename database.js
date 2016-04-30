@@ -64,8 +64,6 @@ function Database() {
     var Category = mongoose.model('Category', categorySchema);
 
     //functions for inserting a document into their respective schemas
-    this.insertUser = function (userId, userName, userEmail, userCourses, user, callback) {
-
     this.insertUser = function (userId, userName, userEmail, user) {
         var userToInsert = new User({
             _id: userId,
@@ -158,7 +156,7 @@ function Database() {
         User.findOne(criteria, field, callback);
     } */
 
-    this.findTestFromCourse = function(course, callback){        
+    this.findTestFromCourse = function(course, callback) {        
         Course.findOne({_id: course}).populate('tests', 'title').exec(function(err, course) {
             if (err) console.error(err);
 
@@ -258,7 +256,9 @@ function Database() {
     this.deleteTestFromCourse = function (courseId, test) {
         Course.update({'_id': courseId}, {'$pull': {
             'tests': test
-        }}, function(error, success){console.log(success);});
+        }}, function(error, success){
+            console.log(success);
+        });
     }
 }
 
