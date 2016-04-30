@@ -1,7 +1,9 @@
 var Reports = require('./reports.js');
+var Stormpath = require('./config/stormpath.js');
 
 var exports = function(app, db) {
 	var reports = new Reports(db);
+	var storm = new Stormpath();
 	var loggedIn = {};
 
 	function generateSessionID() {
@@ -16,6 +18,23 @@ var exports = function(app, db) {
 	app.get('/', function(req, res) {
 		res.render('index.html');
 	});
+
+	app.get('/signUp', function(req, res) {
+		var fName = req.body.firstName;
+		var lName = req.body.lastName;
+		var uID = req.body.BID;
+		var email = req.body.email;
+		var pass = req.body.password;
+		// unsalt and unhash password
+
+		var fName = 'Harry';
+		var lName = 'Potter';
+		var uID = 'B0009999';
+		var email = 'harry@brown.edu';
+		var pass = 'theWizardingWorld55';
+		storm.createAccount(fName, lName, uID, email, pass);
+
+	})
 
 	app.post('/home', function(req, res) {
 		var user = req.body.userID;

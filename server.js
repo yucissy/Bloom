@@ -4,7 +4,7 @@ var engines = require('consolidate');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-var Data = require('./db_test.js');
+var Data = require('./database.js');
 var handlers = require('./handlers.js');
 
 var app = express();

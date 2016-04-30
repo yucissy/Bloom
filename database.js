@@ -1,12 +1,5 @@
 var mongoose = require('mongoose');
 
-// var db = mongoose.connection;
-
-// db.on('error', console.error);
-// db.once('open', function() {
-//     console.log("Connected to DB!");
-// });
-
 function Database() {
     
     var db = mongoose.connect('mongodb://bloom-admin:bloomwebappCS132@ds021989.mlab.com:21989/bloom');
@@ -72,61 +65,50 @@ function Database() {
 
     //functions for inserting a document into their respective schemas
     this.insertUser = function (userId, userName, userEmail, userCourses, user, callback) {
+
+    this.insertUser = function (userId, userName, userEmail, user) {
         var userToInsert = new User({
             _id: userId,
             name: userName,
             email: userEmail,
-            courses: userCourses,
             type: user
         });
 
         userToInsert.save(function(err, user) {
-            if (err) {
-                console.error(err);
-                //callback(err, null);
-            }
-            else {
-                console.dir(user);
-                //callback(null, "success");
-            }
+            if (err) console.error(err);
         });
     }
 
-    this.insertTest = function(testTitle, testCount, testQuestions, callback) {
+    this.insertTestForCourse = function(courseId, testName, qs) {
         var testToInsert = new Test({
-            title: testTitle,
-            count: testCount,
-            questions: testQuestions
-        });
+                title: testName,
+                questions: qs
+            });
 
-        testToInsert.save(function(err, test) {
-            if (err) {
-                console.error(err);
-                //callback(err, null);
-            }
-            else {
-                console.dir(test);
-                //callback(null, "success");
-            }
+        testToInsert.save(function(err) {
+            if (err) console.error(err);
+
+            Course.findOne({_id: courseId}).exec(function(err, course) {
+                if (err) console.error(err);
+                
+                course.tests.push(testToInsert);
+
+                course.save(function(err) {
+                    if (err) console.error(err);
+                });
+            });
         });
     }
 
-    this.insertReport = function(reportStudentId, reportTestId, reportSubcategories, callback) {
+    this.insertStudentReport = function(userId, testId, categoriesList) {
         var reportToInsert = new Report({
-            student_id: reportId,
+            student_id: userId,
             test_id: testId,
-            sub_categories: reportSubcategories
+            categories: categoriesList
         });
 
-        reportToInsert.save(function(err, report) {
-            if (err) {
-                console.error(err);
-                //callback(err, null);
-            }
-            else {
-                console.dir(report);
-                //callback(null, "success");
-            }
+        reportToInsert.save(function(err) {
+            if (err) console.error(err);            
         });
     }
 
@@ -159,7 +141,7 @@ function Database() {
             tests: courseTests
         });
 
-        courseToInsert.save(function(err, course) {-
+        courseToInsert.save(function(err, course) {
             if (err) {
                 console.error(err);
                 //callback(err, null);
@@ -172,24 +154,40 @@ function Database() {
     }
 
     //functions for finding a document based on some criteria
-    this.findUser = function (criteria, field, callback) {
+    /*this.findUser = function (criteria, field, callback) {
         User.findOne(criteria, field, callback);
+    } */
+
+    this.findTestFromCourse = function(course, callback){        
+        Course.findOne({_id: course}).populate('tests', 'title').exec(function(err, course) {
+            if (err) console.error(err);
+
+            callback(course.tests);
+        });
     }
 
-    this.findTest = function (criteria, field, callback) {
-        Test.findOne(criteria, field, callback);
+    this.findTest = function(testId, callback) {
+        Test.findOne({_id: testId}).populate('questions.categories.main_cat_id').exec(function(err, test) {
+            if (err) console.error(err);
+
+            callback(test);
+        });
     }
 
-    this.findReport = function (criteria, field, callback) {
-        Report.findOne(criteria, field, callback);
+    this.findReportForStudent = function(userId, callback) {
+        Report.find({student_id : userId}).exec(function(err, reports) {
+            if (err) console.error(err);
+
+            callback(reports);
+        });
     }
 
-    this.findCourse = function (criteria, field, callback) {
-        Course.findOne(criteria, field, callback);
-    }
+    this.findReport = function(userId, testId, callback) {
+        Report.findOne({student_id: userId, test_id: testId}).populate('categories.main_cat_id').exec(function(err, report) {
+            if (err) console.error(err);
 
-    this.findCategory = function (criteria, field, callback) {
-        Category.findOne(criteria, field, callback);
+            callback(report.categories);
+        });
     }
 
     // functions for updating values (aggregate data + student count of those who inputted)
