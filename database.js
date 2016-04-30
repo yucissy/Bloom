@@ -11,6 +11,7 @@ function Database() {
     
     var db = mongoose.connect('mongodb://bloom-admin:bloomwebappCS132@ds021989.mlab.com:21989/bloom');
 
+    // Schemas
     var userSchema = new mongoose.Schema({
         _id: String,
         name: String,
@@ -69,6 +70,7 @@ function Database() {
     var Course = mongoose.model('Course', courseSchema);
     var Category = mongoose.model('Category', categorySchema);
 
+    //functions for inserting a document into their respective schemas
     this.insertUser = function (userId, userName, userEmail, userCourses, user, callback) {
         var userToInsert = new User({
             _id: userId,
@@ -169,6 +171,7 @@ function Database() {
         });
     }
 
+    //functions for finding a document based on some criteria
     this.findUser = function (criteria, field, callback) {
         User.findOne(criteria, field, callback);
     }
@@ -189,6 +192,7 @@ function Database() {
         Category.findOne(criteria, field, callback);
     }
 
+    // functions for updating values (aggregate data + student count of those who inputted)
     this.updateTestAggregateData = function (testId, questions) { //questions {1:4, 2:5, 3:6}
         for (var key in questions) {
             var userPoints = questions[key];
@@ -205,6 +209,7 @@ function Database() {
         }}, function(error, success){console.log(success);});
     }
 
+    // insert/delete a course from the User document.
     this.insertUserCourse = function (userId, course) {
         User.findOne({_id: userId}, function(err, user) {
             user.courses.push(course);
@@ -215,6 +220,46 @@ function Database() {
     this.deleteUserCourse = function (userId, course) {
         User.update({'_id': userId}, {'$pull': {
             'courses': course
+        }}, function(error, success){console.log(success);});
+    }
+
+    // insert/delete a student, professor, test from the Course document.
+    this.insertStudentIntoCourse = function (courseId, student) {
+        Course.findOne({_id: courseId}, function(err, course) {
+            course.students.push(student);
+            course.save(function(error, success){console.log(success);});
+        });
+    }
+
+    this.deleteStudentFromCourse = function (courseId, student) {
+        Course.update({'_id': courseId}, {'$pull': {
+            'students': student
+        }}, function(error, success){console.log(success);});
+    }
+
+    this.insertProfessorIntoCourse = function (courseId, professor) {
+        Course.findOne({_id: courseId}, function(err, course) {
+            course.professors.push(professor);
+            course.save(function(error, success){console.log(success);});
+        });
+    }
+
+    this.deleteProfessorFromCourse = function (courseId, professor) {
+        Course.update({'_id': courseId}, {'$pull': {
+            'professors': professor
+        }}, function(error, success){console.log(success);});
+    }
+
+    this.insertTestIntoCourse = function (courseId, test) {
+        Course.findOne({_id: courseId}, function(err, course) {
+            course.tests.push(test);
+            course.save(function(error, success){console.log(success);});
+        });
+    }
+
+    this.deleteTestFromCourse = function (courseId, test) {
+        Course.update({'_id': courseId}, {'$pull': {
+            'tests': test
         }}, function(error, success){console.log(success);});
     }
 }
