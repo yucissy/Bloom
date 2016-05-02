@@ -1,8 +1,5 @@
 var Reports = require('./reports.js');
 var Stormpath = require('./config/stormpath.js');
-var crypto = require('crypto'),
-    algorithm = 'aes-256-cbc',
-    password = 'd6F3Efeq';
 
 var exports = function(app, db) {
 	var reports = new Reports(db);
