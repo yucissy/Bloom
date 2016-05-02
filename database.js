@@ -5,7 +5,7 @@ function Database() {
     var db = mongoose.connect('mongodb://bloom-admin:bloomwebappCS132@ds021989.mlab.com:21989/bloom');
 
     // Schemas
-    var userSchema = new mongoose.Schema({
+    var userSchema = new mongoose.Schema({-
         _id: String,
         name: String,
         email: String,
@@ -264,6 +264,16 @@ function Database() {
             'tests': test
         }}, function(error, success){
             console.log(success);
+        });
+    }
+
+    //Function for verifying if the user is a Student or a Professor
+    this.isUserStudent = function (userEmail, callback) {
+        User.findOne({email: userEmail}, function(err, user) {
+            if (user.type === "student")
+                callback(true);
+            else
+                callback(false);
         });
     }
 }
