@@ -19,22 +19,59 @@ var exports = function(app, db) {
 		res.render('index.html');
 	});
 
-	app.get('/signUp', function(req, res) {
+	app.get('/signup', function(req, res) {
+		res.render('signup.html');
+	});
+
+	app.post('/home', function(req, res) {
+		var email = req.body.email;
+		var pass = req.body.pass;
+		// unsalt and unhash password
+		console.log(email);
+		console.log(pass);
+		storm.logIn(email, pass, function() { console.log('login failed'); }, function(err, account) {
+			if (err) {
+				console.error(err);
+				//alert user
+				return;
+			}
+
+			console.log(account);
+
+		});
+	});
+
+	app.post('/signUp', function(req, res) {
 		var fName = req.body.firstName;
 		var lName = req.body.lastName;
 		var uID = req.body.BID;
 		var email = req.body.email;
 		var pass = req.body.password;
+		var uType = req.body.type;
 		// unsalt and unhash password
 
-		var fName = 'Harry';
-		var lName = 'Potter';
-		var uID = 'B0009999';
-		var email = 'harry@brown.edu';
-		var pass = 'theWizardingWorld55';
-		storm.createAccount(fName, lName, uID, email, pass);
+		var sessID = generateSessionID();
 
-	})
+		// var fName = 'Harry';
+		// var lName = 'Potter';
+		// var uID = 'B0009999';
+		// var email = 'harry@brown.edu';
+		// var pass = 'theWizardingWorld55';
+		storm.createAccount(fName, lName, uID, email, pass, function(err) {
+			if (err) {
+				console.error(err);
+				return;
+			}
+
+			db.insertUser(uID, fName + " " + lName, email, uType);
+			loggedIn[sessID] = uID;
+		});
+	});
+
+	app.post('/logOut', function(req, res) {
+		var sessID = req.body.userID;
+		delete loggedIn[sessID];
+	});
 
 	app.post('/home', function(req, res) {
 		var user = req.body.userID;
