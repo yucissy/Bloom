@@ -16,19 +16,36 @@ function getScores(exam_ID) {
         }
     }
 
-
+function getColor(percent) {
+  if (percent > 80)
+    return "#009247";
+  if (percent > 60)
+    return "#86D500";
+  if (percent > 40)
+    return "#FFE200";
+  if (percent > 20)
+    return "#FF7A05";
+  return "#ED1B24";
+}
 
 //actual code
 function makeBarChart(data) {
+  var gap = 20;
+
+  var labels = data.report[0].main_cat_id.sub_categories;
+  var data1 = data.report[0].sub_cats;
+  var percent = [];
+  $.each(data1, function(i, v) {
+    percent.push(v.percentage);
+  });
+  console.log(percent);
+  console.log(percent.length);
+  var indices = d3.range(0, percent.length);
 
 
-
-
-  data = {"understanding":11, "concepts":22, "other":33, "remembering":44, "cool": 44};
-  var percent = [11, 22, 33, 44, 55];
   var width = 280,
-   bar_height = 20,
-   length = Object.keys(data).length,
+   bar_height =30,
+   length = labels.length,
    height = bar_height * length;
 
   var x, y;
@@ -36,15 +53,17 @@ function makeBarChart(data) {
     .domain([0, 100])
     .range([0, width]);
 
-    console.log("length"+length);
-    console.log("height"+height);
   y = d3.scale.ordinal()
-    .domain(percent)
+    .domain(indices)
     .rangeBands([0, height]);
 
     var y2 = d3.scale.ordinal()
-    .domain(Object.keys(data))
+    .domain(labels)
     .rangeBands([0, height]);
+
+    // var y3 = d3.scale.ordinal()
+    //   .domain(percent)
+    //   .rangeBands([0, height]);
 
   var left_width = 200;
 
@@ -58,31 +77,36 @@ chart.selectAll("rect")
   .data(percent)
   .enter().append("rect")
   .attr("x", left_width)
-  .attr("y", y)
+  .attr("y", function(v, i) { return y(i)})
+  .attr("width", 0)
+  .attr("height", y.rangeBand())
+  .attr("fill", function (d) {console.log("1");return getColor(d);})
+  .transition()
+  .duration(1000)
   .attr("width", x)
-  .attr("height", y.rangeBand());
-
-chart.selectAll("text.score")
-  .data(percent)
-  .enter().append("text")
-  .attr("x", function(d) { return x(d) + left_width; })
-  .attr("y", function(d){ console.log("scores"+y(d));return y(d) + y.rangeBand()/2; } )
-  .attr("dx", -5)
-  .attr("dy", ".36em")
-  .attr("text-anchor", "end")
-  .attr('class', 'score')
-  .text(String);
+  .attr("x", left_width);
 
 chart.selectAll("text.name")
-  .data(Object.keys(data))
+  .data(labels)
   .enter().append("text")
   .attr("x", left_width / 2)
-  .attr("y", function(d){
-    console.log("names"+y2(d));return y2(d) + y2.rangeBand()/2; } )
+  .attr("y", function(d){ return y2(d) + y2.rangeBand()/2; } )
   .attr("dy", ".36em")
   .attr("text-anchor", "middle")
   .attr('class', 'name')
   .text(String);
+
+  setTimeout(function() { chart.selectAll("text.score")
+  .data(percent)
+  .enter().append("text")
+  .attr("x", function(d) { return x(d) + left_width; })
+  .attr("y", function(d, i){ console.log("scores"+y(i));return y(i) + y.rangeBand()/2; } )
+  .attr("dx", -5)
+  .attr("dy", ".36em")
+  .attr("text-anchor", "end")
+  .attr('class', 'score')
+  .text(String); }, 1000);
+
 }
 
 getScores("5722c08ea598e9931e085fb8");

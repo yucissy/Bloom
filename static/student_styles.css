@@ -45,12 +45,11 @@
 	border-color:gray;
 }
 .chart {
-	background-color:gray;
+
 	margin:5px;
 }
 .chart rect {
-  stroke: white;
-  fill: steelblue;
+  /*fill: steelblue;*/
 }
 
 .chart text {
