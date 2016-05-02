@@ -60,7 +60,7 @@
         var lname = $("#last").val();
         var e = $("#email").val();
         var bid = $("#bid").val();
-        var p = $("#p1").val() + "chipotleAMaZeCAT726";
+        var p = $("#p1").val();
         var hashed = CryptoJS.MD5(p).toString();
         var toSend = {first: fname, last: lname, BID: bid, email: e, password: hashed, type: t};
         var request = new XMLHttpRequest();

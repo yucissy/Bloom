@@ -28,7 +28,7 @@ var exports = function(app, db) {
 
 	app.post('/home', function(req, res) {
 		var email = req.body.email;
-		var pass = req.body.password;
+		var pass = req.body.password + "A";
 		console.log(email);
 		console.log(pass);
 
@@ -50,7 +50,7 @@ var exports = function(app, db) {
 		var lName = req.body.last;
 		var uID = req.body.BID;
 		var email = req.body.email;
-		var pass = req.body.password;
+		var pass = req.body.password + "A";
 		var uType = req.body.type;
 		console.log(pass);
 

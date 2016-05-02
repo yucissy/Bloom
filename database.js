@@ -5,7 +5,7 @@ function Database() {
     var db = mongoose.connect('mongodb://bloom-admin:bloomwebappCS132@ds021989.mlab.com:21989/bloom');
 
     // Schemas
-    var userSchema = new mongoose.Schema({-
+    var userSchema = new mongoose.Schema({
         _id: String,
         name: String,
         email: String,
@@ -86,7 +86,7 @@ function Database() {
 
         testToInsert.save(function(err) {
             if (err) 
-                callback("ERR: Could not save Test: " + testName + "."s);
+                callback("ERR: Could not save Test: " + testName + ".");
             else {
                 Course.findOne({_id: courseId}).exec(function(err, course) {
                     if (err) 

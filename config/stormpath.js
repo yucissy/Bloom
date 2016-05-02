@@ -31,12 +31,13 @@ function Stormpath() {
 		client.getApplication(applicationHref, function(err, application) {
 
 			var authRequest = {
-				email: em,
+				username: em,
 				password: pass
 		    };
 
 		    application.authenticateAccount(authRequest, function(err, result) {
 		    	if (err) {
+		    		console.log(err);
 		    		fail();
 				} else {
 					result.getAccount(function(err, account) {
