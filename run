@@ -1,4 +1,3 @@
 npm install
-chmod +x ./config/stormpath
-`./config/stormpath`
+source ./config/stormpath
 node server.js
