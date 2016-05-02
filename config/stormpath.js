@@ -27,6 +27,26 @@ function Stormpath() {
 		});
 	}
 
+	this.logIn = function(em, pass, fail, callback) {
+		client.getApplication(applicationHref, function(err, application) {
+
+			var authRequest = {
+				email: em,
+				password: pass
+		    };
+
+		    application.authenticateAccount(authRequest, function(err, result) {
+		    	if (err) {
+		    		fail();
+				} else {
+					result.getAccount(function(err, account) {
+						callback(err, account);
+					});
+				}
+		    });
+		});
+	}
+
 	// client.getApplication(applicationHref, function(err, application) {
 	    // var account = {
 	    //   givenName: 'Joe',

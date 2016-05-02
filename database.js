@@ -188,6 +188,12 @@ function Database() {
         });
     }
 
+    this.getUID = function(em, callback) {
+        User.findOne({email : em}).exec(function(err, user) {
+            callback(user._id);
+        });
+    }
+
     // functions for updating values (aggregate data + student count of those who inputted)
     this.updateTestAggregateData = function (testId, questions) { //questions {1:4, 2:5, 3:6}
         for (var key in questions) {
