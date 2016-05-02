@@ -1,5 +1,8 @@
 var Reports = require('./reports.js');
 var Stormpath = require('./config/stormpath.js');
+var crypto = require('crypto'),
+    algorithm = 'aes-256-cbc',
+    password = 'd6F3Efeq';
 
 var exports = function(app, db) {
 	var reports = new Reports(db);
@@ -25,10 +28,11 @@ var exports = function(app, db) {
 
 	app.post('/home', function(req, res) {
 		var email = req.body.email;
-		var pass = req.body.pass;
-		// unsalt and unhash password
+		var pass = req.body.password;
 		console.log(email);
 		console.log(pass);
+
+		// unsalt and unhash password
 		storm.logIn(email, pass, function() { console.log('login failed'); }, function(err, account) {
 			if (err) {
 				console.error(err);
@@ -42,13 +46,13 @@ var exports = function(app, db) {
 	});
 
 	app.post('/signUp', function(req, res) {
-		var fName = req.body.firstName;
-		var lName = req.body.lastName;
+		var fName = req.body.first;
+		var lName = req.body.last;
 		var uID = req.body.BID;
 		var email = req.body.email;
 		var pass = req.body.password;
 		var uType = req.body.type;
-		// unsalt and unhash password
+		console.log(pass);
 
 		var sessID = generateSessionID();
 

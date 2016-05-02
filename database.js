@@ -5,7 +5,7 @@ function Database() {
     var db = mongoose.connect('mongodb://bloom-admin:bloomwebappCS132@ds021989.mlab.com:21989/bloom');
 
     // Schemas
-    var userSchema = new mongoose.Schema({
+    var userSchema = new mongoose.Schema({-
         _id: String,
         name: String,
         email: String,
@@ -64,6 +64,7 @@ function Database() {
     var Category = mongoose.model('Category', categorySchema);
 
     //functions for inserting a document into their respective schemas
+    //Stormpath will take care of error handling for this function
     this.insertUser = function (userId, userName, userEmail, user) {
         var userToInsert = new User({
             _id: userId,
@@ -77,24 +78,31 @@ function Database() {
         });
     }
 
-    this.insertTestForCourse = function(courseId, testName, qs) {
+    this.insertTestForCourse = function(courseId, testName, qs, callback) {
         var testToInsert = new Test({
                 title: testName,
                 questions: qs
             });
 
         testToInsert.save(function(err) {
-            if (err) console.error(err);
+            if (err) 
+                callback("ERR: Could not save Test: " + testName + "."s);
+            else {
+                Course.findOne({_id: courseId}).exec(function(err, course) {
+                    if (err) 
+                        callback("ERR: Could not find a course with ID: " + courseId + ".");
+                    else {                    
+                        course.tests.push(testToInsert);
 
-            Course.findOne({_id: courseId}).exec(function(err, course) {
-                if (err) console.error(err);
-                
-                course.tests.push(testToInsert);
-
-                course.save(function(err) {
-                    if (err) console.error(err);
+                        course.save(function(err) {
+                            if (err) 
+                                callback("ERR: Could not save Test: " + testName + " to Course: " + courseId + ".");
+                            else
+                                callback(null);
+                        });
+                    }
                 });
-            });
+            }
         });
     }
 
@@ -118,21 +126,17 @@ function Database() {
         });
 
         categoryToInsert.save(function(err, category) {
-            if (err) {
-                console.error(err);
-                //callback(err, null);
-            }
-            else {
-                console.dir(category);
-                //callback(null, "success");
-            }
+            if (err) 
+                callback("Could not save Category: " + categoryName + ".");
+            else 
+                callback(null);
         });
     }
 
     this.insertCourse = function(courseId, courseTitle, courseSemester, courseStudents, courseProfessors, courseTests, callback) {
         var courseToInsert = new Course({
             _id: courseId,
-            title: courseTitsle,
+            title: courseTitle,
             semester: courseSemester,
             students: courseStudents,
             professors: courseProfessors,
@@ -140,14 +144,10 @@ function Database() {
         });
 
         courseToInsert.save(function(err, course) {
-            if (err) {
-                console.error(err);
-                //callback(err, null);
-            }
-            else {
-                console.dir(course);
-                //callback(null, "success");
-            }
+            if (err) 
+                callback("Could not save Course: " + courseId + ".");
+            else
+                callback(null);
         });
     }
 
@@ -264,6 +264,16 @@ function Database() {
             'tests': test
         }}, function(error, success){
             console.log(success);
+        });
+    }
+
+    //Function for verifying if the user is a Student or a Professor
+    this.isUserStudent = function (userEmail, callback) {
+        User.findOne({email: userEmail}, function(err, user) {
+            if (user.type === "student")
+                callback(true);
+            else
+                callback(false);
         });
     }
 }

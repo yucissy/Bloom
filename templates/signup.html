@@ -13,6 +13,7 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/aes.js"></script>
 
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="student_styles.css">
@@ -33,10 +34,10 @@
       </div>
       <input type="text" name="first_name" id="first" placeholder="First Name">
       <input type="text" name="last_name" id="last" placeholder="Last Name">
-      <input type="text" name="email" placeholder="Email address">
-      <input type="text" name="banner_id" placeholder="Banner ID">
-      <input type="password" name="pass" placeholder="Password">
-      <input type="password" name="pass2" placeholder="Retype Password">
+      <input type="text" name="email" id="email" placeholder="Email address">
+      <input type="text" name="banner_id" id="bid" placeholder="Banner ID">
+      <input type="password" name="pass" id="p1" placeholder="Password">
+      <input type="password" name="pass2" id="p2" placeholder="Retype Password">
       <input type="submit" name="submit" id="signup_submit" value="SIGN UP">
     </div>
     <div class="col-md-6 head" id="signup_wrapper">
@@ -50,6 +51,22 @@
     <script>
       $('.s').on('click', function() {
         $('#button').html('I am a '+$(this).text());
+      });
+
+      $("#signup_submit").on('click', function(e) {
+        e.preventDefault();
+        var t = $("#button").html().substring(7);
+        var fname = $("#first").val();
+        var lname = $("#last").val();
+        var e = $("#email").val();
+        var bid = $("#bid").val();
+        var p = $("#p1").val() + "chipotleAMaZeCAT726";
+        var hashed = CryptoJS.MD5(p).toString();
+        var toSend = {first: fname, last: lname, BID: bid, email: e, password: hashed, type: t};
+        var request = new XMLHttpRequest();
+        request.open('POST', '/signUp', true);
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.send(JSON.stringify(toSend));
       });
     </script>
   </body>
