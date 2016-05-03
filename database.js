@@ -154,17 +154,22 @@ function Database() {
         });
     }
 
-    //functions for finding a document based on some criteria
-    /*this.findUser = function (criteria, field, callback) {
-        User.findOne(criteria, field, callback);
-    } */
-
+    //functions for accessing certain fields of a document
     this.findTestFromCourse = function(course, callback) {        
         Course.findOne({_id: course}).populate('tests', 'title').exec(function(err, course) {
             if (err) 
                 callback("ERR: Could not find Course: " + course + ".");
             else
                 callback(course.tests);
+        });
+    }
+
+    this.getStudentsFromCourse = function (courseId, callback) {
+        Course.findOne({_id: course}).populate('students', 'name').exec(function(error, course) {
+            if (error)
+                callback("ERR: Could not find students from Course: " + courseId + ".");
+            else
+                callback(course.students);
         });
     }
 
@@ -180,7 +185,7 @@ function Database() {
     this.findReportForStudent = function(userId, callback) {
         Report.find({student_id : userId}).exec(function(err, reports) {
             if (err) 
-                callback("ERR: Could not find report for Student: " + userId + ".");
+                callback("ERR: Could not find reports for Student: " + userId + ".");
             else
                 callback(reports);
         });
@@ -330,16 +335,6 @@ function Database() {
                 callback(true);
             else
                 callback(false);
-        });
-    }
-
-    //Function for getting all the students in a course
-    this.getStudentsForCourse = function (courseId, callback) {
-        Course.findOne({_id: course}).populate('students', 'name').exec(function(error, course) {
-            if (error)
-                callback("ERR: Could not find students from Course: " + courseId + ".");
-            else
-                callback(course.students);
         });
     }
 }
