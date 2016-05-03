@@ -160,7 +160,7 @@ var exports = function(app, db) {
 					}
 					toReturn.push(toAppend);
 				}
-				
+
 				res.setHeader('Content-Type', 'application/json');
 				res.send(JSON.stringify({reports : toReturn}));
 			});
@@ -178,11 +178,21 @@ var exports = function(app, db) {
 		});
 	});
 
+	app.post('/getAllAggregate', function(req, res) {
+		var user = req.body.userID;
+		var course = req.body.courseID;
+
+	});
+
 	app.post('/getAggregate', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
+		// var exam = '5722c08ea598e9931e085fb8'
 		db.findTest({_id : exam}, function(data){
-			var results = reports.calculateAggregate(data);
+			var calc = reports.calculateAggregate(data);
+			var toReturn = {title: data.title, count: data.count, results: calc};
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({aggregate: toReturn}));
 		});
 	});
 }
