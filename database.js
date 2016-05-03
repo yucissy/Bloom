@@ -187,7 +187,7 @@ function Database() {
     }
 
     this.findReport = function(userId, testId, callback) {
-        Report.findOne({student_id: userId, test_id: testId}).populate('categories.main_cat_id').exec(function(err, report) {
+        Report.findOne({student_id: userId, test_id: testId}).populate('test_id', 'title').populate('categories.main_cat_id').exec(function(err, report) {
             if (err) 
                 callback("ERR: Could not find report for Student: " + userId + " and Test: " + testId + ".");
             else

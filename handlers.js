@@ -23,49 +23,47 @@ var exports = function(app, db) {
 		res.render('signup.html');
 	});
 
+	app.get('/forgot', function(req, res) {
+		res.render('forgot.html');
+	});
+
 	app.post('/home', function(req, res) {
 		var email = req.body.email;
-		var pass = req.body.password + "A";
-		console.log(email);
-		console.log(pass);
+		var pass = req.body.pass + "A";
 
 		// unsalt and unhash password
-		storm.logIn(email, pass, function() { console.log('login failed'); }, function(err, account) {
+		storm.logIn(email, pass, function() {
+			res.render('index.html', {alert: "Login failed! Please try again."});
+		}, function(err, account) {
 			if (err) {
-				console.error(err);
-				//alert user
-				return;
+				res.render('index.html', {alert: "Login failed! Please try again."});
+			} else {
+				var sessID = generateSessionID();
+				loggedIn[sessID] = account.username;
+				res.render('upload_categories.html')
 			}
-
-			console.log(account);
-
 		});
 	});
 
 	app.post('/signUp', function(req, res) {
-		var fName = req.body.first;
-		var lName = req.body.last;
-		var uID = req.body.BID;
+		var fName = req.body.first_name;
+		var lName = req.body.last_name;
+		var uID = req.body.banner_id;
 		var email = req.body.email;
-		var pass = req.body.password + "A";
+		var pass = req.body.pass + "A";
 		var uType = req.body.type;
-		console.log(pass);
 
 		var sessID = generateSessionID();
 
-		// var fName = 'Harry';
-		// var lName = 'Potter';
-		// var uID = 'B0009999';
-		// var email = 'harry@brown.edu';
-		// var pass = 'theWizardingWorld55';
 		storm.createAccount(fName, lName, uID, email, pass, function(err) {
 			if (err) {
 				console.error(err);
-				return;
+				res.render('signup.html', {alert: "Sign up failed! An account with your credentials may already exist."});
+			} else {
+				db.insertUser(uID, fName + " " + lName, email, uType);
+				loggedIn[sessID] = uID;
+				res.render('upload_categories.html');
 			}
-
-			db.insertUser(uID, fName + " " + lName, email, uType);
-			loggedIn[sessID] = uID;
 		});
 	});
 
@@ -74,14 +72,8 @@ var exports = function(app, db) {
 		delete loggedIn[sessID];
 	});
 
-	app.post('/home', function(req, res) {
-		var user = req.body.userID;
-
-		var sessID = generateSessionID();
-		loggedIn[sessID] = user;
-	});
-
 	app.get('/uploadC', function(req, res) {
+		console.log(req);
 		res.render('upload_categories.html');
 	})
 
