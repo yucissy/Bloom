@@ -106,7 +106,7 @@ function Database() {
         });
     }
 
-    this.insertStudentReport = function(userId, testId, categoriesList) {
+    this.insertStudentReport = function(userId, testId, categoriesList, callback) {
         var reportToInsert = new Report({
             student_id: userId,
             test_id: testId,
@@ -114,7 +114,10 @@ function Database() {
         });
 
         reportToInsert.save(function(err) {
-            if (err) console.error(err);            
+            if (err) 
+                callback("ERR: Could not save report for Student: " + userId + ".");
+            else
+                callback(null);
         });
     }
 
@@ -127,7 +130,7 @@ function Database() {
 
         categoryToInsert.save(function(err, category) {
             if (err) 
-                callback("Could not save Category: " + categoryName + ".");
+                callback("ERR: Could not save Category: " + categoryName + ".");
             else 
                 callback(null);
         });
@@ -145,7 +148,7 @@ function Database() {
 
         courseToInsert.save(function(err, course) {
             if (err) 
-                callback("Could not save Course: " + courseId + ".");
+                callback("ERR: Could not save Course: " + courseId + ".");
             else
                 callback(null);
         });
@@ -158,104 +161,156 @@ function Database() {
 
     this.findTestFromCourse = function(course, callback) {        
         Course.findOne({_id: course}).populate('tests', 'title').exec(function(err, course) {
-            if (err) console.error(err);
-
-            callback(course.tests);
+            if (err) 
+                callback("ERR: Could not find Course: " + course + ".");
+            else
+                callback(course.tests);
         });
     }
 
     this.findTest = function(testId, callback) {
         Test.findOne({_id: testId}).populate('questions.categories.main_cat_id').exec(function(err, test) {
-            if (err) console.error(err);
-
-            callback(test);
+            if (err) 
+                callback("ERR: Could not find Test: " + testId + ".");
+            else
+                callback(test);
         });
     }
 
     this.findReportForStudent = function(userId, callback) {
         Report.find({student_id : userId}).exec(function(err, reports) {
-            if (err) console.error(err);
-
-            callback(reports);
+            if (err) 
+                callback("ERR: Could not find report for Student: " + userId + ".");
+            else
+                callback(reports);
         });
     }
 
     this.findReport = function(userId, testId, callback) {
         Report.findOne({student_id: userId, test_id: testId}).populate('categories.main_cat_id').exec(function(err, report) {
-            if (err) console.error(err);
-
-            callback(report.categories);
+            if (err) 
+                callback("ERR: Could not find report for Student: " + userId + " and Test: " + testId + ".");
+            else
+                callback(report.categories);
         });
     }
 
     this.getUID = function(em, callback) {
         User.findOne({email : em}).exec(function(err, user) {
-            callback(user._id);
+            if (err)
+                callback("ERR: Could not find a user with email: " + em + ".");
+            else
+                callback(user._id);
         });
     }
 
     // functions for updating values (aggregate data + student count of those who inputted)
-    this.updateTestAggregateData = function (testId, questions) { //questions {1:4, 2:5, 3:6}
+    this.updateTestAggregateData = function (testId, questions, callback) { //questions {1:4, 2:5, 3:6}
         for (var key in questions) {
             var userPoints = questions[key];
             var questionId = key;
             Test.update({'_id': testId, 'questions.qid': questionId}, {'$inc': {
                 'questions.$.sum_points': userPoints
-            }}, function(error, success){console.log(success);});
+            }}, function(error, success){
+                    if (error)
+                        callback("ERR: Could not update Test: " + testId + ", Question: " + questionId + ".");
+                    else
+                        callback(null)
+                });
         }
     }
 
-    this.updateTestCount = function (testId) {
+    this.updateTestCount = function (testId, callback) {
         Test.update({'_id': testId}, {'$inc': {
             'count': 1
-        }}, function(error, success){console.log(success);});
+        }}, function(error, success){
+                if (error)
+                    callback("ERR: Could not update count of Test: " + testId + ".");
+                else
+                    callback(null)
+            });
     }
 
     // insert/delete a course from the User document.
-    this.insertUserCourse = function (userId, course) {
+    this.insertUserCourse = function (userId, course, callback) {
         User.findOne({_id: userId}, function(err, user) {
             user.courses.push(course);
-            user.save(function(error, success){console.log(success);});
+            user.save(function(error, success){
+                if (error)
+                    callback("ERR: Could not save Course: " + course + " to User: " + userId + ".");
+                else
+                    callback(null);
+            });
         });
     }
 
-    this.deleteUserCourse = function (userId, course) {
+    this.deleteUserCourse = function (userId, course, callback) {
         User.update({'_id': userId}, {'$pull': {
             'courses': course
-        }}, function(error, success){console.log(success);});
+        }}, function(error, success){
+                if (error)
+                    callback("ERR: Could not delete Course: " + course + " from User: " + userId + ".");
+                else
+                    callback(null);
+            });
     }
 
     // insert/delete a student, professor, test from the Course document.
-    this.insertStudentIntoCourse = function (courseId, student) {
+    this.insertStudentIntoCourse = function (courseId, student, callback) {
         Course.findOne({_id: courseId}, function(err, course) {
             course.students.push(student);
-            course.save(function(error, success){console.log(success);});
+            course.save(function(error, success){
+                            if (error)
+                                callback("ERR: Could not insert Student: " + student + "into Course: " + courseId + ".");
+                            else
+                                callback(null);
+                        });
         });
     }
 
-    this.deleteStudentFromCourse = function (courseId, student) {
+    this.deleteStudentFromCourse = function (courseId, student, callback) {
         Course.update({'_id': courseId}, {'$pull': {
             'students': student
-        }}, function(error, success){console.log(success);});
+        }}, function(error, success){
+                if (error)
+                    callback("ERR: Could not delete Student: " + student + "into Course: " + courseId + ".");
+                else
+                    callback(null);
+            });
     }
 
-    this.insertProfessorIntoCourse = function (courseId, professor) {
+    this.insertProfessorIntoCourse = function (courseId, professor, callback) {
         Course.findOne({_id: courseId}, function(err, course) {
             course.professors.push(professor);
-            course.save(function(error, success){console.log(success);});
+            course.save(function(error, success){
+                if (error)
+                    callback("ERR: Could not insert Professor: " + professor + " into Course: " + courseId + ".");
+                else
+                    callback(null);
+            });
         });
     }
 
-    this.deleteProfessorFromCourse = function (courseId, professor) {
+    this.deleteProfessorFromCourse = function (courseId, professor, callback) {
         Course.update({'_id': courseId}, {'$pull': {
             'professors': professor
-        }}, function(error, success){console.log(success);});
+        }}, function(error, success){
+                if (error)
+                    callback("ERR: Could not delete Professor: " + professor + " from Course: " + courseId + ".");
+                else
+                    callback(null);
+            });
     }
 
     this.insertTestIntoCourse = function (courseId, test) {
         Course.findOne({_id: courseId}, function(err, course) {
             course.tests.push(test);
-            course.save(function(error, success){console.log(success);});
+            course.save(function(error, success){
+                if (error)
+                    callback("ERR: Could not insert test into Course: " + courseId + ".");
+                else
+                    callback(null);
+            });
         });
     }
 
@@ -263,8 +318,9 @@ function Database() {
         Course.update({'_id': courseId}, {'$pull': {
             'tests': test
         }}, function(error, success){
-            console.log(success);
-        });
+                if (error)
+                    callback("ERR: Could not delete test from Course: " + courseId + ".");
+            });
     }
 
     //Function for verifying if the user is a Student or a Professor
