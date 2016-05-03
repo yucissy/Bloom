@@ -146,11 +146,46 @@ function Database() {
             tests: courseTests
         });
 
-        courseToInsert.save(function(err, course) {
-            if (err) 
+        courseToInsert.save(function(error, course) {
+            if (error) 
                 callback("ERR: Could not save Course: " + courseId + ".");
-            else
-                callback(null);
+            else {
+                //iterate through students
+                for (var student in courseStudents) {
+                    User.findOne({_id: student}, function(error, student){
+                        if (error)
+                            callback("ERR: Could not find Student: " + student + ".");
+                        else {
+                            student.courses.push(courseToInsert);
+
+                            student.save(function(error) {
+                                if(error)
+                                    callback("ERR: Could not save course to Student: " + student + "'s courses.");
+                                else
+                                    callback(null);
+                            });
+                        }
+                    });
+                }
+
+                //iterate through professors
+                for (var professor in courseProfessors) {
+                    User.findOne({_id: professor}, function(error, professor){
+                        if (error)
+                            callback("ERR: Could not find Professor: " + professor + ".");
+                        else {
+                            professor.courses.push(courseToInsert);
+
+                            professor.save(function(error) {
+                                if(error)
+                                    callback("ERR: Could not save course to Professor: " + student + "'s courses.");
+                                else
+                                    callback(null);
+                            });
+                        }
+                    });
+                }
+            }
         });
     }
 
