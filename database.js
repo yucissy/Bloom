@@ -325,11 +325,21 @@ function Database() {
 
     //Function for verifying if the user is a Student or a Professor
     this.isUserStudent = function (userEmail, callback) {
-        User.findOne({email: userEmail}, function(err, user) {
+        User.findOne({email: userEmail}, function(error, user) {
             if (user.type === "student")
                 callback(true);
             else
                 callback(false);
+        });
+    }
+
+    //Function for getting all the students in a course
+    this.getStudentsForCourse = function (courseId, callback) {
+        Course.findOne({_id: course}).populate('students', 'name').exec(function(error, course) {
+            if (error)
+                callback("ERR: Could not find students from Course: " + courseId + ".");
+            else
+                callback(course.students);
         });
     }
 }
