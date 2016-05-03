@@ -12,7 +12,7 @@ $(function() {
     		//this variable holds the csv data!
     		var dataURL = reader.result;
             var toSend = {courseID: cID, exam: examName, data: dataURL};
-
+            console.log(toSend);
             var request = new XMLHttpRequest();
             request.open('POST', '/sendExam', true);
             request.setRequestHeader('Content-Type', 'application/json');

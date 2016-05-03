@@ -30,6 +30,21 @@ function getColor(percent) {
 
 //actual code
 function makeBarChart(data) {
+
+  var newDiv = d3.select("#part1")
+            .append("div")
+            .attr("class", "category");
+
+  var categoryTitle = data.report[0].main_cat_id.name;
+  var id = data.report[0].main_cat_id._id;
+  newDiv.append("h2")
+    .text(categoryTitle.toUpperCase());
+
+  newDiv.append("hr")
+    .style("color", "gray");
+
+  newDiv.append("div")
+    .attr("id", id);
   var gap = 20;
 
   var labels = data.report[0].main_cat_id.sub_categories;
@@ -67,7 +82,7 @@ function makeBarChart(data) {
 
   var left_width = 200;
 
-chart = d3.select($("#chart_container")[0])
+chart = d3.select($("#"+id)[0])
   .append('svg')
   .attr('class', 'chart')
   .attr('width', left_width + width)

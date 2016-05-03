@@ -39,6 +39,7 @@
 	font-size:.55em;
 	letter-spacing:2px;
 	padding-bottom:0;
+	cursor:context-menu;
 }
 #part1 hr {
 	margin-top:-3px;
@@ -59,4 +60,18 @@
 
 .chart text.name {
   fill: #000;
+}
+#prof_selector h2:hover {
+	font-weight:bold;
+}
+#prof_selector {
+	height:50px;
+}
+.prof_select {
+	float:left;
+	margin-right:100px;
+}
+.selected {
+	font-weight:bold;
+	color:black;
 }

@@ -131,6 +131,7 @@ input {
 .modal-body {
     border:gray;
     padding:40px;
+    text-align:left;
 }
 .modal-body img {
 	height:250px;
@@ -318,4 +319,3 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 #questions {
 	display:none;
 }
-*/*/*/
