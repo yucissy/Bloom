@@ -31,13 +31,16 @@
           <li><a href="#" class="s">Teaching Assistant</a></li>
         </ul>
       </div>
-      <input type="text" name="first_name" id="first" placeholder="First Name">
-      <input type="text" name="last_name" id="last" placeholder="Last Name">
-      <input type="text" name="email" id="email" placeholder="Email address">
-      <input type="text" name="banner_id" id="bid" placeholder="Banner ID">
-      <input type="password" name="pass" id="p1" placeholder="Password">
-      <input type="password" name="pass2" id="p2" placeholder="Retype Password">
-      <input type="submit" name="submit" id="signup_submit" value="SIGN UP">
+      <form id="sign" action="/signUp" method="POST">
+        <input type="text" name="first_name" id="first" placeholder="First Name">
+        <input type="text" name="last_name" id="last" placeholder="Last Name">
+        <input type="text" name="email" id="email" placeholder="Email address">
+        <input type="text" name="banner_id" id="bid" placeholder="Banner ID">
+        <input type="password" name="pass" id="p1" placeholder="Password">
+        <input type="password" name="pass2" id="p2" placeholder="Retype Password">
+        <div id="alert" style="color:red;">{{alert}}</div>
+        <input type="submit" id="signup_submit" value="SIGN UP">
+      </form>
     </div>
     <div class="col-md-6 head" id="signup_wrapper">
       <h1>Sign Up</h1>
@@ -48,24 +51,71 @@
     </div>
 
     <script>
+      var typeChosen = false;
+      var bidValid = false;
+      var passwordValid = false;
+      var passVerified = false;
+      var emailVerified = false;
+
       $('.s').on('click', function() {
         $('#button').html('I am a '+$(this).text());
+        typeChosen = true;
+      });
+
+      // Banner ID validation. add UI response
+      $('#bid').keyup(function() {
+        var id = $('#bid').val();
+        if (id.length == 9) {
+          if (id.substring(0, 3) == "B00" && !isNaN(id.substring(1))) {
+            bidValid = true;
+          }
+        }
+      });
+
+      // checks if password has number, capital, lowercase. add UI response
+      $('#p1').keyup(function() {
+        var pass = $('#p1').val();
+        var matches = pass.match(/\d+/g);
+        if (pass.toUpperCase() != pass && pass.toLowerCase() != pass && matches != null) {
+          passwordValid =true;
+        }
+      });
+
+      // checks if second password is same as first. add UI response
+      $('#p2').keyup(function() {
+        var pass1 = $('#p1').val();
+        var pass2 = $('#p2').val();
+        if (pass1 == pass2) {
+          passVerified = true;
+        }
+      });
+
+      $('#email').keyup(function() {
+        var email = $('#email').val();
+        if (email.length > 10 && email.substr(email.length - 10) == "@brown.edu") {
+          emailVerified = true;
+        }
       });
 
       $("#signup_submit").on('click', function(e) {
+        $("#alert").empty();
         e.preventDefault();
+
         var t = $("#button").html().substring(7);
         var fname = $("#first").val();
         var lname = $("#last").val();
         var e = $("#email").val();
         var bid = $("#bid").val();
-        var p = $("#p1").val();
-        var hashed = CryptoJS.MD5(p).toString();
-        var toSend = {first: fname, last: lname, BID: bid, email: e, password: hashed, type: t};
-        var request = new XMLHttpRequest();
-        request.open('POST', '/signUp', true);
-        request.setRequestHeader('Content-Type', 'application/json');
-        request.send(JSON.stringify(toSend));
+        var pw = $("#p1").val();
+
+        if (typeChosen && bidValid && passwordValid && passVerified && fname != "" && lname != "" && e != "") {
+          var hashed = CryptoJS.MD5(pw).toString();
+          $("#p1").val(hashed);
+          $("#sign")[0].submit();
+        } else {
+          $("#alert").text("Please check if all fields are valid!!");
+        }
+        
       });
     </script>
   </body>

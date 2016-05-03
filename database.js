@@ -154,17 +154,22 @@ function Database() {
         });
     }
 
-    //functions for finding a document based on some criteria
-    /*this.findUser = function (criteria, field, callback) {
-        User.findOne(criteria, field, callback);
-    } */
-
+    //functions for accessing certain fields of a document
     this.findTestFromCourse = function(course, callback) {        
         Course.findOne({_id: course}).populate('tests', 'title').exec(function(err, course) {
             if (err) 
                 callback("ERR: Could not find Course: " + course + ".");
             else
                 callback(course.tests);
+        });
+    }
+
+    this.getStudentsFromCourse = function (courseId, callback) {
+        Course.findOne({_id: course}).populate('students', 'name').exec(function(error, course) {
+            if (error)
+                callback("ERR: Could not find students from Course: " + courseId + ".");
+            else
+                callback(course.students);
         });
     }
 
@@ -180,14 +185,14 @@ function Database() {
     this.findReportForStudent = function(userId, callback) {
         Report.find({student_id : userId}).exec(function(err, reports) {
             if (err) 
-                callback("ERR: Could not find report for Student: " + userId + ".");
+                callback("ERR: Could not find reports for Student: " + userId + ".");
             else
                 callback(reports);
         });
     }
 
     this.findReport = function(userId, testId, callback) {
-        Report.findOne({student_id: userId, test_id: testId}).populate('categories.main_cat_id').exec(function(err, report) {
+        Report.findOne({student_id: userId, test_id: testId}).populate('test_id', 'title').populate('categories.main_cat_id').exec(function(err, report) {
             if (err) 
                 callback("ERR: Could not find report for Student: " + userId + " and Test: " + testId + ".");
             else
@@ -325,7 +330,7 @@ function Database() {
 
     //Function for verifying if the user is a Student or a Professor
     this.isUserStudent = function (userEmail, callback) {
-        User.findOne({email: userEmail}, function(err, user) {
+        User.findOne({email: userEmail}, function(error, user) {
             if (user.type === "student")
                 callback(true);
             else

@@ -11,7 +11,7 @@ function Stormpath() {
 
 	var applicationHref = process.env['STORMPATH_APPLICATION_HREF'];
 
-	this.createAccount = function(fName, lName, uID, em, pass) {
+	this.createAccount = function(fName, lName, uID, em, pass, callback) {
 		client.getApplication(applicationHref, function(err, application) {
 			var account = {
 				givenName: fName,
@@ -22,7 +22,7 @@ function Stormpath() {
 		    };
 
 		    application.createAccount(account, function(err, createdAccount) {
-				console.log('Account:', createdAccount);
+				callback(err);
 			});
 		});
 	}
