@@ -54,18 +54,30 @@ function Reports(db) {
 		var make = this.makeExamHelper;
 		csv.parse(data, {columns:true}, function(err, output) {
 			var test = make(output);
-			db.insertTestForCourse(course, name, test);
+			db.insertTestForCourse(course, name, test, function(error){
+                if (error != null)
+                    console.log(error); //may need another callback to inform the user?
+            });
 		});
 	}
 
 	this.calculateReport = function(userId, exam, scores) {
 		var cats = this.calculateHelper(exam.questions, scores, 1);
 
-		db.insertStudentReport(userId, exam._id, cats);
+		db.insertStudentReport(userId, exam._id, cats, function(error) {
+            if (error != null)
+                console.log(error);            
+        });
 
 		// UPDATING TEST DB DOCUMENT FOR AGGREGATE DATA
-		db.updateTestAggregateData(exam._id, scores);
-		db.updateTestCount(exam._id);
+		db.updateTestAggregateData(exam._id, scores, function(error) {
+            if (error != null)
+                console.log(error);
+        });
+		db.updateTestCount(exam._id, function(error) {
+            if (error != null)
+                console.log(error);
+        });
 	}
 
 	this.calculateAggregate = function(exam){
