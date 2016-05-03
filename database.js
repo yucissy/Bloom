@@ -196,7 +196,7 @@ function Database() {
             if (err) 
                 callback("ERR: Could not find report for Student: " + userId + " and Test: " + testId + ".");
             else
-                callback(report.categories);
+                callback(report);
         });
     }
 

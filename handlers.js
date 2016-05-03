@@ -142,6 +142,31 @@ var exports = function(app, db) {
 		});
 	});
 
+	app.post('/getAllScores', function(req, res) {
+		var user = req.body.userID;
+		var course = req.body.courseID;
+		// var course = 'CSCI1230'
+		// var user = 'B0004567'
+		db.findTestFromCourse(course, function(tests) {
+			db.findReportForStudent(user, function(reports) {
+				var toReturn = [];
+				for (i = 0; i < tests.length; i++) {
+					var toAppend = {test: tests[i], categories: null};
+					for (j = 0; j < reports.length; j++) {
+						if (String(reports[j].test_id) == String(tests[i]._id)) {
+							toAppend.categories = reports[j].categories;
+							break;
+						}
+					}
+					toReturn.push(toAppend);
+				}
+				
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({reports : toReturn}));
+			});
+		});
+	});
+
 	app.post('/getScores', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
