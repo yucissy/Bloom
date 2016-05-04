@@ -22,7 +22,6 @@ $(document).ready(function() {
                 examID = id;
                 var response = JSON.parse(request.responseText);
                 var questions = response.exam.questions;
-                console.log(questions);
                 $('#questions').empty();
                 $.each(questions, function(i, v) {
                     $('#questions').append('<div class="question">'+v.qid+'. '+'<input class="q" type="text"></input>'
@@ -35,13 +34,13 @@ $(document).ready(function() {
 
     function getScores(exam_ID) {
         var toSend = {userID: user_ID, examID: exam_ID};
-        console.log(toSend);
+
         var request = new XMLHttpRequest();
         request.open('POST', '/getScores', true);
         request.setRequestHeader('Content-Type', 'application/json');
         request.send(JSON.stringify(toSend));
         request.onreadystatechange = function() {
-            console.log("got scores");
+ 
            if (request.readyState == 4 && request.status == 200) {
                 var response = JSON.parse(request.responseText);
                 console.log(response);

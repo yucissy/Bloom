@@ -53,8 +53,7 @@ function makeBarChart(data) {
   $.each(data1, function(i, v) {
     percent.push(v.percentage);
   });
-  console.log(percent);
-  console.log(percent.length);
+
   var indices = d3.range(0, percent.length);
 
 
@@ -95,7 +94,7 @@ chart.selectAll("rect")
   .attr("y", function(v, i) { return y(i)})
   .attr("width", 0)
   .attr("height", y.rangeBand())
-  .attr("fill", function (d) {console.log("1");return getColor(d);})
+  .attr("fill", function (d) { return getColor(d);})
   .transition()
   .duration(1000)
   .attr("width", x)
@@ -115,7 +114,7 @@ chart.selectAll("text.name")
   .data(percent)
   .enter().append("text")
   .attr("x", function(d) { return x(d) + left_width; })
-  .attr("y", function(d, i){ console.log("scores"+y(i));return y(i) + y.rangeBand()/2; } )
+  .attr("y", function(d, i){ return y(i) + y.rangeBand()/2; } )
   .attr("dx", -5)
   .attr("dy", ".36em")
   .attr("text-anchor", "end")
@@ -124,4 +123,7 @@ chart.selectAll("text.name")
 
 }
 
-getScores("5722c08ea598e9931e085fb8");
+$("#select_2").on('click', function() {
+  console.log('d');
+  $("#part1").empty();
+});
