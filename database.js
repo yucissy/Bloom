@@ -381,7 +381,7 @@ function Database() {
     //Function for verifying if the user is a Student or a Professor
     this.isUserStudent = function (userEmail, callback) {
         User.findOne({email: userEmail}, function(error, user) {
-            if (user.type === "student")
+            if (user.type === "Student")
                 callback(true, user);
             else
                 callback(false, user);

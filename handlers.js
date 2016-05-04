@@ -19,6 +19,10 @@ var exports = function(app, db) {
 		res.render('index.html');
 	});
 
+	app.get('/home', function(req, res) {
+		res.render('index.html');
+	});
+
 	app.get('/signup', function(req, res) {
 		res.render('signup.html');
 	});
@@ -69,15 +73,10 @@ var exports = function(app, db) {
 				db.insertUser(uID, fName + " " + lName, email, uType, function(us) {
 					if (typeof us === 'string') {
                         console.log(us);
+                        res.render('signup.html', {alert: "Sign up failed! An account with your credentials may already exist."});
+                    } else {
+                    	res.render('index.html', {alert: "Sign up success! Please log in."});
                     }
-
-					loggedIn[sessID] = uID;
-					if (uType == "Student") {
-						console.log(us);
-						res.render('upload_questions.html', {user: us});
-					} else {
-						res.render('upload_categories.html', {user: us});
-					}
 				});
 			}
 		});
