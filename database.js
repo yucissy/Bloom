@@ -155,34 +155,17 @@ function Database() {
                 callback("ERR: Could not save Course: " + courseId + ".");
             else {
                 //iterate through students
-                for (var student in courseStudents) {
-                    User.findOne({_id: student}, function(error, student){
+                var users = courseStudents.concat(courseProfessors);
+                for (var i = 0; i < users.length; i++) {
+                    User.findOne({_id: users[i]}, function(error, user){
                         if (error)
-                            callback("ERR: Could not find Student: " + student + ".");
+                            callback("ERR: Could not find User: " + user + ".");
                         else {
-                            student.courses.push(courseToInsert);
+                            user.courses.push(courseToInsert);
 
-                            student.save(function(error) {
+                            user.save(function(error) {
                                 if(error)
-                                    callback("ERR: Could not save course to Student: " + student + "'s courses.");
-                                else
-                                    callback(null);
-                            });
-                        }
-                    });
-                }
-
-                //iterate through professors
-                for (var professor in courseProfessors) {
-                    User.findOne({_id: professor}, function(error, professor){
-                        if (error)
-                            callback("ERR: Could not find Professor: " + professor + ".");
-                        else {
-                            professor.courses.push(courseToInsert);
-
-                            professor.save(function(error) {
-                                if(error)
-                                    callback("ERR: Could not save course to Professor: " + student + "'s courses.");
+                                    callback("ERR: Could not save course to User: " + student + "'s courses.");
                                 else
                                     callback(null);
                             });
