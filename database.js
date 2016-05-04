@@ -23,7 +23,7 @@ function Database() {
                 categories: [
                     {
                         main_cat_id: { type: String, ref: 'Category' },
-                        sub_cat: Number
+                        sub_cat_id: Number
                     }
                 ],
                 sum_points: Number
@@ -192,6 +192,17 @@ function Database() {
     //functions for accessing certain fields of a document
     this.findTestFromCourse = function(course, callback) {        
         Course.findOne({_id: course}).populate('tests', 'title').exec(function(err, course) {
+            if (err) 
+                callback("ERR: Could not find Course: " + course + ".");
+            else
+                callback(course.tests);
+        });
+    }
+
+    this.findPopulatedTestFromCourse = function(course, callback) {        
+        Course.findOne({_id: course}).populate({path: 'tests',
+                                                populate: { path: 'questions.categories.main_cat_id' }
+                                               }).exec(function(err, course) {
             if (err) 
                 callback("ERR: Could not find Course: " + course + ".");
             else

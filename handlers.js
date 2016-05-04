@@ -181,6 +181,16 @@ var exports = function(app, db) {
 	app.post('/getAllAggregate', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
+		// var course = 'CSCI1230'
+		db.findPopulatedTestFromCourse(course, function(tests) {
+			var toReturn = [];
+			for (var i = 0; i < tests.length; i++) {
+				var calc = reports.calculateAggregate(tests[i]);
+				toReturn.push({title: tests[i].title, count: tests[i].count, results: calc});
+			}
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({aggregate: toReturn}));
+		});
 
 	});
 
@@ -188,7 +198,7 @@ var exports = function(app, db) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		// var exam = '5722c08ea598e9931e085fb8'
-		db.findTest({_id : exam}, function(data){
+		db.findTest(exam, function(data){
 			var calc = reports.calculateAggregate(data);
 			var toReturn = {title: data.title, count: data.count, results: calc};
 			res.setHeader('Content-Type', 'application/json');
