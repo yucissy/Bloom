@@ -74,9 +74,10 @@ function Database() {
         });
 
         userToInsert.save(function(err, user) {
-            if (err) console.error(err);
-
-            callback(user);
+            if (err) 
+                callback("ERR: Could not save User: " + userName + ".");
+            else
+                callback(user);
         });
     }
 
@@ -379,7 +380,7 @@ function Database() {
     //Function for verifying if the user is a Student or a Professor
     this.isUserStudent = function (userEmail, callback) {
         User.findOne({email: userEmail}, function(error, user) {
-            if (user.type === "Student")
+            if (user.type === "student")
                 callback(true, user);
             else
                 callback(false, user);
