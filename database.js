@@ -23,7 +23,7 @@ function Database() {
                 categories: [
                     {
                         main_cat_id: { type: String, ref: 'Category' },
-                        sub_cat: Number
+                        sub_cat_id: Number
                     }
                 ],
                 sum_points: Number
@@ -37,7 +37,7 @@ function Database() {
             categories: [
                 {
                     main_cat_id: { type: String, ref: 'Category' },
-                    sub_cats: [{name: String, percentage: Number}]
+                    sub_cats: [{_id: Number, percentage: Number}]
                 }
             ]
     });
@@ -146,17 +146,63 @@ function Database() {
             tests: courseTests
         });
 
-        courseToInsert.save(function(err, course) {
-            if (err) 
+        courseToInsert.save(function(error, course) {
+            if (error) 
                 callback("ERR: Could not save Course: " + courseId + ".");
-            else
-                callback(null);
+            else {
+                //iterate through students
+                for (var student in courseStudents) {
+                    User.findOne({_id: student}, function(error, student){
+                        if (error)
+                            callback("ERR: Could not find Student: " + student + ".");
+                        else {
+                            student.courses.push(courseToInsert);
+
+                            student.save(function(error) {
+                                if(error)
+                                    callback("ERR: Could not save course to Student: " + student + "'s courses.");
+                                else
+                                    callback(null);
+                            });
+                        }
+                    });
+                }
+
+                //iterate through professors
+                for (var professor in courseProfessors) {
+                    User.findOne({_id: professor}, function(error, professor){
+                        if (error)
+                            callback("ERR: Could not find Professor: " + professor + ".");
+                        else {
+                            professor.courses.push(courseToInsert);
+
+                            professor.save(function(error) {
+                                if(error)
+                                    callback("ERR: Could not save course to Professor: " + student + "'s courses.");
+                                else
+                                    callback(null);
+                            });
+                        }
+                    });
+                }
+            }
         });
     }
 
     //functions for accessing certain fields of a document
     this.findTestFromCourse = function(course, callback) {        
         Course.findOne({_id: course}).populate('tests', 'title').exec(function(err, course) {
+            if (err) 
+                callback("ERR: Could not find Course: " + course + ".");
+            else
+                callback(course.tests);
+        });
+    }
+
+    this.findPopulatedTestFromCourse = function(course, callback) {        
+        Course.findOne({_id: course}).populate({path: 'tests',
+                                                populate: { path: 'questions.categories.main_cat_id' }
+                                               }).exec(function(err, course) {
             if (err) 
                 callback("ERR: Could not find Course: " + course + ".");
             else
@@ -196,7 +242,7 @@ function Database() {
             if (err) 
                 callback("ERR: Could not find report for Student: " + userId + " and Test: " + testId + ".");
             else
-                callback(report.categories);
+                callback(report);
         });
     }
 

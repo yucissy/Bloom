@@ -27,12 +27,12 @@ function Reports(db) {
 		var catToReturn = [];
 
 		// loop thru each category
-		for (i = 0; i < questions[0].categories.length; i++) {
+		for (var i = 0; i < questions[0].categories.length; i++) {
 			var catToAppend = {main_cat_id: questions[0].categories[i].main_cat_id, sub_cats: []};
 			var numQs = {};
 			var totalPer = {};
 			// for each question, add score and increment number of Q for the sub category it belongs to
-			for (j = 0; j < questions.length; j++) {
+			for (var j = 0; j < questions.length; j++) {
 				var qid = questions[j].qid;
 				var fullPoints = questions[j].max_points;
 				var subCat = questions[j].categories[i].sub_cat_id;
@@ -82,8 +82,8 @@ function Reports(db) {
 
 	this.calculateAggregate = function(exam){
 		var qs = exam.questions;
-		var scores ={}
-		for (i = 0; i < qs.length; i++){
+		var scores = {};
+		for (var i = 0; i < qs.length; i++){
 			scores[qs[i].qid] = qs[i].sum_points;
 		}
 

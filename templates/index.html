@@ -46,7 +46,6 @@
       var e = $("#login")[0].email.value;
       var p = $("#login")[0].pass.value;
       var hashed = CryptoJS.MD5(p).toString();
-      console.log(hashed);
       $("#login")[0].pass.value = hashed;
       $("#login")[0].submit();
     });

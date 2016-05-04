@@ -123,9 +123,9 @@ var exports = function(app, db) {
 			db.findReportForStudent(user, function(reports) {
 				var testsToReturn = [];
 
-				for (i = 0; i < data.length; i++) {
+				for (var i = 0; i < data.length; i++) {
 					var flag = true;
-					for (j = 0; j < reports.length; j++) {
+					for (var j = 0; j < reports.length; j++) {
 						if (String(data[i]._id) == String(reports[j].test_id)) {
 							flag = false;
 							break;
@@ -142,6 +142,31 @@ var exports = function(app, db) {
 		});
 	});
 
+	app.post('/getAllScores', function(req, res) {
+		var user = req.body.userID;
+		var course = req.body.courseID;
+		// var course = 'CSCI1230'
+		// var user = 'B0004567'
+		db.findTestFromCourse(course, function(tests) {
+			db.findReportForStudent(user, function(reports) {
+				var toReturn = [];
+				for (var i = 0; i < tests.length; i++) {
+					var toAppend = {test: tests[i], categories: null};
+					for (var j = 0; j < reports.length; j++) {
+						if (String(reports[j].test_id) == String(tests[i]._id)) {
+							toAppend.categories = reports[j].categories;
+							break;
+						}
+					}
+					toReturn.push(toAppend);
+				}
+
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({reports : toReturn}));
+			});
+		});
+	});
+
 	app.post('/getScores', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
@@ -153,11 +178,31 @@ var exports = function(app, db) {
 		});
 	});
 
+	app.post('/getAllAggregate', function(req, res) {
+		var user = req.body.userID;
+		var course = req.body.courseID;
+		// var course = 'CSCI1230'
+		db.findPopulatedTestFromCourse(course, function(tests) {
+			var toReturn = [];
+			for (var i = 0; i < tests.length; i++) {
+				var calc = reports.calculateAggregate(tests[i]);
+				toReturn.push({title: tests[i].title, count: tests[i].count, results: calc});
+			}
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({aggregate: toReturn}));
+		});
+
+	});
+
 	app.post('/getAggregate', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
-		db.findTest({_id : exam}, function(data){
-			var results = reports.calculateAggregate(data);
+		// var exam = '5722c08ea598e9931e085fb8'
+		db.findTest(exam, function(data){
+			var calc = reports.calculateAggregate(data);
+			var toReturn = {title: data.title, count: data.count, results: calc};
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({aggregate: toReturn}));
 		});
 	});
 }
