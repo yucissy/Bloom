@@ -67,6 +67,10 @@ var exports = function(app, db) {
 				res.render('signup.html', {alert: "Sign up failed! An account with your credentials may already exist."});
 			} else {
 				db.insertUser(uID, fName + " " + lName, email, uType, function(us) {
+					if (typeof us === 'string') {
+                        console.log(us);
+                    }
+
 					loggedIn[sessID] = uID;
 					if (uType == "Student") {
 						console.log(us);
