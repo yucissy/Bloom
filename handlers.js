@@ -35,7 +35,6 @@ var exports = function(app, db) {
 		var email = req.body.email;
 		var pass = req.body.pass + "A";
 
-		// unsalt and unhash password
 		storm.logIn(email, pass, function() {
 			res.render('index.html', {alert: "Login failed! Please try again."});
 		}, function(err, account) {
@@ -178,6 +177,7 @@ var exports = function(app, db) {
 
 				res.setHeader('Content-Type', 'application/json');
 				res.send(JSON.stringify({reports : toReturn}));
+				console.log(toReturn);
 			});
 		});
 	});
@@ -190,8 +190,11 @@ var exports = function(app, db) {
 		db.findReport(user, exam, function(data) {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({report : data}));
+			console.log(data);
 		});
 	});
+
+	app.post('/getAverageScore', function(){});
 
 	app.post('/getAllAggregate', function(req, res) {
 		var user = req.body.userID;
@@ -201,7 +204,10 @@ var exports = function(app, db) {
 			var toReturn = [];
 			for (var i = 0; i < tests.length; i++) {
 				var calc = reports.calculateAggregate(tests[i]);
-				toReturn.push({title: tests[i].title, count: tests[i].count, results: calc});
+				toReturn.push({test: {_id: tests[i]._id,
+									  title: tests[i].title,
+									  count: tests[i].count}, 
+							   categories: calc});
 			}
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({aggregate: toReturn}));
@@ -215,7 +221,10 @@ var exports = function(app, db) {
 		// var exam = '5722c08ea598e9931e085fb8'
 		db.findTest(exam, function(data){
 			var calc = reports.calculateAggregate(data);
-			var toReturn = {title: data.title, count: data.count, results: calc};
+			var toReturn = {test: {_id: data._id,
+									  title: data.title,
+									  count: data.count}, 
+							   categories: calc};
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({aggregate: toReturn}));
 		});
