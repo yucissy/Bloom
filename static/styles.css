@@ -4,6 +4,7 @@ body {
 	padding:0px;
 	font-family: 'Lato', sans-serif;
 	letter-spacing:.8px;
+
 }
 #wrapper {
 	width:100%;
@@ -99,13 +100,15 @@ input {
 	margin-top:-20px;
 }
 #content_body {
-	background-color:#0c0703;
+	background-color:#1A1A1A;
 	width:100%;
 	position:fixed;
 	top:190px;
 	bottom:0px;
 	left:0px;
 	right:0px;
+	overflow:scroll;
+	height:100%;
 }
 .col-md-2 {
 	height:100%;
