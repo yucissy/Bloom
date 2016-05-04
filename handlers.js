@@ -60,7 +60,11 @@ var exports = function(app, db) {
 				console.error(err);
 				res.render('signup.html', {alert: "Sign up failed! An account with your credentials may already exist."});
 			} else {
-				db.insertUser(uID, fName + " " + lName, email, uType);
+				db.insertUser(uID, fName + " " + lName, email, uType, function(err) {
+                    if (typeof err === 'string') {
+                        console.log(err);
+                    }
+                });
 				loggedIn[sessID] = uID;
 				res.render('upload_categories.html');
 			}
