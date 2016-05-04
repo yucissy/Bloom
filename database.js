@@ -231,7 +231,7 @@ function Database() {
     }
 
     this.findReportForStudent = function(userId, callback) {
-        Report.find({student_id : userId}).exec(function(err, reports) {
+        Report.find({student_id : userId}).populate('categories.main_cat_id').exec(function(err, reports) {
             if (err) 
                 callback("ERR: Could not find reports for Student: " + userId + ".");
             else
