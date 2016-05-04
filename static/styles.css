@@ -109,6 +109,7 @@ input {
 	right:0px;
 	overflow:scroll;
 	height:100%;
+
 }
 .col-md-2 {
 	height:100%;
@@ -119,6 +120,7 @@ input {
 	background-color:#1A1A1A;
 	height:100%;
 	color:white;
+	padding-bottom:1000px;
 }
 .modal-content p, h4, h3, h2{
 	color:black;
