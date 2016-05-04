@@ -74,9 +74,10 @@ function Database() {
         });
 
         userToInsert.save(function(err, user) {
-            if (err) console.error(err);
-
-            callback(user);
+            if (err) 
+                callback("ERR: Could not save User: " + userName + ".");
+            else
+                callback(user);
         });
     }
 
