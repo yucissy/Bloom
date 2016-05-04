@@ -1,17 +1,19 @@
-function getScores(exam_ID) {
+function getScores() {
   var user_ID = "B0004567";
-        var toSend = {userID: user_ID, examID: exam_ID};
+        var toSend = {userID: user_ID, courseID: 'CSCI1230'};
         console.log(toSend);
         var request = new XMLHttpRequest();
-        request.open('POST', '/getScores', true);
+        request.open('POST', '/getAllScores', true);
         request.setRequestHeader('Content-Type', 'application/json');
         request.send(JSON.stringify(toSend));
         request.onreadystatechange = function() {
             console.log("got scores");
            if (request.readyState == 4 && request.status == 200) {
                 var response = JSON.parse(request.responseText);
-                console.log(response);
-                makeBarChart(response);
+   
+                $.each(response.reports, function(i, v) {
+                	makeBarChart(v);
+                });
             } 
         }
     }
@@ -35,28 +37,33 @@ function makeBarChart(data) {
             .append("div")
             .attr("class", "category");
 
-  var categoryTitle = data.report[0].main_cat_id.name;
-  var id = data.report[0].main_cat_id._id;
+  var title = data.test.title;
+  newDiv.append("h3")
+  	.text(title);
+  if (data.categories != null) {
+  	var categoryTitle = data.categories[0].main_cat_id.name;
+  var id = data.test._id;
   newDiv.append("h2")
     .text(categoryTitle.toUpperCase());
 
   newDiv.append("hr")
     .style("color", "gray");
 
-  newDiv.append("div")
+  var chartArea = newDiv.append("div")
     .attr("id", id);
   var gap = 20;
 
-  var labels = data.report[0].main_cat_id.sub_categories;
-  var data1 = data.report[0].sub_cats;
-  var percent = [];
+  var labels = data.categories[0].main_cat_id.sub_categories;
+  var data1 = data.categories[0].sub_cats;
+  var percent = Array.apply(null, Array(labels.length)).map(Number.prototype.valueOf,0);
   $.each(data1, function(i, v) {
-    percent.push(v.percentage);
+    percent[v._id] = v.percentage;
   });
 
   var indices = d3.range(0, percent.length);
 
-
+  console.log("labels "+labels);
+  console.log("percent "+percent);
   var width = 280,
    bar_height =30,
    length = labels.length,
@@ -81,7 +88,7 @@ function makeBarChart(data) {
 
   var left_width = 200;
 
-chart = d3.select($("#"+id)[0])
+chart = chartArea
   .append('svg')
   .attr('class', 'chart')
   .attr('width', left_width + width)
@@ -110,7 +117,7 @@ chart.selectAll("text.name")
   .attr('class', 'name')
   .text(String);
 
-  setTimeout(function() { chart.selectAll("text.score")
+  chart.selectAll("text.score")
   .data(percent)
   .enter().append("text")
   .attr("x", function(d) { return x(d) + left_width; })
@@ -119,11 +126,19 @@ chart.selectAll("text.name")
   .attr("dy", ".36em")
   .attr("text-anchor", "end")
   .attr('class', 'score')
-  .text(String); }, 1000);
+  .text(function(d) {
+  	if (d != 0)
+  	return d;
+	return '';}); 
+  console.log(chart.id);
+} else {
+	newDiv.append("p")
+		.text("You have not entered scores yet.");
+}
+  
 
 }
 
 $("#select_2").on('click', function() {
-  console.log('d');
   $("#part1").empty();
 });
