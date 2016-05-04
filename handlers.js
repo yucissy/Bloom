@@ -19,6 +19,10 @@ var exports = function(app, db) {
 		res.render('index.html');
 	});
 
+	app.get('/home', function(req, res) {
+		res.render('index.html');
+	});
+
 	app.get('/signup', function(req, res) {
 		res.render('signup.html');
 	});
@@ -40,7 +44,13 @@ var exports = function(app, db) {
 			} else {
 				var sessID = generateSessionID();
 				loggedIn[sessID] = account.username;
-				res.render('upload_categories.html')
+				db.isUserStudent(account.email, function(stu, us) {
+					if (stu) {
+						res.render('upload_questions.html', {user: us});
+					} else {
+						res.render('upload_categories.html', {user: us});
+					}
+				});
 			}
 		});
 	});
@@ -60,9 +70,14 @@ var exports = function(app, db) {
 				console.error(err);
 				res.render('signup.html', {alert: "Sign up failed! An account with your credentials may already exist."});
 			} else {
-				db.insertUser(uID, fName + " " + lName, email, uType);
-				loggedIn[sessID] = uID;
-				res.render('upload_categories.html');
+				db.insertUser(uID, fName + " " + lName, email, uType, function(us) {
+					if (typeof us === 'string') {
+                        console.log(us);
+                        res.render('signup.html', {alert: "Sign up failed! An account with your credentials may already exist."});
+                    } else {
+                    	res.render('index.html', {alert: "Sign up success! Please log in."});
+                    }
+				});
 			}
 		});
 	});

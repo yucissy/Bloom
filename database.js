@@ -65,12 +65,13 @@ function Database() {
 
     //functions for inserting a document into their respective schemas
     //Stormpath will take care of error handling for this function
-    this.insertUser = function (userId, userName, userEmail, user, callback) {
+    this.insertUser = function (userId, userName, userEmail, uType, callback) {
+        console.log(uType);
         var userToInsert = new User({
             _id: userId,
             name: userName,
             email: userEmail,
-            type: user
+            type: uType
         });
 
         userToInsert.save(function(err, user) {
@@ -380,7 +381,7 @@ function Database() {
     //Function for verifying if the user is a Student or a Professor
     this.isUserStudent = function (userEmail, callback) {
         User.findOne({email: userEmail}, function(error, user) {
-            if (user.type === "student")
+            if (user.type === "Student")
                 callback(true, user);
             else
                 callback(false, user);
