@@ -65,12 +65,13 @@ function Database() {
 
     //functions for inserting a document into their respective schemas
     //Stormpath will take care of error handling for this function
-    this.insertUser = function (userId, userName, userEmail, user, callback) {
+    this.insertUser = function (userId, userName, userEmail, uType, callback) {
+        console.log(uType);
         var userToInsert = new User({
             _id: userId,
             name: userName,
             email: userEmail,
-            type: user
+            type: uType
         });
 
         userToInsert.save(function(err, user) {

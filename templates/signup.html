@@ -28,10 +28,10 @@
         <ul class="dropdown-menu">
           <li><a href="#" class="s">Student</a></li>
           <li><a href="#" class="s">Professor</a></li>
-          <li><a href="#" class="s">Teaching Assistant</a></li>
         </ul>
       </div>
       <form id="sign" action="/signUp" method="POST">
+        <input type="hidden" name="type" id="utype">
         <input type="text" name="first_name" id="first" placeholder="First Name">
         <input type="text" name="last_name" id="last" placeholder="Last Name">
         <input type="text" name="email" id="email" placeholder="Email address">
@@ -111,6 +111,7 @@
         if (typeChosen && bidValid && passwordValid && passVerified && fname != "" && lname != "" && e != "") {
           var hashed = CryptoJS.MD5(pw).toString();
           $("#p1").val(hashed);
+          $("#utype").val(t);
           $("#sign")[0].submit();
         } else {
           $("#alert").text("Please check if all fields are valid!!");
