@@ -37,7 +37,7 @@ function Database() {
             categories: [
                 {
                     main_cat_id: { type: String, ref: 'Category' },
-                    sub_cats: [{name: String, percentage: Number}]
+                    sub_cats: [{_id: Number, percentage: Number}]
                 }
             ]
     });
