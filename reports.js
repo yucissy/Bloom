@@ -82,7 +82,7 @@ function Reports(db) {
 
 	this.calculateAggregate = function(exam){
 		var qs = exam.questions;
-		var scores ={}
+		var scores = {};
 		for (var i = 0; i < qs.length; i++){
 			scores[qs[i].qid] = qs[i].sum_points;
 		}

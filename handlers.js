@@ -123,9 +123,9 @@ var exports = function(app, db) {
 			db.findReportForStudent(user, function(reports) {
 				var testsToReturn = [];
 
-				for (i = 0; i < data.length; i++) {
+				for (var i = 0; i < data.length; i++) {
 					var flag = true;
-					for (j = 0; j < reports.length; j++) {
+					for (var j = 0; j < reports.length; j++) {
 						if (String(data[i]._id) == String(reports[j].test_id)) {
 							flag = false;
 							break;
@@ -150,9 +150,9 @@ var exports = function(app, db) {
 		db.findTestFromCourse(course, function(tests) {
 			db.findReportForStudent(user, function(reports) {
 				var toReturn = [];
-				for (i = 0; i < tests.length; i++) {
+				for (var i = 0; i < tests.length; i++) {
 					var toAppend = {test: tests[i], categories: null};
-					for (j = 0; j < reports.length; j++) {
+					for (var j = 0; j < reports.length; j++) {
 						if (String(reports[j].test_id) == String(tests[i]._id)) {
 							toAppend.categories = reports[j].categories;
 							break;
