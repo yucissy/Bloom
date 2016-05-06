@@ -3,8 +3,8 @@
 $(document).ready(function() {
 
     //dummy data
-    var course_ID = 'CSCI1230';
-    var user_ID = 'B0004567';
+    //var course_ID = 'CSCI1230';
+    //var user_ID = 'B0004567';
 
     //array to hold max possible points for each question
     var maxPoints = {};
@@ -12,6 +12,8 @@ $(document).ready(function() {
 
     function getExam(id) {
         console.log(id);
+        
+        var user_ID = $("meta[name='user_id']").attr("content");
         var toSend = {userID: user_ID, examID: id};
         var request = new XMLHttpRequest();
         request.open('POST', '/getExam', true);
@@ -33,6 +35,7 @@ $(document).ready(function() {
     }
 
     function getScores(exam_ID) {
+    	var user_ID = $("meta[name='user_id']").attr("content");
         var toSend = {userID: user_ID, examID: exam_ID};
 
         var request = new XMLHttpRequest();
@@ -50,6 +53,8 @@ $(document).ready(function() {
 
 	//first dropdown button behavior
     $('#select_exams').on('click', function() {
+    	var course_ID = $("meta[name='course_id']").attr("content");
+    	var user_ID = $("meta[name='user_id']").attr("content");
 		var toSend = {userID: user_ID, courseID: course_ID};
 		console.log(toSend);
 		var request = new XMLHttpRequest();
@@ -105,6 +110,7 @@ $(document).ready(function() {
             num++;
         });
         if (valid) {
+        	var user_ID = $("meta[name='user_id']").attr("content");
             var toSend = {userID: user_ID, examID: examID, scores: scores};
             var request = new XMLHttpRequest();
             request.open('POST', '/sendScores', true);
@@ -117,6 +123,9 @@ $(document).ready(function() {
                     getScores(examID);
                 } 
             }
+            $("#questions").empty();
+            $("#exams_list").empty();
+            $('#select_exams').html("None");        
         } else {
             $("#error").empty();
             $("#error").append("<p>Oops. Did you forget to fill out "+
