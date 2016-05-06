@@ -102,9 +102,9 @@ $(document).ready(function() {
         var num = 1;
 
         $('.q').each(function() {
-            var val = $(this).val();
-            if (val != "" && val <= maxPoints[num])
-                scores[num] = parseInt(val);
+            var val = parseFloat($(this).val());
+            if (!isNaN(val) && val <= parseFloat(maxPoints[num]) && val >= 0)
+                scores[num] = val;
             else
                 valid = false;
             num++;
