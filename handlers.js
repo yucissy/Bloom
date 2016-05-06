@@ -98,7 +98,10 @@ var exports = function(app, db) {
 		var course = req.body.courseID;
 		var name = req.body.exam;
 		var data = req.body.data;
-		reports.makeExam(course, name, data);
+		reports.makeExam(course, name, data, function(stat) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({status : stat}));
+		});
 	});
 
 	app.post('/sendScores', function(req, res) {
@@ -106,7 +109,10 @@ var exports = function(app, db) {
 		var exam = req.body.examID;
 		var scores = req.body.scores;
 		db.findTest({_id: exam}, function(data) {
-			reports.calculateReport(user, data, scores);
+			reports.calculateReport(user, data, scores, function(stat) {
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({status : stat}));
+			});
 		});
 	});
 

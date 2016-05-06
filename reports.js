@@ -52,23 +52,31 @@ function Reports(db) {
 		return catToReturn;
 	}
 
-	this.makeExam = function(course, name, data) {
+	this.makeExam = function(course, name, data, callback) {
 		var make = this.makeExamHelper;
 		csv.parse(data, {columns:true}, function(err, output) {
 			var test = make(output);
 			db.insertTestForCourse(course, name, test, function(error){
-                if (error != null)
-                    console.log(error); //may need another callback to inform the user?
+                if (error != null) {
+                	console.log(error);
+                	callback('fail');
+                } else {
+                	callback('success');
+                }
             });
 		});
 	}
 
-	this.calculateReport = function(userId, exam, scores) {
+	this.calculateReport = function(userId, exam, scores, callback) {
 		var cats = this.calculateHelper(exam.questions, scores, 1);
 
 		db.insertStudentReport(userId, exam._id, cats, function(error) {
-            if (error != null)
+            if (error != null) {
                 console.log(error);
+                callback('fail');
+            } else {
+            	callback('success');
+            }
         });
 
 		// UPDATING TEST DB DOCUMENT FOR AGGREGATE DATA
