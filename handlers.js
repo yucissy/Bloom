@@ -264,6 +264,46 @@ var exports = function(app, db) {
 			});
 		});
 	});
+
+	app.post('/getRoster', function(req, res) {
+		var user = req.body.userID;
+		var course = req.body.courseID;
+		// course = 'CSCI1230';
+
+		db.getStudentsAndTestsFromCourse(course, function(students, tests) {
+			var toReturn = [];
+			students.forEach(function(stu, i){
+				var studentToAdd = {_id: stu._id, name: stu.name, exams: []}
+				db.findReportForStudent(stu._id, function(rts) {
+					for (var k=0; k < tests.length; k++) {
+						var flag = true;
+						for (var j=0; j < rts.length; j++) {
+							if (String(tests[k]._id) == String(rts[j].test_id)) {
+								var toPush = {};
+								toPush[tests[k].title] = true;
+								studentToAdd.exams.push(toPush);
+								flag = false;
+								break;
+							}
+						}
+						if (flag) {
+							var toPush = {};
+							toPush[tests[k].title] = false;
+							studentToAdd.exams.push(toPush);
+						}
+					}
+
+					toReturn.push(studentToAdd);
+
+					if (toReturn.length == students.length) {
+						res.setHeader('Content-Type', 'application/json');
+						res.send(JSON.stringify({roster : toReturn}));
+					}
+				});
+
+			});
+		});
+	});
 }
 
 module.exports = exports;

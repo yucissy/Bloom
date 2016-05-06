@@ -197,12 +197,12 @@ function Database() {
         });
     }
 
-    this.getStudentsFromCourse = function (courseId, callback) {
-        Course.findOne({_id: course}).populate('students', 'name').exec(function(error, course) {
+    this.getStudentsAndTestsFromCourse = function (courseId, callback) {
+        Course.findOne({_id: courseId}).populate('students', 'name').populate('tests', 'title').exec(function(error, course) {
             if (error)
                 callback("ERR: Could not find students from Course: " + courseId + ".");
             else
-                callback(course.students);
+                callback(course.students, course.tests);
         });
     }
 
