@@ -1,16 +1,20 @@
-function getScores() {
+function getScores(aggregate) {
   var user_ID = "B0004567";
         var toSend = {userID: user_ID, courseID: 'CSCI1230'};
         console.log(toSend);
         var request = new XMLHttpRequest();
-        request.open('POST', '/getAllScores', true);
+        if (aggregate)
+        	request.open('POST', '/getAllAggregate', true);
+        else
+        	request.open('POST', '/getAllScores', true);
         request.setRequestHeader('Content-Type', 'application/json');
         request.send(JSON.stringify(toSend));
         request.onreadystatechange = function() {
             console.log("got scores");
            if (request.readyState == 4 && request.status == 200) {
                 var response = JSON.parse(request.responseText);
-   
+   				$("#part3").empty();
+   				console.log(response);
                 $.each(response.reports, function(i, v) {
                 	makeBarChart(v);
                 });
@@ -33,7 +37,8 @@ function getColor(percent) {
 //actual code
 function makeBarChart(data) {
 
-  var newDiv = d3.select("#part1")
+
+  var newDiv = d3.select("#part3")
             .append("div")
             .attr("class", "category");
 
@@ -46,8 +51,7 @@ function makeBarChart(data) {
   newDiv.append("h2")
     .text(categoryTitle.toUpperCase());
 
-  newDiv.append("hr")
-    .style("color", "gray");
+
 
   var chartArea = newDiv.append("div")
     .attr("id", id);
@@ -139,6 +143,4 @@ chart.selectAll("text.name")
 
 }
 
-$("#select_2").on('click', function() {
-  $("#part1").empty();
-});
+console.log("loaded");
