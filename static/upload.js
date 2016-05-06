@@ -17,6 +17,17 @@ $(function() {
             request.open('POST', '/sendExam', true);
             request.setRequestHeader('Content-Type', 'application/json');
             request.send(JSON.stringify(toSend));
+
+            request.onreadystatechange = function() {
+                if (request.readyState == 4 && request.status == 200) {
+                    var response = JSON.parse(request.responseText);
+                    if (response.status == 'success') {
+                        $('#myModal').modal('hide');
+                    } else {
+                        $('#modal-alert').text('Something went wrong :(');
+                    }
+                }
+            }
     	};
     	reader.readAsText(selected);
 	});

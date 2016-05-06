@@ -120,11 +120,12 @@
       <div class="modal-body">
         <p>1. Enter the Exam Title:</p>
         <input type="text" name="exam" placeholder="e.g. Midterm 1" id="title"><br>
-        <p>2. Upload an Excel Sheet in the following format:</p>
+        <p>2. Upload a csv file in the following format:</p>
         <img src="images/categories.png" alt="">
         <input type="file" name="file" id="categories">
       </div>
       <div class="modal-footer">
+        <div id="modal-alert"></div>
         <button type="button" id="close" class="btn btn-default" data-dismiss="modal">Close</button>
         <button id="upload" type="button" class="btn btn-success">Upload</button>
       </div>
@@ -134,6 +135,10 @@
 </div>
 
 <script>
+  $('.new_exam').on('click', function() {
+    $("#modal-alert").empty();
+  });
+
   $('.prof_select').on('click', function() {
     $(this).children("h2").css('font-weight', 'bold');
     $(this).siblings('').children("h2").css('font-weight', 'normal');
