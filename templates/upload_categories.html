@@ -65,24 +65,32 @@
         </div>
         <hr style="color:gray">
 
+        <div id="part2">
         <div class="table-responsive">
           <table class="table-hover">
-            <tr>
-              <td>Mary Jane</td>
+          	<tr>
+              <th>Name</th><th>Test</th><th>Midterm 1</th>
             </tr>
             <tr>
-              <td>Mary Jane</td>
+              <td>Mary Jane</td><td>Yes</td><td>No</td>
             </tr>
             <tr>
-              <td>Mary Jane</td>
+              <td>Mary Jane</td><td>Yes</td><td>No</td>
             </tr>
             <tr>
-              <td>Mary Jane</td>
+              <td>Mary Jane</td><td>Yes</td><td>No</td>
             </tr>
             <tr>
-              <td>Mary Jane</td>
+              <td>Mary Jane</td><td>Yes</td><td>No</td>
+            </tr>
+            <tr>
+              <td>Mary Jane</td><td>Yes</td><td>No</td>
             </tr>
           </table>
+        </div>
+        </div>
+
+        <div id="part3">
         </div>
         </div>
 
@@ -121,6 +129,18 @@
     $(this).children("h2").css('font-weight', 'bold');
     $(this).siblings('').children("h2").css('font-weight', 'normal');
   });
+
+  $("#select_2").on('click', function() {
+	  $("#part2").hide();
+	  $("#part3").show();
+	  getScores(true);
+	});
+
+  $("#select_1").on('click', function() {
+		console.log("hey");
+	  $("#part3").hide();
+	  $("#part2").show();
+	});
 </script>
 
   </body>

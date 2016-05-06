@@ -1,4 +1,6 @@
 var csv = require('csv');
+var fs = require('fs');
+var csvWriter = require('csv-write-stream');
 
 function Reports(db) {
 	var transformers = {
@@ -66,7 +68,7 @@ function Reports(db) {
 
 		db.insertStudentReport(userId, exam._id, cats, function(error) {
             if (error != null)
-                console.log(error);            
+                console.log(error);
         });
 
 		// UPDATING TEST DB DOCUMENT FOR AGGREGATE DATA
@@ -80,14 +82,104 @@ function Reports(db) {
         });
 	}
 
-	this.calculateAggregate = function(exam){
+	this.calculateAggregate = function(exam) {
 		var qs = exam.questions;
 		var scores = {};
-		for (var i = 0; i < qs.length; i++){
+		for (var i = 0; i < qs.length; i++) {
 			scores[qs[i].qid] = qs[i].sum_points;
 		}
 
 		return this.calculateHelper(qs, scores, exam.count);
+	}
+
+	this.calculateAverageScore = function(exam) {
+		var qs = exam.questions;
+		var c = exam.count;
+		var total = 0;
+		var points = 0;
+		for (var i=0; i < qs.length; i++) {
+			total += qs[i].max_points * c;
+			points += qs[i].sum_points;
+		}
+
+		return Math.round(points / total * 10000)/100;
+	}
+
+	// a text file!!!
+	// course name
+	// test name, test avg score, test avg categories score
+	this.downloadCourseData = function(course, tests, callback) {
+		var date = Date.now();
+		var filePath = "./local_storage/" + course + "_" + date + ".txt";
+
+		var wstream = fs.createWriteStream(filePath);
+		wstream.write('Report Generated On: ' + (new Date(date)).toString() + '\n');
+		wstream.write('Course: ' + course + '\n\n');
+		for (var i=0; i < tests.length; i++) {
+			wstream.write('Test: ' + tests[i].title + '\n');
+			wstream.write('Number of Submitted Test Scores: ' + tests[i].count + '\n');
+			var calc = this.calculateAggregate(tests[i]);
+			for (var k=0; k < calc.length; k++) {
+				wstream.write('Category: ' + calc[k].main_cat_id.name + '\n');
+				for (var j=0; j < calc[k].sub_cats.length; j++) {
+					var index = calc[k].sub_cats[j]._id;
+					wstream.write(index + ' ');
+					wstream.write(calc[k].main_cat_id.sub_categories[index] + ': ');
+					wstream.write(calc[k].sub_cats[j].percentage + '%\n');
+				}
+			}
+			var avg = this.calculateAverageScore(tests[i]);
+			wstream.write('Average Score: ' + avg + "%\n");
+			wstream.write('\n');
+		}
+		wstream.end();
+		wstream.on('finish', function() {
+			callback(filePath);
+		});
+	}
+
+	// a csv file!!!
+	// student bloom0 bloom1 bloom2 ...
+	this.downloadExamData = function(test, reports, callback) {
+		var date = Date.now();
+		var filePath = "./local_storage/" + test + "_" + date + ".csv";
+
+		var hdr = ["student_id", "student_name"];
+		var sample_cats = reports[0].categories;
+		for (var i=0; i < sample_cats.length; i++) {
+			var cat = sample_cats[i].main_cat_id;
+			for (var c=0; c < cat.sub_categories.length; c++) {
+				hdr.push(cat._id + "_" + c);
+			}
+		}
+
+		var writer = csvWriter({ headers: hdr});
+		var wstream = fs.createWriteStream(filePath);
+		writer.pipe(wstream);
+
+		for (var j=0; j < reports.length; j++) {
+			var toWrite = [];
+			toWrite.push(reports[j].student_id._id);
+			toWrite.push(reports[j].student_id.name);
+			var cats = reports[j].categories;
+			var count = 2;
+			for (var k=0; k < cats.length; k++) {
+				for (var m=0; m < cats[k].sub_cats.length; m++) {
+					var number = parseInt(hdr[count].substr(hdr[count].length-1));
+					if (number == m) {
+						toWrite.push(cats[k].sub_cats[m].percentage);
+					} else {
+						toWrite.push('-');
+					}
+					count++;
+				}
+			}
+			writer.write(toWrite);
+		}
+		writer.end();
+		wstream.on('finish', function() {
+			callback(filePath);
+		});
 	}
 }
 
