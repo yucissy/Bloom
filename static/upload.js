@@ -21,3 +21,14 @@ $(function() {
     	reader.readAsText(selected);
 	});
 });
+$(document).ready(function() {
+    $('#user_settings').hover(
+        function() {
+        $('#user_banner').css('background-image', "url('images/user_banner2.gif')");
+        },
+        function() {
+            $('#user_banner').css('background-image', "url('images/user_banner.gif')");
+        }
+    );
+
+});

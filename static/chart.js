@@ -1,4 +1,5 @@
 function getScores(aggregate) {
+	   				$("#part3").empty();
   var user_ID = "B0004567";
         var toSend = {userID: user_ID, courseID: 'CSCI1230'};
         console.log(toSend);
@@ -13,11 +14,21 @@ function getScores(aggregate) {
             console.log("got scores");
            if (request.readyState == 4 && request.status == 200) {
                 var response = JSON.parse(request.responseText);
-   				$("#part3").empty();
+
    				console.log(response);
-                $.each(response.reports, function(i, v) {
-                	makeBarChart(v);
-                });
+   				$('.score').css('display', 'none');
+   				if (aggregate) {
+   					$.each(response.aggregate, function(i, v) {
+	                	makeBarChart(v, true);
+	                });
+   				} else {
+	                $.each(response.reports, function(i, v) {
+	                	makeBarChart(v, false);
+	                });
+            	}
+            	setTimeout(function() {
+            		$('.score').css('display', 'block');
+            	}, 1000);
             } 
         }
     }
@@ -35,7 +46,7 @@ function getColor(percent) {
 }
 
 //actual code
-function makeBarChart(data) {
+function makeBarChart(data, agg) {
 
 
   var newDiv = d3.select("#part3")
@@ -48,10 +59,22 @@ function makeBarChart(data) {
   if (data.categories != null) {
   	var categoryTitle = data.categories[0].main_cat_id.name;
   var id = data.test._id;
-  newDiv.append("h2")
+  
+  var par = newDiv.append("p");
+  par.append("h2")
+  	.attr("class", "left")
     .text(categoryTitle.toUpperCase());
 
-
+  if (agg) {
+    	var count = data.test.count;
+    	var students = "STUDENTS";
+		  if (count==1)
+		  	students = "STUDENT";
+		  par.append("h2")
+		  	.attr("class", "right")
+		  	.text(count +" "+students);
+  }
+  
 
   var chartArea = newDiv.append("div")
     .attr("id", id);
@@ -137,7 +160,7 @@ chart.selectAll("text.name")
   console.log(chart.id);
 } else {
 	newDiv.append("p")
-		.text("You have not entered scores yet.");
+		.text("No scores have been entered yet.");
 }
   
 
