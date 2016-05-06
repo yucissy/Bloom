@@ -120,8 +120,14 @@ $(document).ready(function() {
                if (request.readyState == 4 && request.status == 200) {
                     var response = JSON.parse(request.responseText);
                     console.log(response);
+                    if (response.status == 'success') {
+                        $('#newExam1').modal('hide');
+                        getScores(false);
+                    } else {
+                        $('#error').text('Something went wrong :(');
+                    }
                     getScores(examID);
-                } 
+                }
             }
             $("#questions").empty();
             $("#exams_list").empty();

@@ -1,36 +1,37 @@
 function getScores(aggregate) {
-	   				$("#part3").empty();
-  var user_ID = "B0004567";
-        var toSend = {userID: user_ID, courseID: 'CSCI1230'};
-        console.log(toSend);
-        var request = new XMLHttpRequest();
-        if (aggregate)
-        	request.open('POST', '/getAllAggregate', true);
-        else
-        	request.open('POST', '/getAllScores', true);
-        request.setRequestHeader('Content-Type', 'application/json');
-        request.send(JSON.stringify(toSend));
-        request.onreadystatechange = function() {
-            console.log("got scores");
-           if (request.readyState == 4 && request.status == 200) {
-                var response = JSON.parse(request.responseText);
+	   	$("#part3").empty();
+  		var user_ID = $("meta[name='user_id']").attr("content");
+  		var course_ID = $("meta[name='course_id']").attr("content");
+	    var toSend = {userID: user_ID, courseID: course_ID};
+	    console.log(toSend);
+	    var request = new XMLHttpRequest();
+	    if (aggregate)
+	    	request.open('POST', '/getAllAggregate', true);
+	    else
+	    	request.open('POST', '/getAllScores', true);
+	    request.setRequestHeader('Content-Type', 'application/json');
+	    request.send(JSON.stringify(toSend));
+	    request.onreadystatechange = function() {
+	        console.log("got scores");
+	       if (request.readyState == 4 && request.status == 200) {
+	            var response = JSON.parse(request.responseText);
 
-   				console.log(response);
-   				$('.score').css('display', 'none');
-   				if (aggregate) {
-   					$.each(response.aggregate, function(i, v) {
+					console.log(response);
+					$('.score').css('display', 'none');
+					if (aggregate) {
+						$.each(response.aggregate, function(i, v) {
 	                	makeBarChart(v, true);
 	                });
-   				} else {
+					} else {
 	                $.each(response.reports, function(i, v) {
 	                	makeBarChart(v, false);
 	                });
-            	}
-            	setTimeout(function() {
-            		$('.score').css('display', 'block');
-            	}, 1000);
-            } 
-        }
+	        	}
+	        	setTimeout(function() {
+	        		$('.score').css('display', 'block');
+	        	}, 1000);
+	        } 
+	    }
     }
 
 function getColor(percent) {
@@ -160,10 +161,11 @@ chart.selectAll("text.name")
   console.log(chart.id);
 } else {
 	newDiv.append("p")
+		.attr("class","empty")
 		.text("No scores have been entered yet.");
 }
   
 
 }
 
-console.log("loaded");
+
