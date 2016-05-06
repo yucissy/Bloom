@@ -117,6 +117,9 @@ $(document).ready(function() {
                     getScores(examID);
                 } 
             }
+            $("#questions").empty();
+            $("#exams_list").empty();
+            $('#select_exams').html("None");        
         } else {
             $("#error").empty();
             $("#error").append("<p>Oops. Did you forget to fill out "+
