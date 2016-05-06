@@ -71,7 +71,6 @@ var exports = function(app, db) {
 			} else {
 				db.insertUser(uID, fName + " " + lName, email, uType, function(us) {
 					if (typeof us === 'string') {
-                        console.log(us);
                         res.render('signup.html', {alert: "Sign up failed! An account with your credentials may already exist."});
                     } else {
                     	res.render('index.html', {alert: "Sign up success! Please log in."});
@@ -87,7 +86,6 @@ var exports = function(app, db) {
 	});
 
 	app.get('/uploadC', function(req, res) {
-		console.log(req);
 		res.render('upload_categories.html');
 	})
 
@@ -156,6 +154,7 @@ var exports = function(app, db) {
 		});
 	});
 
+	// A list of all categories report for a student in a course
 	app.post('/getAllScores', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
@@ -177,11 +176,11 @@ var exports = function(app, db) {
 
 				res.setHeader('Content-Type', 'application/json');
 				res.send(JSON.stringify({reports : toReturn}));
-				console.log(toReturn);
 			});
 		});
 	});
 
+	// categories report for student's test
 	app.post('/getScores', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
@@ -190,12 +189,21 @@ var exports = function(app, db) {
 		db.findReport(user, exam, function(data) {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({report : data}));
-			console.log(data);
 		});
 	});
 
-	app.post('/getAverageScore', function(){});
+	app.post('/getAverageScore', function(req, res){
+		var user = req.body.userID;
+		var exam = req.body.examID;
+		// var exam = '5722c08ea598e9931e085fb8'
+		db.findTest(exam, function(test) {
+			var avg = reports.calculateAverageScore(test);
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({average : avg}));
+		});
+	});
 
+	// a list of aggregate reports for a professor in a course
 	app.post('/getAllAggregate', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
@@ -215,6 +223,7 @@ var exports = function(app, db) {
 
 	});
 
+	// aggregate report for a test
 	app.post('/getAggregate', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
@@ -227,6 +236,32 @@ var exports = function(app, db) {
 							   categories: calc};
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({aggregate: toReturn}));
+		});
+	});
+
+	app.post('/downloadAggregate', function(req, res) {
+		var user = req.body.userID;
+		var course = req.body.courseID;
+		// var course = 'CSCI1230';
+		db.findPopulatedTestFromCourse(course, function(tests) {
+			reports.downloadCourseData(course, tests, function(path) {
+				res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
+				res.setHeader('Content-type', 'text/plain');
+				res.download(path);
+			});
+		});
+	});
+
+	app.post('/downloadExamData', function(req, res) {
+		var user = req.body.userID;
+		var exam = req.body.examID;
+		// var exam = '5722c08ea598e9931e085fb8'
+		db.findReportForTest(exam, function(rts){
+			reports.downloadExamData(exam, rts, function(path) {
+				res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
+				res.setHeader('Content-type', 'text/csv');
+				res.download(path);
+			});
 		});
 	});
 }

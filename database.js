@@ -224,6 +224,17 @@ function Database() {
         });
     }
 
+    this.findReportForTest = function(testId, callback) {
+        Report.find({test_id: testId}).populate('student_id').populate('categories.main_cat_id').exec(function(err, reports) {
+            if (err) {
+                callback("ERR: Could not find reports for Test: " + testId + ".");
+            } else {
+                callback(reports);
+            }
+
+        });
+    }
+
     this.findReport = function(userId, testId, callback) {
         Report.findOne({student_id: userId, test_id: testId}).populate('test_id', 'title').populate('categories.main_cat_id').exec(function(err, report) {
             if (err) 
