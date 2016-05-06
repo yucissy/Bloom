@@ -35,14 +35,14 @@
     <div class="row" id="navbar">
       <div id="user_banner">
         <div id="user_settings">
-        Hi, Monica
+        Hi, {{user.name}}
         </div>
       </div>
     <div class="row" id="content_body">
       <div class="col-md-2" id="courses">
         <h2>COURSES</h2>
         <div class="curr course">
-        <p>CSCI1230</p>
+        <p>{{course._id}}</p>
         </div>
         <div class="new_exam">
           <p>New Course</p>
@@ -57,7 +57,7 @@
       <div class="col-md-10" id="main">
         <div id="main_content">
         <div id="part1">
-        <h1>CSCI1230: Creating Modern Web Apps</h1>
+        <h1>{{course.title}}</h1>
         <div id="prof_selector">
           <div class="prof_select"><h2 class="selected" id="select_1">STUDENTS</h2></div>
           <div class="prof_select"><h2 id="select_2">EXAMS</h2></div>
