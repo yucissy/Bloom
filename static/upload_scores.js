@@ -176,6 +176,7 @@ function getExamList() {
                         $('#exam_list').append("<p class='unselected course'>"+v.title+"</p>");
                     }
                 });
+                visualizeScores(false);
             });
        }
     };
