@@ -129,6 +129,7 @@ $(document).ready(function() {
                     getScores(examID);
                 }
             }
+            $("#error").empty();
             $("#questions").empty();
             $("#exams_list").empty();
             $('#select_exams').html("None");        
