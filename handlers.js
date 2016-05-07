@@ -274,7 +274,6 @@ var exports = function(app, db) {
 	app.post('/getRoster', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
-		// course = 'CSCI1230';
 
 		db.getStudentsAndTestsFromCourse(course, function(students, tests) {
 			var toReturn = [];
