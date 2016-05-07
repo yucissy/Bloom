@@ -51,6 +51,8 @@
         </div>
         <div id="exam_container">
         <h2>EXAMS</h2>
+        <div id="exam_list">
+        </div>
         <div class="new_exam" data-toggle="modal" data-target="#myModal">
           <p>New Exam</p>
         </div>
@@ -96,6 +98,7 @@
         </div>
         <!-- Secondary, outline button -->
 		<button type="button" class="btn btn-default" aria-label="Left Align" id="course_report">
+      <form action="/downloadAggregate" method="POST" id="course-report-form"></form>
   			<span class="glyphicon glyphicon-download" aria-hidden="true"></span>
   			 <span class="btn-text">Course Report</span>
 		</button>
@@ -156,6 +159,8 @@
 	  $("#part3").hide();
 	  $("#part2").show();
 	});
+
+  getExamList();
 </script>
 
   </body>
