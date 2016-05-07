@@ -70,38 +70,7 @@
         <hr style="color:gray">
 
         <div id="part2">
-        <div class="table-responsive">
-          <table class="table-hover">
-          <thead>
-          	<tr>
-              <th>Name</th><th>Test</th><th>Midterm 1</th>
-            </tr>
-           </thead>
-           <tbody>
-            <tr>
-              <td>Mary Jane</td><td class="y"></td><td>--</td>
-            </tr>
-            <tr>
-              <td>John Bui</td><td class="y"></td><td>--</td>
-            </tr>
-            <tr>
-              <td>Ben Lee</td><td class="y"></td><td>--</td>
-            </tr>
-            <tr>
-              <td>Lee Oswald</td><td class="y"></td><td>--</td>
-            </tr>
-            <tr>
-              <td>Olivia B. Little</td><td class="y"></td><td>--</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- Secondary, outline button -->
-		<button type="button" class="btn btn-default" aria-label="Left Align" id="course_report">
-      <form action="/downloadAggregate" method="POST" id="course-report-form"></form>
-  			<span class="glyphicon glyphicon-download" aria-hidden="true"></span>
-  			 <span class="btn-text">Course Report</span>
-		</button>
+
         </div>
 
         <div id="part3">
@@ -153,11 +122,14 @@
 	  $("#part2").hide();
 	  $("#part3").show();
 	  visualizeScores(true);
-	});
+  });
 
   $("#select_1").on('click', function() {
 	  $("#part3").hide();
 	  $("#part2").show();
+	  visualizeRoster();
+  });
+
 	});
 
   getExamList();

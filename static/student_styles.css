@@ -75,7 +75,7 @@
 	color:black;
 }
 td, th {
-	padding-left:100px;
+	padding-left:10px;
 }
 td:nth-child(1), th:nth-child(1){  
   padding-left:10px;
@@ -119,6 +119,9 @@ background: -webkit-linear-gradient(top, #f9d49d 0%,#feb645 100%); /* Chrome10-2
 background: linear-gradient(to bottom, #f9d49d 0%,#feb645 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9d49d', endColorstr='#feb645',GradientType=0 ); /* IE6-9 */
 }
+tbody td {
+	text-align:right;
+}
 
 th:nth-last-child(1) {
 	border-radius:0 10px 0 0;
@@ -133,7 +136,7 @@ tr:last-child td:nth-last-child(1) {
 	background-image:url("images/tick.png");
 	background-size:25px 25px;
 	background-repeat:no-repeat;
-	background-position:60% 50%;
+	background-position:80% 50%;
 }
 #course_report {
 	width:150px;

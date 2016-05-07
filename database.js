@@ -96,7 +96,7 @@ function Database() {
                     if (err) 
                         callback("ERR: Could not find a course with ID: " + courseId + ".");
                     else {
-                        if (course != null)
+                        if (course == null)
                             callback("ERR: Could not find a course with ID: " + courseId + ".");
                         else {
                             course.tests.push(testToInsert);
