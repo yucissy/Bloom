@@ -1,9 +1,9 @@
-function getScores(aggregate) {
+function visualizeScores(aggregate) {
 	   	$("#part3").empty();
   		var user_ID = $("meta[name='user_id']").attr("content");
   		var course_ID = $("meta[name='course_id']").attr("content");
 	    var toSend = {userID: user_ID, courseID: course_ID};
-	    console.log(toSend);
+
 	    var request = new XMLHttpRequest();
 	    if (aggregate)
 	    	request.open('POST', '/getAllAggregate', true);
@@ -12,11 +12,11 @@ function getScores(aggregate) {
 	    request.setRequestHeader('Content-Type', 'application/json');
 	    request.send(JSON.stringify(toSend));
 	    request.onreadystatechange = function() {
-	        console.log("got scores");
+
 	       if (request.readyState == 4 && request.status == 200) {
 	            var response = JSON.parse(request.responseText);
 
-					console.log(response);
+		
 					$('.score').css('display', 'none');
 					if (aggregate) {
 						$.each(response.aggregate, function(i, v) {
@@ -46,32 +46,59 @@ function getColor(percent) {
   return "#ED1B24";
 }
 
+function makeButton(div, examID) {
+
+	var button = div.append("button")
+		.attr("type", "button")
+		.attr("class", "btn btn-default exam-report")
+		.attr("aria-label", "Left Align")
+		.attr("id", examID);
+
+
+	button.append("span")
+		.attr("class", "glyphicon glyphicon-download")
+		.attr("aria-hidden", "true");
+
+	button.append("span")
+		.attr("class", "btn-text exam-btn-text")
+		.text("Report");
+
+}
+
 //actual code
 function makeBarChart(data, agg) {
-
-
   var newDiv = d3.select("#part3")
             .append("div")
             .attr("class", "category");
 
   var title = data.test.title;
-  newDiv.append("h3")
+  var header = newDiv.append("h3")
   	.text(title);
+
+  makeButton(header, data.test._id);
+
   if (data.categories != null) {
   	var categoryTitle = data.categories[0].main_cat_id.name;
   var id = data.test._id;
+
+  newDiv.append("div")
+  	.style("clear", "both");
   
-  var par = newDiv.append("p");
+  var par = newDiv.append("div");
   par.append("h2")
   	.attr("class", "left")
     .text(categoryTitle.toUpperCase());
 
+
+
   if (agg) {
     	var count = data.test.count;
     	var students = "STUDENTS";
-		  if (count==1)
-		  	students = "STUDENT";
-		  par.append("h2")
+		if (count==1)
+		  students = "STUDENT";
+		if (count==undefined)
+			count = 0;
+		par.append("h2")
 		  	.attr("class", "right")
 		  	.text(count +" "+students);
   }
@@ -90,8 +117,6 @@ function makeBarChart(data, agg) {
 
   var indices = d3.range(0, percent.length);
 
-  console.log("labels "+labels);
-  console.log("percent "+percent);
   var width = 280,
    bar_height =30,
    length = labels.length,
@@ -109,10 +134,6 @@ function makeBarChart(data, agg) {
     var y2 = d3.scale.ordinal()
     .domain(labels)
     .rangeBands([0, height]);
-
-    // var y3 = d3.scale.ordinal()
-    //   .domain(percent)
-    //   .rangeBands([0, height]);
 
   var left_width = 200;
 
@@ -158,7 +179,7 @@ chart.selectAll("text.name")
   	if (d != 0)
   	return d;
 	return '';}); 
-  console.log(chart.id);
+
 } else {
 	newDiv.append("p")
 		.attr("class","empty")
@@ -167,5 +188,6 @@ chart.selectAll("text.name")
   
 
 }
+
 
 

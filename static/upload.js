@@ -13,7 +13,7 @@ $(function() {
     		//this variable holds the csv data!
     		var dataURL = reader.result;
             var toSend = {courseID: course_ID, exam: examName, data: dataURL};
-            console.log(toSend);
+
             var request = new XMLHttpRequest();
             request.open('POST', '/sendExam', true);
             request.setRequestHeader('Content-Type', 'application/json');
@@ -43,7 +43,26 @@ $(document).ready(function() {
         }
     );
     $('#course_report').on('click', function() {
+    	var user_ID = $("meta[name='user_id']").attr("content");
+    	var course_ID = $("meta[name='course_id']").attr("content");
+    	var postParameters = {courseID: course_ID, userID: user_ID};
 
+    	var request = new XMLHttpRequest();
+    	request.open('POST', '/downloadAggregate', true);
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.send(JSON.stringify(postParameters));
+
+    });
+
+    $('#part3').on( 'click', '.exam-report', function() {
+    	var exam_ID = $(this).attr('id');
+    	var user_ID = $("meta[name='user_id']").attr("content");
+    	var postParameters = {examID: exam_ID, userID: user_ID};
+
+ 		var request = new XMLHttpRequest();
+    	request.open('POST', '/downloadExamData', true);
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.send(JSON.stringify(postParameters));
     });
 
 });

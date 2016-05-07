@@ -144,3 +144,17 @@ tr:last-child td:nth-last-child(1) {
 	top:5px;
 	padding-right:5px;
 }
+.exam-report {
+	border-radius:20px;
+	float:right;
+	width:100px;
+	border:1px solid gray;
+}
+.exam-icon {
+	font-size:2em !important;
+	color:#f759d2;
+	top:-10px;
+}
+.exam-btn-text {
+	margin-top:-10px;
+}
