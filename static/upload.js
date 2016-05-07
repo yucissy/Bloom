@@ -43,6 +43,7 @@ $(document).ready(function() {
         }
     );
     $('#course_report').on('click', function() {
+    	console.log("course report");
     	var user_ID = $("meta[name='user_id']").attr("content");
     	var course_ID = $("meta[name='course_id']").attr("content");
     	var postParameters = {courseID: course_ID, userID: user_ID};

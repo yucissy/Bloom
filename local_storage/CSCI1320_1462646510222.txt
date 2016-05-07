@@ -1,0 +1,36 @@
+Report Generated On: Sat May 07 2016 14:41:50 GMT-0400 (Eastern Daylight Time)
+Course: CSCI1320
+
+Test: Midterm 1
+Number of Submitted Test Scores: 3
+Category: Bloom's Taxonomy
+0 Remembering: 75%
+1 Understanding: 67.5%
+2 Applying: 67.9%
+3 Analyzing: 75%
+4 Evaluating: 71.11%
+5 Creating: 73.33%
+Average Score: 70.56%
+
+Test: Test Midterm
+Number of Submitted Test Scores: 1
+Category: Bloom's Taxonomy
+0 Remembering: 100%
+1 Understanding: 40%
+2 Applying: 55.56%
+3 Analyzing: 50%
+4 Evaluating: 73.33%
+5 Creating: 40%
+Average Score: 66.67%
+
+Test: Mini-Quiz
+Number of Submitted Test Scores: 1
+Category: Bloom's Taxonomy
+0 Remembering: 75%
+1 Understanding: 62.5%
+2 Applying: 68.52%
+3 Analyzing: 37.5%
+4 Evaluating: 20%
+5 Creating: 20%
+Average Score: 40%
+
