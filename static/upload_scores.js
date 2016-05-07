@@ -2,16 +2,12 @@
 
 $(document).ready(function() {
 
-    //dummy data
-    //var course_ID = 'CSCI1230';
-    //var user_ID = 'B0004567';
-
     //array to hold max possible points for each question
     var maxPoints = {};
     var examID;
 
     function getExam(id) {
-        console.log(id);
+
         
         var user_ID = $("meta[name='user_id']").attr("content");
         var toSend = {userID: user_ID, examID: id};
@@ -46,7 +42,6 @@ $(document).ready(function() {
  
            if (request.readyState == 4 && request.status == 200) {
                 var response = JSON.parse(request.responseText);
-                console.log(response);
             } 
         }
     }
@@ -56,7 +51,7 @@ $(document).ready(function() {
     	var course_ID = $("meta[name='course_id']").attr("content");
     	var user_ID = $("meta[name='user_id']").attr("content");
 		var toSend = {userID: user_ID, courseID: course_ID};
-		console.log(toSend);
+
 		var request = new XMLHttpRequest();
         request.open('POST', '/getPendingExams', true);
         request.setRequestHeader('Content-Type', 'application/json');
@@ -119,10 +114,11 @@ $(document).ready(function() {
             request.onreadystatechange = function() {
                if (request.readyState == 4 && request.status == 200) {
                     var response = JSON.parse(request.responseText);
-                    console.log(response);
+ 
                     if (response.status == 'success') {
+                    	$("#error").empty();
                         $('#newExam1').modal('hide');
-                        getScores(false);
+                        visualizeScores(false);
                     } else {
                         $('#error').text('Something went wrong :(');
                     }
