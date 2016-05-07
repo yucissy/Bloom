@@ -17,7 +17,7 @@ body {
 	position:relative;
 	height:500px;
 }
-.head h1, h2, h3, h4, p {
+.head h1, h2, h3, h4{
 	color:white;
 	font-family: "Lato", Arial, sans-serif;
 }
@@ -275,20 +275,34 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 	color:#b3b3b3;
 	padding:10px;
 }
-.course {
-	height:40px;
+.course, .exam {
+	height:32px;
 	width:100%;
 	color:gray;
-	padding:10px;
-	margin-bottom:15px;
+	padding:4px;
+	margin-bottom:10px;
 }
-.course p {
+.course p,.exam p {
 	font-size:1.2em;
 	margin-left:40px;
 }
 .course.curr {
 	border-left:thick solid #fbb03b;
 	color:white;
+}
+.exam.curr {
+	border-left:thick solid #8BC63E;
+	color:white;
+}
+.course.unselected {
+	padding-left:10px;
+	color:gray;
+	font-size:1.2em;
+	margin-left:40px;
+}
+.course.unselected:hover {
+	color:white;
+	cursor: default;
 }
 .new_exam {
 	height:50px;

@@ -45,9 +45,9 @@ var exports = function(app, db) {
 				loggedIn[sessID] = account.username;
 				db.isUserStudent(account.email, function(stu, us) {
 					if (stu) {
-						res.render('upload_questions.html', {user: us, course: us.courses[0]});
+						res.render('upload_questions.html', {user: us, course: us.courses});
 					} else {
-						res.render('upload_categories.html', {user: us, course: us.courses[0]});
+						res.render('upload_categories.html', {user: us, course: us.courses});
 					}
 				});
 			}
