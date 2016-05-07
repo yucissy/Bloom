@@ -1,0 +1,77 @@
+Report Generated On: Sat May 07 2016 14:22:11 GMT-0400 (EDT)
+Course: CSCI1230
+
+Test: Test 1
+Number of Submitted Test Scores: 2
+Category: Bloom's Taxonomy
+0 Remembering: 150%
+1 Understanding: 73.75%
+2 Applying: 32.41%
+Average Score: 60.29%
+
+Test: Midterm
+Number of Submitted Test Scores: 1
+Category: Bloom's Taxonomy
+0 Remembering: 100%
+1 Understanding: 82.5%
+2 Applying: 61.11%
+3 Analyzing: 100%
+4 Evaluating: 86.67%
+5 Creating: 40%
+Average Score: 76.67%
+
+Test: Midterm 1
+Number of Submitted Test Scores: 2
+Category: Bloom's Taxonomy
+0 Remembering: 50%
+1 Understanding: 50%
+2 Applying: 44.44%
+3 Analyzing: 25%
+4 Evaluating: 66.67%
+5 Creating: 60%
+Average Score: 50%
+
+Test: Midterm 1
+Number of Submitted Test Scores: 3
+Category: Bloom's Taxonomy
+0 Remembering: 100%
+1 Understanding: 62.5%
+2 Applying: 57.41%
+3 Analyzing: 37.5%
+4 Evaluating: 20%
+5 Creating: 20%
+Average Score: 36.67%
+
+Test: Midterm 1
+Number of Submitted Test Scores: undefined
+Category: Bloom's Taxonomy
+0 Remembering: NaN%
+1 Understanding: NaN%
+2 Applying: NaN%
+3 Analyzing: NaN%
+4 Evaluating: NaN%
+5 Creating: NaN%
+Average Score: NaN%
+
+Test: Midterm 1
+Number of Submitted Test Scores: undefined
+Category: Bloom's Taxonomy
+0 Remembering: NaN%
+1 Understanding: NaN%
+2 Applying: NaN%
+3 Analyzing: NaN%
+4 Evaluating: NaN%
+5 Creating: NaN%
+Average Score: NaN%
+
+Test: Midterm 1
+Number of Submitted Test Scores: undefined
+Category: Bloom's Taxonomy
+0 Remembering: NaN%
+1 Understanding: NaN%
+2 Applying: NaN%
+3 Analyzing: NaN%
+4 Evaluating: NaN%
+5 Creating: NaN%
+Average Score: NaN%
+
