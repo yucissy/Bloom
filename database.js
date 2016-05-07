@@ -369,16 +369,23 @@ function Database() {
         }}, function(error, success){
                 if (error)
                     callback("ERR: Could not delete test from Course: " + courseId + ".");
+                else
+                    callback(null);
             });
     }
 
     //Function for verifying if the user is a Student or a Professor
     this.isUserStudent = function (userEmail, callback) {
         User.findOne({email: userEmail}).populate('courses', 'title').exec(function(error, user) {
-            if (user.type === "Student")
-                callback(true, user);
-            else
-                callback(false, user);
+            if (error) {
+                callback("ERR: Could not find a user associated with the email " + userEmail + ".", null);
+            }
+            else {
+                if (user.type === "Student")
+                    callback(true, user);
+                else
+                    callback(false, user);
+            }
         });
     }
 }

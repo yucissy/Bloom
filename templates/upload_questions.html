@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="course_id" content="{{course._id}}">
+    <meta name="course_id" content="{{course.0._id}}">
     <meta name="user_id" content="{{user._id}}">
 
     <!-- Latest compiled and minified CSS -->
@@ -45,13 +45,18 @@
       <div class="col-md-2" id="courses">
         <h2>COURSES</h2>
         <div class="curr course">
-        <p>{{course._id}}</p>
+        {{#course}}<p>{{_id}}</p>{{/course}}
         </div>
+        <!-- <div class="unselected course">
+        </div> -->
+        <!-- THIS IS BAD!! NEED CHANGE AFTER DEMO -->
         <div class="new_exam">
           <p>New Course</p>
         </div>
         <div id="exam_container">
         <h2>EXAMS</h2>
+        <div id="exam_list">
+        </div>
         <div class="new_exam" data-toggle="modal" data-target="#newExam1">
           <p>New Exam</p>
         </div>
@@ -63,7 +68,7 @@
 
    
 
-        <h1>{{course.title}}</h1>
+        <h1>{{course.0.title}}</h1>
         	<div id="part3">
         	</div>
        
@@ -109,6 +114,7 @@
 </div>
 <script src="chart.js"></script>
 <script>
+getExamList();
 visualizeScores(false);
 </script>
   </body>

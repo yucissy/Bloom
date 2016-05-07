@@ -1,7 +1,7 @@
 body {
 	background-color:#231F20;
 	margin:0 auto;
-	padding:0px;
+    padding: 0px;
 	font-family: 'Lato', sans-serif;
 	letter-spacing:.8px;
 
@@ -17,7 +17,7 @@ body {
 	position:relative;
 	height:500px;
 }
-.head h1, h2, h3, h4, p {
+.head h1, h2, h3, h4{
 	color:white;
 	font-family: "Lato", Arial, sans-serif;
 }
@@ -102,7 +102,7 @@ input {
 #content_body {
 	background-color:#1A1A1A;
 	width:100%;
-	position:fixed;
+	position:absolute;
 	top:190px;
 	bottom:0px;
 	left:0px;
@@ -275,20 +275,34 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 	color:#b3b3b3;
 	padding:10px;
 }
-.course {
-	height:40px;
+.course, .exam {
+	height:32px;
 	width:100%;
 	color:gray;
-	padding:10px;
-	margin-bottom:15px;
+	padding:4px;
+	margin-bottom:10px;
 }
-.course p {
+.course p,.exam p {
 	font-size:1.2em;
 	margin-left:40px;
 }
 .course.curr {
 	border-left:thick solid #fbb03b;
 	color:white;
+}
+.exam.curr {
+	border-left:thick solid #8BC63E;
+	color:white;
+}
+.course.unselected {
+	padding-left:10px;
+	color:gray;
+	font-size:1.2em;
+	margin-left:40px;
+}
+.course.unselected:hover {
+	color:white;
+	cursor: default;
 }
 .new_exam {
 	height:50px;
@@ -317,6 +331,7 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 #main_content {
 	text-align:left;
 	margin-top:50px;
+    margin-bottom:50px;
 	margin-left:70px;
 	font-size:2em;
 	color:#9b9393;

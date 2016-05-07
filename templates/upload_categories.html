@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="course_id" content="{{course._id}}">
+    <meta name="course_id" content="{{course.0._id}}">
     <meta name="user_id" content="{{user._id}}">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -44,7 +44,7 @@
       <div class="col-md-2" id="courses">
         <h2>COURSES</h2>
         <div class="curr course">
-        <p>{{course._id}}</p>
+        {{#course}}<p>{{_id}}</p>{{/course}}
         </div>
         <div class="new_exam">
           <p>New Course</p>
@@ -59,7 +59,7 @@
       <div class="col-md-10" id="main">
         <div id="main_content">
         <div id="part1">
-        <h1>{{course.title}}</h1>
+        <h1>{{course.0.title}}</h1>
         <div id="prof_selector">
           <div class="prof_select"><h2 class="selected" id="select_1">STUDENTS</h2></div>
           <div class="prof_select"><h2 id="select_2">EXAMS</h2></div>
