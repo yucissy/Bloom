@@ -317,6 +317,7 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 #main_content {
 	text-align:left;
 	margin-top:50px;
+    margin-bottom:50px;
 	margin-left:70px;
 	font-size:2em;
 	color:#9b9393;
