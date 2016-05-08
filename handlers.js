@@ -85,14 +85,6 @@ var exports = function(app, db) {
 		delete loggedIn[sessID];
 	});
 
-	app.get('/uploadC', function(req, res) {
-		res.render('upload_categories.html');
-	})
-
-	app.get('/uploadQ', function(req, res) {
-		res.render('upload_questions.html');
-	});
-
 	app.post('/sendExam', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
