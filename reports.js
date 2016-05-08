@@ -55,15 +55,21 @@ function Reports(db) {
 	this.makeExam = function(course, name, data, callback) {
 		var make = this.makeExamHelper;
 		csv.parse(data, {columns:true}, function(err, output) {
-			var test = make(output);
-			db.insertTestForCourse(course, name, test, function(error){
-                if (error != null) {
-                	console.log(error);
-                	callback('fail');
-                } else {
-                	callback('success');
-                }
-            });
+			var check = output[0];
+			if ('qid' in check && 'max_points' in check && 'blooms' in check) {
+				var test = make(output);
+				db.insertTestForCourse(course, name, test, function(error){
+	                if (error != null) {
+	                	console.log(error);
+	                	callback('fail');
+	                } else {
+	                	callback('success');
+	                }
+	            });
+			} else {
+				console.log('ERROR: bad csv input');
+				//error
+			}
 		});
 	}
 
