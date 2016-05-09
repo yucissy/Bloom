@@ -93,6 +93,17 @@ function visualizeRoster() {
             	.attr('class', 'btn-text')
             	.text('Course Report');
 
+
+            $('#course_report').on('click', function() {
+                var user_ID = $("meta[name='user_id']").attr("content");
+                var course_ID = $("meta[name='course_id']").attr("content");
+                console.log('here');
+                $form = $('<form action="/downloadAggregate" method="POST"></form>');
+                $form.append("<input type='hidden' name='courseID' value='"+course_ID+"'/>");
+                $form.append("<input type='hidden' name='userID' value='"+user_ID+"'/>");
+                $form.submit();
+
+            });
         }
     }
 }
@@ -143,15 +154,6 @@ $(document).ready(function() {
             $('#user_banner').css('background-image', "url('images/user_banner.gif')");
         }
     );
-    $('#course_report').on('click', function() {
-    	var user_ID = $("meta[name='user_id']").attr("content");
-    	var course_ID = $("meta[name='course_id']").attr("content");
-
-    	$('#course-report-form').append("<input type='hidden' name='courseID' value='"+course_ID+"'/>");
-        $('#course-report-form').append("<input type='hidden' name='userID' value='"+user_ID+"'/>");
-        $('#course-report-form').submit();
-
-    });
 
     $('#part3').on( 'click', '.exam-report', function() {
     	var exam_ID = $(this).attr('id');
@@ -183,11 +185,14 @@ function getExamList() {
             var examlist = response.exams;
             $('#exam_list').empty();
             $.each(examlist, function(i, v) {
-                if (i == 0) {
-                    $('#exam_list').append("<div class='curr exam'><p>"+v.title+"</p></div>");
-                } else {
+                $('#exam_list').append("<p class='unselected course'>"+v.title+"</p>");
+            });
+
+            $("#select_1").on('click', function() {
+                $('#exam_list').empty();
+                $.each(examlist, function(i, v) {
                     $('#exam_list').append("<p class='unselected course'>"+v.title+"</p>");
-                }
+                });
             });
 
             $("body").on("click", ".course.unselected", function(){
@@ -202,6 +207,10 @@ function getExamList() {
                 });
                 $("#part2").hide();
                 $("#part3").show();
+
+                $('#select_1').css('font-weight', 'normal');
+                $('#select_2').css('font-weight', 'bold');
+
                 visualizeScores(true);
             });
        }
