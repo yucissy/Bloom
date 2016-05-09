@@ -139,6 +139,7 @@ $(function() {
                     var response = JSON.parse(request.responseText);
                     if (response.status == 'success') {
                         $('#myModal').modal('hide');
+                        rosterCached = false;
                         visualizeRoster();
                     } else {
                         $('#modal-alert').text('Something went wrong :(');
