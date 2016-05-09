@@ -3,9 +3,7 @@ var userID;
 var maxPoints = {};
 
 function getExam(exam_ID, user_ID) {
-	
 
-    
     var user = $("meta[name='user_id']").attr("content");
     var toSend = {userID: user, examID: exam_ID};
     var request = new XMLHttpRequest();
@@ -118,7 +116,8 @@ $(document).ready(function() {
 
 });
 
-function getExamList() {
+
+function getExamList(prof) {
     var user_ID = $("meta[name='user_id']").attr("content");
     var course_ID = $("meta[name='course_id']").attr("content");
     var toSend = {userID: user_ID, courseID: course_ID};
@@ -132,7 +131,7 @@ function getExamList() {
             var examlist = response.exams;
             $('#exam_list').empty();
             $.each(examlist, function(i, v) {
-                if (i == 0) {
+                if (!prof && i == 0) {
                     $('#exam_list').append("<div class='curr exam'><p>"+v.title+"</p></div>");
                 } else {
                     $('#exam_list').append("<p class='unselected course'>"+v.title+"</p>");
@@ -149,8 +148,39 @@ function getExamList() {
                         $('#exam_list').append("<p class='unselected course'>"+v.title+"</p>");
                     }
                 });
-                visualizeScores(false);
+
+                if (prof) {
+                    $("#part2").hide();
+                    $("#part3").show();
+
+                    $('#select_1').css('font-weight', 'normal');
+                    $('#select_2').css('font-weight', 'bold');
+
+                    visualizeScores(true, "professor");
+                } else {
+                    visualizeScores(false, "student");
+                }
             });
-       }
+
+            if (prof) {
+                $("#select_1").on('click', function() {
+                    $('#exam_list').empty();
+                    $.each(examlist, function(i, v) {
+                        $('#exam_list').append("<p class='unselected course'>"+v.title+"</p>");
+                    });
+                });
+
+                $("#select_2").on('click', function() {
+                    $('#exam_list').empty();
+                    $.each(examlist, function(i, v) {
+                        if (i == 0) {
+                            $('#exam_list').append("<div class='curr exam'><p>"+v.title+"</p></div>");
+                        } else {
+                            $('#exam_list').append("<p class='unselected course'>"+v.title+"</p>");
+                        }
+                    });
+                });
+            }
+        }
     };
 }

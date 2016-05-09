@@ -1,3 +1,4 @@
+
 function inputScores(id, studentID) {
 	
 	getExam(id, studentID);
@@ -172,49 +173,3 @@ $(document).ready(function() {
     	visualizeRoster();
     });
 });
-
-function getExamList() {
-    var user_ID = $("meta[name='user_id']").attr("content");
-    var course_ID = $("meta[name='course_id']").attr("content");
-    var toSend = {userID: user_ID, courseID: course_ID};
-    var request = new XMLHttpRequest();
-    request.open('POST', '/getExams', true);
-    request.setRequestHeader('Content-Type', 'application/json');
-    request.send(JSON.stringify(toSend));
-    request.onreadystatechange = function() {
-       if (request.readyState == 4 && request.status == 200) {
-            var response = JSON.parse(request.responseText);
-            var examlist = response.exams;
-            $('#exam_list').empty();
-            $.each(examlist, function(i, v) {
-                $('#exam_list').append("<p class='unselected course'>"+v.title+"</p>");
-            });
-
-            $("#select_1").on('click', function() {
-                $('#exam_list').empty();
-                $.each(examlist, function(i, v) {
-                    $('#exam_list').append("<p class='unselected course'>"+v.title+"</p>");
-                });
-            });
-
-            $("body").on("click", ".course.unselected", function(){
-                $('#exam_list').empty();
-                var toSelect = $(this).text();
-                $.each(examlist, function(i, v) {
-                    if (v.title == toSelect) {
-                        $('#exam_list').append("<div class='curr exam'><p>"+v.title+"</p></div>");
-                    } else {
-                        $('#exam_list').append("<p class='unselected course'>"+v.title+"</p>");
-                    }
-                });
-                $("#part2").hide();
-                $("#part3").show();
-
-                $('#select_1').css('font-weight', 'normal');
-                $('#select_2').css('font-weight', 'bold');
-
-                visualizeScores(true);
-            });
-       }
-    };
-}
