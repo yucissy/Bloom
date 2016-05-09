@@ -108,20 +108,10 @@ input {
 	bottom:0px;
 	left:0px;
 	right:0px;
-	overflow:scroll;
-	height:100%;
-
+	overflow-y:scroll;
+	overflow-x:hidden; 
 }
 
-@media (min-width: 992px) {
-	.col-md-2 {
-		width: 16.67%;
-	}
-
-	#main {
-		left: 16.67%;
-	}
-}
 .col-md-2 {
 	position: fixed;
 	height:100%;
@@ -129,6 +119,7 @@ input {
 	color:white;
 }
 #main {
+	left: 17%;
 	position: absolute;
 	background-color:#1A1A1A;
 	height:100%;
