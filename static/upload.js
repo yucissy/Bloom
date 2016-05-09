@@ -68,8 +68,10 @@ function visualizeRoster() {
             					
             					var index = $(this).closest('td').index();
             					var examID = $('th').eq(index).attr('id');
+            					var examTitle = $('th').eq(index).html();
             					$('#submitLine').empty();
             					$('#submitLine').html('Submit '+studentName+"'s scores:");
+            					$('#exam-title').html(examTitle);
             					inputScores(examID, studentID);
             				})
             				.append('span')

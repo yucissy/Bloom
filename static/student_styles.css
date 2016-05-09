@@ -122,6 +122,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9d49d', end
 tbody td {
 	text-align:right;
 }
+tbody td:nth-child(1) {
+	text-align:left;
+}
 
 th:nth-last-child(1) {
 	border-radius:0 10px 0 0;

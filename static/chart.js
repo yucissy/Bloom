@@ -195,6 +195,7 @@ chart.selectAll("text.name")
 		.attr("aria-label", "Left Align")
 		.text('Enter Scores')
 		.on('click', function() {
+			$('#exam-title').html(title);
 			getExam($(this).parent().attr('id'), user_ID);
 		})
 		.attr('data-toggle', 'modal')
