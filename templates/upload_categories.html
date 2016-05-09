@@ -16,6 +16,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
       
     <script src="upload.js"></script>
+    <script src="upload_scores.js"></script>
     <script src="chart.js"></script>
 
     <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -106,9 +107,38 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div class="modal fade" id="newExam1" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <h2 class="modal-title">Add New Exam
+        <button type="button" style="color:white;" class="close closebut" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></h2>
+        
+      </div>
+      <div class="modal-body">
+      	<p id="submitLine">Submit your scores:</p>
+        <div id="questions">
+        
+        </div>
+        </div>
+
+
+
+        <div class="modal-footer">
+        <div id="error"></div>
+        <button type="button" id="close" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button id="submit" type="button" class="btn btn-success">Submit</button>
+      </div>
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 </div>
 
 <script>
+  $('#part3').hide();
+
   $('.new_exam').on('click', function() {
     $("#modal-alert").empty();
   });
@@ -121,7 +151,7 @@
   $("#select_2").on('click', function() {
 	  $("#part2").hide();
 	  $("#part3").show();
-	  visualizeScores(true);
+	  visualizeScores(true, "professor");
   });
 
   $("#select_1").on('click', function() {

@@ -57,9 +57,6 @@
         <h2>EXAMS</h2>
         <div id="exam_list">
         </div>
-        <div class="new_exam" data-toggle="modal" data-target="#newExam1">
-          <p>New Exam</p>
-        </div>
         </div>
       </div>
       <div class="col-md-10" id="main">
@@ -88,15 +85,9 @@
         
       </div>
       <div class="modal-body">
-        <p>1. Select the Exam:</p>
-        <div class="dropdown">
-        <button id="select_exams" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">None</button>
-        <ul id="exams_list" class="dropdown-menu">
-        </ul>
-        </div>
 
         <div id="questions">
-        <p>2. Submit your scores:</p>
+        <p>Submit your scores:</p>
         </div>
         </div>
 
@@ -115,7 +106,7 @@
 <script src="chart.js"></script>
 <script>
 getExamList();
-visualizeScores(false);
+visualizeScores(false, "student");
 </script>
   </body>
 </html>

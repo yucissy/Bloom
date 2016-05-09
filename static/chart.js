@@ -1,4 +1,4 @@
-function visualizeScores(aggregate) {
+function visualizeScores(aggregate, page) {
 	   	$("#part3").empty();
   		var user_ID = $("meta[name='user_id']").attr("content");
   		var course_ID = $("meta[name='course_id']").attr("content");
@@ -20,11 +20,11 @@ function visualizeScores(aggregate) {
 					$('.score').css('display', 'none');
 					if (aggregate) {
 						$.each(response.aggregate, function(i, v) {
-	                	makeBarChart(v, true);
+	                	makeBarChart(v, true, page);
 	                });
 					} else {
 	                $.each(response.reports, function(i, v) {
-	                	makeBarChart(v, false);
+	                	makeBarChart(v, false, page);
 	                });
 	        	}
 	        	setTimeout(function() {
@@ -46,7 +46,7 @@ function getColor(percent) {
   return "#ED1B24";
 }
 
-function makeButton(div, examID) {
+function makeButton(div, examID, page) {
 
 	var button = div.append("button")
 		.attr("type", "button")
@@ -66,7 +66,7 @@ function makeButton(div, examID) {
 }
 
 //actual code
-function makeBarChart(data, agg) {
+function makeBarChart(data, agg, page) {
   var newDiv = d3.select("#part3")
             .append("div")
             .attr("class", "category");
@@ -75,16 +75,23 @@ function makeBarChart(data, agg) {
   var header = newDiv.append("h3")
   	.text(title);
 
-  makeButton(header, data.test._id);
-
-  if (data.categories != null) {
-  	var categoryTitle = data.categories[0].main_cat_id.name;
-  var id = data.test._id;
+  if (page == "professor") {
+   makeButton(header, data.test._id); 	
+  }
 
   newDiv.append("div")
   	.style("clear", "both");
+  var id = data.test._id;
+  var chartArea = newDiv.append("div")
+    .attr("id", id);
+
+  if (data.categories != null) {
+  	var categoryTitle = data.categories[0].main_cat_id.name;
   
-  var par = newDiv.append("div");
+
+  
+  
+  var par = chartArea.append("div");
   par.append("h2")
   	.attr("class", "left")
     .text(categoryTitle.toUpperCase());
@@ -104,8 +111,7 @@ function makeBarChart(data, agg) {
   }
   
 
-  var chartArea = newDiv.append("div")
-    .attr("id", id);
+  
   var gap = 20;
 
   var labels = data.categories[0].main_cat_id.sub_categories;
@@ -181,9 +187,24 @@ chart.selectAll("text.name")
 	return '';}); 
 
 } else {
-	newDiv.append("p")
-		.attr("class","empty")
-		.text("No scores have been entered yet.");
+	var user_ID = $("meta[name='user_id']").attr("content");
+
+	var btn = chartArea.append('button')
+        .attr('type', 'button')
+		.attr('class', 'btn btn-primary-outline')
+		.attr("aria-label", "Left Align")
+		.text('Enter Scores')
+		.on('click', function() {
+			getExam($(this).parent().attr('id'), user_ID);
+		})
+		.attr('data-toggle', 'modal')
+		.attr('data-target', '#newExam1')
+		.append('span')
+		.attr('class', 'glyphicon glyphicon-plus pull-left')
+		.attr('aria-hidden', 'true')
+		.style('margin-top', '-5px');
+
+
 }
   
 

@@ -1,3 +1,9 @@
+function inputScores(id, studentID) {
+	
+	getExam(id, studentID);
+	$('#newExam1').modal('show');
+}
+
 function visualizeRoster() {
 	var examTitles = [];
 
@@ -12,8 +18,9 @@ function visualizeRoster() {
     request.onreadystatechange = function() {
         if (request.readyState == 4 && request.status == 200) {
             var response = JSON.parse(request.responseText);
+            console.log(response);
             $.each(response.exams, function(i, v) {
-            	examTitles.push(v.title);
+            	examTitles.push({title: v.title, id: v._id});
             });
         }
     }
@@ -26,7 +33,7 @@ function visualizeRoster() {
     request2.onreadystatechange = function() {
         if (request2.readyState == 4 && request2.status == 200) {
             var response = JSON.parse(request2.responseText);
-
+            console.log(response);
             $('#part2').empty();
             var table = d3.select("#part2")
             	.append("div")
@@ -39,20 +46,31 @@ function visualizeRoster() {
 
             thead.append('th').text('Name');
             $.each(examTitles, function(i,v) {
-            	thead.append('th').text(v);
+            	thead.append('th').text(v.title)
+            		.attr('id', v.id);
             });
 
             var tbody = table.append('tbody');
             $.each(response.roster, function(i,v) {
-            	var trow = tbody.append('tr');
+            	var trow = tbody.append('tr').attr('id', v._id);
             	trow.append('td').text(v.name);
+            	var studentID = v._id;
+            	var studentName = v.name;
             	$.each(v.exams, function(i,v) {
-            		if (v[examTitles[i]] == true)
+            		if (v[examTitles[i].title] == true)
             			trow.append('td').attr('class','y');
             		else
             			trow.append('td').append('button')
             				.attr('type', 'button')
             				.attr('class', 'btn btn-secondary-outline')
+            				.on('click', function() {
+            					
+            					var index = $(this).closest('td').index();
+            					var examID = $('th').eq(index).attr('id');
+            					$('#submitLine').empty();
+            					$('#submitLine').html('Submit '+studentName+"'s scores:");
+            					inputScores(examID, studentID);
+            				})
             				.append('span')
             				.attr('class', 'glyphicon glyphicon-pencil')
             				.attr('aria-hidden', 'true');
@@ -104,6 +122,7 @@ $(function() {
                     var response = JSON.parse(request.responseText);
                     if (response.status == 'success') {
                         $('#myModal').modal('hide');
+                        visualizeRoster();
                     } else {
                         $('#modal-alert').text('Something went wrong :(');
                     }
@@ -144,7 +163,10 @@ $(document).ready(function() {
         $form.submit();
     });
 
-
+    $('#submit').on('click', function() {
+    	console.log('go');
+    	visualizeRoster();
+    });
 });
 
 function getExamList() {
