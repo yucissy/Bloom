@@ -1,0 +1,80 @@
+Report Generated On: Sun May 08 2016 23:24:28 GMT-0400 (Eastern Daylight Time)
+Course: CSCI1320
+
+Test: Test Midterm
+Number of Submitted Test Scores: 2
+Category: Bloom's Taxonomy
+0 Remembering: 62.5%
+1 Understanding: 58.75%
+2 Applying: 59.26%
+3 Analyzing: 62.5%
+4 Evaluating: 66.67%
+5 Creating: 50%
+Average Score: 65.83%
+
+Test: Mini-Quiz
+Number of Submitted Test Scores: 2
+Category: Bloom's Taxonomy
+0 Remembering: 87.5%
+1 Understanding: 62.5%
+2 Applying: 66.67%
+3 Analyzing: 37.5%
+4 Evaluating: 20%
+5 Creating: 20%
+Average Score: 40%
+
+Test: Quiz 2
+Number of Submitted Test Scores: 2
+Category: Bloom's Taxonomy
+0 Remembering: 50%
+1 Understanding: 31.25%
+2 Applying: 32.41%
+3 Analyzing: 18.75%
+4 Evaluating: 10%
+5 Creating: 10%
+Average Score: 20%
+
+Test: Test Exam 
+Number of Submitted Test Scores: 2
+Category: Bloom's Taxonomy
+0 Remembering: 100%
+1 Understanding: 63.75%
+2 Applying: 50%
+3 Analyzing: 56.25%
+4 Evaluating: 30%
+5 Creating: 50%
+Average Score: 48.33%
+
+Test: Test Exam 2
+Number of Submitted Test Scores: 2
+Category: Bloom's Taxonomy
+0 Remembering: 75%
+1 Understanding: 41.25%
+2 Applying: 56.48%
+3 Analyzing: 56.25%
+4 Evaluating: 43.33%
+5 Creating: 60%
+Average Score: 44.17%
+
+Test: Super Test
+Number of Submitted Test Scores: 2
+Category: Bloom's Taxonomy
+0 Remembering: 0%
+1 Understanding: 0%
+2 Applying: 0%
+3 Analyzing: 0%
+4 Evaluating: 0%
+5 Creating: 0%
+Average Score: 0%
+
+Test: Mini Test
+Number of Submitted Test Scores: 1
+Category: Bloom's Taxonomy
+0 Remembering: 100%
+1 Understanding: 62.5%
+2 Applying: 64.81%
+3 Analyzing: 37.5%
+4 Evaluating: 20%
+5 Creating: 20%
+Average Score: 40%
+
