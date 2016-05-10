@@ -89,7 +89,6 @@ input {
 	text-decoration:underline;
 }
 #header_top {
-	position: fixed;
 	text-align:left;
 	width:100%;
 	height:120px;
@@ -103,24 +102,21 @@ input {
 #content_body {
 	background-color:#1A1A1A;
 	width:100%;
-	position:fixed;
+	position:absolute;
 	top:190px;
 	bottom:0px;
 	left:0px;
 	right:0px;
-	overflow-y:scroll;
-	overflow-x:hidden;
-}
+	overflow:scroll;
+	height:100%;
 
+}
 .col-md-2 {
-	position: fixed;
 	height:100%;
 	background-color:#2B2A2A;
 	color:white;
 }
 #main {
-	left: 17%;
-	position: absolute;
 	background-color:#1A1A1A;
 	height:100%;
 	color:white;
@@ -172,7 +168,6 @@ input {
 	font-size:3em;
 }
 #signup_wrapper p {
-	color:white;
 	font-size:1.3em;
 }
 #signup_input input {
@@ -217,9 +212,6 @@ input {
 	color:#EE3E35;
 }
 #navbar {
-	position: fixed;
-	top: 120px;
-	width: 100%;
 	height:70px;
 /* IE10+ */ 
 background-image: -ms-linear-gradient(bottom, #505052 0%, #9E9E9E 100%);
@@ -273,6 +265,24 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 	cursor:pointer;
 	box-shadow: 3px 3px 1px #888888;
 }
+
+#logout {
+	height:29px;
+	background-color:#333333;
+	border-radius:10px 10px 10px 10px;
+	color:white;
+	font-family: 'Lato', sans-serif;
+	font-size:1.2em;
+    position: absolute;
+    right:25px;
+    top:140px;
+}
+
+#logout:hover {
+	background-color:#494949;
+	cursor:pointer;
+}
+
 #courses {
 	background-color:#23211f;
 	text-align:left;
