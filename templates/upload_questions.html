@@ -120,6 +120,7 @@ $('body').on('click', '.course.unselected', function() {
   getCourseList($(this).text());
   $("meta[name='course_id']").attr("content", $(this).text());
   visualizeScores(false, "student");
+  getExamList(false);
 });
 </script>
   </body>
