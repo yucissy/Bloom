@@ -240,7 +240,7 @@ var exports = function(app, db) {
 	app.post('/downloadAggregate', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
-		// var course = 'CSCI1230';
+		// course = 'CSCI1320';
 		db.findPopulatedTestFromCourse(course, function(tests) {
 			reports.downloadCourseData(course, tests, function(path) {
 				res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
@@ -256,6 +256,34 @@ var exports = function(app, db) {
 		// var exam = '5722c08ea598e9931e085fb8'
 		db.findReportForTest(exam, function(rts){
 			reports.downloadExamData(exam, rts, function(path) {
+				res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
+				res.setHeader('Content-type', 'text/csv');
+				res.download(path);
+			});
+		});
+	});
+
+	app.post('/readyForData', function(req, res) {
+		var user = req.body.userID;
+		var exam = req.body.examID;
+		var course = req.body.courseID;
+		db.getStudentsAndTestsFromCourse(course, function(stu, t) {
+			db.findTest(exam, function(test) {
+				var ready = "false";
+				if (stu.length == test.count) {
+					ready = "true";
+				}
+				res.send(JSON.stringify({status: ready}));
+			});
+		});
+	});
+
+	app.post('/downloadPublicData', function(req, res) {
+		var user = req.body.userID;
+		var exam = req.body.examID;
+		// exam = '5730c484f1a94d4245c40c76'
+		db.findTest(exam, function(test) {
+			reports.downloadPublicData(test, function(path) {
 				res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
 				res.setHeader('Content-type', 'text/csv');
 				res.download(path);

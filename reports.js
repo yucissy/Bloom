@@ -52,6 +52,24 @@ function Reports(db) {
 		return catToReturn;
 	}
 
+	this.writeTestReportHelper = function(test, wstream) {
+		wstream.write('Test: ' + test.title + '\n');
+		wstream.write('Number of Submitted Test Scores: ' + test.count + '\n\n');
+		var calc = this.calculateAggregate(test);
+		for (var k=0; k < calc.length; k++) {
+			wstream.write('Category: ' + calc[k].main_cat_id.name + '\n');
+			for (var j=0; j < calc[k].sub_cats.length; j++) {
+				var index = calc[k].sub_cats[j]._id;
+				wstream.write(index + ' ');
+				wstream.write(calc[k].main_cat_id.sub_categories[index] + ': ');
+				wstream.write(calc[k].sub_cats[j].percentage + '%\n');
+			}
+			wstream.write('\n');
+		}
+		var avg = this.calculateAverageScore(test);
+		wstream.write('Average Raw Score: ' + avg + "%\n\n");
+	}
+
 	this.makeExam = function(course, name, data, callback) {
 		var make = this.makeExamHelper;
 		csv.parse(data, {columns:true}, function(err, output) {
@@ -130,21 +148,29 @@ function Reports(db) {
 		wstream.write('Report Generated On: ' + (new Date(date)).toString() + '\n');
 		wstream.write('Course: ' + course + '\n\n');
 		for (var i=0; i < tests.length; i++) {
-			wstream.write('Test: ' + tests[i].title + '\n');
-			wstream.write('Number of Submitted Test Scores: ' + tests[i].count + '\n');
-			var calc = this.calculateAggregate(tests[i]);
-			for (var k=0; k < calc.length; k++) {
-				wstream.write('Category: ' + calc[k].main_cat_id.name + '\n');
-				for (var j=0; j < calc[k].sub_cats.length; j++) {
-					var index = calc[k].sub_cats[j]._id;
-					wstream.write(index + ' ');
-					wstream.write(calc[k].main_cat_id.sub_categories[index] + ': ');
-					wstream.write(calc[k].sub_cats[j].percentage + '%\n');
-				}
-			}
-			var avg = this.calculateAverageScore(tests[i]);
-			wstream.write('Average Score: ' + avg + "%\n");
-			wstream.write('\n');
+			wstream.write('-------------------------\n');
+			this.writeTestReportHelper(tests[i], wstream);
+		}
+		wstream.end();
+		wstream.on('finish', function() {
+			callback(filePath);
+		});
+	}
+
+	// should check if everyone submitted before generating this
+	this.downloadPublicData = function(test, callback) {
+		var date = Date.now();
+		var filePath = "./local_storage/" + test._id + "_PUBLIC_" + date + ".txt";
+
+		var wstream = fs.createWriteStream(filePath);
+		wstream.write('Report Generated On: ' + (new Date(date)).toString() + '\n');
+		this.writeTestReportHelper(test, wstream);
+		wstream.write('Question Breakdown\n');
+		var qs = test.questions;
+		for (var i=0; i < qs.length; i++) {
+			var pt = qs[i].sum_points;
+			var total = test.count * qs[i].max_points;
+			wstream.write(qs[i].qid + ':' + Math.round(pt/total * 10000)/100 + '%\n');
 		}
 		wstream.end();
 		wstream.on('finish', function() {
