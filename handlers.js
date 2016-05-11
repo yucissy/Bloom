@@ -99,7 +99,7 @@ var exports = function(app, db) {
 
 	app.post('/addNewCourse', function(req, res) {
 		var user = req.body.userID;
-		var course_id = req.body.couseID;
+		var course_id = req.body.courseID;
 		var course_title = req.body.title;
 		var sem = req.body.semester;
 		var data = req.body.data;

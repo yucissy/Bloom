@@ -46,6 +46,9 @@ img {
 #content_wrapper h2 {
 	color:#8BC63E;
 }
+#content_wrapper p {
+	color:white;
+}
 #h3 {
 	margin-left:150px;
 	color:white;
@@ -373,5 +376,5 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 	text-align:left;
 }
 .modal-backdrop {
-	position: relative !important;
+
 }

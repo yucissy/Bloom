@@ -114,6 +114,10 @@
 
 <script>
 getExamList(false);
+<<<<<<< HEAD
+var user = $("meta[name='user_id']").attr("content");
+visualizeScores(false, user);
+=======
 visualizeScores(false, "student");
 
 $('body').on('click', '.course.unselected', function() {
@@ -122,6 +126,7 @@ $('body').on('click', '.course.unselected', function() {
   visualizeScores(false, "student");
   getExamList(false);
 });
+>>>>>>> 096f8750111e2d7b421f7cb30789de0903d02800
 </script>
   </body>
 </html>

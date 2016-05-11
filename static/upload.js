@@ -145,6 +145,43 @@ $(function() {
     	};
     	reader.readAsText(selected);
 	});
+
+	$('#upload-course').click(function(e) {
+
+		var user_ID = $("meta[name='user_id']").attr("content");
+		var course_ID = $("#course-id").val();
+		var course_title = $("#course-title").val();
+        var sem = $("#semester-level").val();
+        var selected = $("#roster").get(0).files[0];
+
+    	//TODO: null check all input
+    	var reader = new FileReader();
+    	reader.onload = function() {
+
+    		//this variable holds the csv data!
+    		var dataURL = reader.result;
+            var toSend = {userID: user_ID, courseID: course_ID, title: course_title, semester: sem, data: dataURL};
+            console.log(toSend);
+            var request = new XMLHttpRequest();
+            request.open('POST', '/addNewCourse', true);
+            request.setRequestHeader('Content-Type', 'application/json');
+            request.send(JSON.stringify(toSend));
+
+            request.onreadystatechange = function() {
+            	console.log("ok");
+                if (request.readyState == 4 && request.status == 200) {
+                    var response = JSON.parse(request.responseText);
+                    if (response.status == 'success') {
+                        $('#myModal').modal('hide');
+                        visualizeRoster();
+                    } else {
+                        $('#modal-alert').text('Something went wrong :(');
+                    }
+                }
+            }
+    	};
+    	reader.readAsText(selected);
+	});
 });
 $(document).ready(function() {
 	visualizeRoster();
@@ -162,14 +199,15 @@ $(document).ready(function() {
     	var exam_ID = $(this).attr('id');
     	var user_ID = $("meta[name='user_id']").attr("content");
 
-        $form = $('<form action="/downloadExamData" method="POST"></form>');
+        $form = $('<form action="/downloadPublicData" method="POST"></form>');
         $form.append("<input type='hidden' name='examID' value='"+exam_ID+"'/>");
         $form.append("<input type='hidden' name='userID' value='"+user_ID+"'/>");
         $form.submit();
     });
 
     $('#submit').on('click', function() {
-    	console.log('go');
     	visualizeRoster();
+    	var user = $("meta[name='user_id']").attr("content");
+    	visualizeScores(true, user);
     });
 });

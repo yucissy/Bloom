@@ -88,7 +88,8 @@ $(document).ready(function() {
                     if (response.status == 'success') {
                     	$("#error").empty();
                         $('#newExam1').modal('hide');
-                        visualizeScores(false);
+                        var user = $("meta[name='user_id']").attr("content");
+                        visualizeScores(false, user);
                         visualizeRoster();
                     } else {
                         $('#error').text('Something went wrong :(');
@@ -173,7 +174,7 @@ function getExamList(prof) {
                         $('#exam_list').append("<p class='unselected exam'>"+v.title+"</p>");
                     }
                 });
-
+                var user = $("meta[name='user_id']").attr("content");
                 if (prof) {
                     $("#part2").hide();
                     $("#part3").show();
@@ -181,9 +182,10 @@ function getExamList(prof) {
                     $('#select_1').css('font-weight', 'normal');
                     $('#select_2').css('font-weight', 'bold');
 
-                    visualizeScores(true, "professor");
+                    
+                    visualizeScores(true, user);
                 } else {
-                    visualizeScores(false, "student");
+                    visualizeScores(false, user);
                 }
             });
 
