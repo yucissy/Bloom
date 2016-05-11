@@ -116,6 +116,31 @@ $(document).ready(function() {
 
 });
 
+function getCourseList(current) {
+    var user_ID = $("meta[name='user_id']").attr("content");
+    var toSend = {userID: user_ID};
+    var request = new XMLHttpRequest();
+    request.open('POST', '/getCourses', true);
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.send(JSON.stringify(toSend));
+
+    request.onreadystatechange = function() {
+        if (request.readyState == 4 && request.status == 200) {
+            var response = JSON.parse(request.responseText);
+            var courselist = response.courses;
+            $('#course_list').empty();
+            $.each(courselist, function(i, v) {
+                if (v._id == current) {
+                    $('#course_list').append("<div class='curr course'><p>"+v._id+"</p></div>");
+                    $('#curr_title').text(v.title);
+                } else {
+                    $('#course_list').append("<p class='unselected course'>"+v._id+"</p>");
+                }
+            });
+        }
+    };
+}
+
 
 function getExamList(prof) {
     var user_ID = $("meta[name='user_id']").attr("content");
@@ -134,18 +159,18 @@ function getExamList(prof) {
                 if (!prof && i == 0) {
                     $('#exam_list').append("<div class='curr exam'><p>"+v.title+"</p></div>");
                 } else {
-                    $('#exam_list').append("<p class='unselected course'>"+v.title+"</p>");
+                    $('#exam_list').append("<p class='unselected exam'>"+v.title+"</p>");
                 }
             });
 
-            $("body").on("click", ".course.unselected", function(){
+            $("body").on("click", ".exam.unselected", function(){
                 $('#exam_list').empty();
                 var toSelect = $(this).text();
                 $.each(examlist, function(i, v) {
                     if (v.title == toSelect) {
                         $('#exam_list').append("<div class='curr exam'><p>"+v.title+"</p></div>");
                     } else {
-                        $('#exam_list').append("<p class='unselected course'>"+v.title+"</p>");
+                        $('#exam_list').append("<p class='unselected exam'>"+v.title+"</p>");
                     }
                 });
 
@@ -166,7 +191,7 @@ function getExamList(prof) {
                 $("#select_1").on('click', function() {
                     $('#exam_list').empty();
                     $.each(examlist, function(i, v) {
-                        $('#exam_list').append("<p class='unselected course'>"+v.title+"</p>");
+                        $('#exam_list').append("<p class='unselected exam'>"+v.title+"</p>");
                     });
                 });
 
@@ -176,7 +201,7 @@ function getExamList(prof) {
                         if (i == 0) {
                             $('#exam_list').append("<div class='curr exam'><p>"+v.title+"</p></div>");
                         } else {
-                            $('#exam_list').append("<p class='unselected course'>"+v.title+"</p>");
+                            $('#exam_list').append("<p class='unselected exam'>"+v.title+"</p>");
                         }
                     });
                 });

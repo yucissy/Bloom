@@ -116,6 +116,7 @@ input {
 	height:100%;
 	background-color:#2B2A2A;
 	color:white;
+	overflow-y:scroll;
 }
 #main {
 	left: 17%;
@@ -319,13 +320,13 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 	border-left:thick solid #8BC63E;
 	color:white;
 }
-.course.unselected {
+.course.unselected, .exam.unselected {
 	padding-left:10px;
 	color:gray;
 	font-size:1.2em;
 	margin-left:40px;
 }
-.course.unselected:hover {
+.course.unselected:hover, .exam.unselected:hover {
 	color:white;
 	cursor: default;
 }

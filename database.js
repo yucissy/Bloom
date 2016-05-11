@@ -158,25 +158,28 @@ function Database() {
             if (error) 
                 callback("ERR: Could not save Course: " + courseId + ".");
             else {
+                callback(null);
                 //iterate through students
                 var users = courseStudents.concat(courseProfessors);
                 for (var i = 0; i < users.length; i++) {
                     User.findOne({_id: users[i]}, function(error, user){
                         if (error)
-                            callback("Warning: Could not find User: " + users[i] + ".");
+                            console.error("ERR: An error occurred with finding User: " + users[i] + ".");
                         else {
                             if (user != null) {
                                 user.courses.push(courseToInsert);
 
                                 user.save(function(error) {
-                                    if(error)
-                                        callback("ERR: Could not save course to User: " + student + "'s courses.");
-                                    else
-                                        callback(null);
+                                    if(error) {
+                                        console.error("ERR: Could not save course to User: " + student + "'s courses.");
+                                    } else {
+                                        // callback(null);
+                                    }
                                 });
                             }
                             else
-                                callback("Warning: Could not find User: " + users[i] + ".");
+                                console.log("Warning: Could not find User: " + users[i] + ".");
+                                // callback(null);
                         }
                     });
                 }
