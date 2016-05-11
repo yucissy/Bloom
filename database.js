@@ -278,6 +278,19 @@ function Database() {
         });
     }
 
+    this.findUserCourses = function (userId, callback) {
+        User.findOne({_id: userId}).populate('courses', 'title').exec(function(err, user) {
+            if (err)
+                callback("ERR: Could not find user: " + userId + ".");
+            else {
+                if (user != null)
+                    callback(user.courses);
+                else
+                    callback("ERR: Could not find user: " + userId + ".");
+            }
+        });
+    }
+
     this.getUID = function(em, callback) {
         User.findOne({email : em}).exec(function(err, user) {
             if (err)
