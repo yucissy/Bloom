@@ -85,7 +85,7 @@ function Reports(db) {
 	                }
 	            });
 			} else {
-				console.log('ERROR: bad csv input');
+				console.error('ERROR: bad csv input');
 				//error
 			}
 		});

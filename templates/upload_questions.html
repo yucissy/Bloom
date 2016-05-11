@@ -45,12 +45,18 @@
     <div class="row" id="content_body">
       <div class="col-md-2" id="courses">
         <h2>COURSES</h2>
-        <div class="curr course">
-        {{#course}}<p>{{_id}}</p>{{/course}}
+        <div id="course_list">
+        {{#course}}
+          {{#first}}
+          <div class="curr course">
+          <p>{{_id}}</p>
+          </div>
+          {{/first}}
+          {{#other}}
+          <p class='unselected course'>{{_id}}</p>
+          {{/other}}
+        {{/course}}
         </div>
-        <!-- <div class="unselected course">
-        </div> -->
-        <!-- THIS IS BAD!! NEED CHANGE AFTER DEMO -->
         <div class="new_exam">
           <p>New Course</p>
         </div>
@@ -66,7 +72,7 @@
 
    
 
-        <h1>{{course.0.title}}</h1>
+        <h1 id="curr_title">{{course.0.title}}</h1>
         	<div id="part3">
         	</div>
        
@@ -105,10 +111,21 @@
 </div><!-- /.modal -->
 </div>
 <script src="chart.js"></script>
+
 <script>
 getExamList(false);
+<<<<<<< HEAD
 var user = $("meta[name='user_id']").attr("content");
 visualizeScores(false, user);
+=======
+visualizeScores(false, "student");
+
+$('body').on('click', '.course.unselected', function() {
+  getCourseList($(this).text());
+  $("meta[name='course_id']").attr("content", $(this).text());
+  visualizeScores(false, "student");
+});
+>>>>>>> 096f8750111e2d7b421f7cb30789de0903d02800
 </script>
   </body>
 </html>

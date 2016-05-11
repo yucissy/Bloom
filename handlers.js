@@ -46,10 +46,20 @@ var exports = function(app, db) {
 				var sessID = generateSessionID();
 				loggedIn[sessID] = account.username;
 				db.isUserStudent(account.email, function(stu, us) {
+					var courseMus = [];
+					for (var i=0; i < us.courses.length; i++) {
+						var c = us.courses[i];
+						if (i == 0) {
+							c.first = true;
+						} else {
+							c.other = true;
+						}
+						courseMus.push(c);
+					}
 					if (stu) {
-						res.render('upload_questions.html', {user: us, course: us.courses});
+						res.render('upload_questions.html', {user: us, course: courseMus});
 					} else {
-						res.render('upload_categories.html', {user: us, course: us.courses});
+						res.render('upload_categories.html', {user: us, course: courseMus});
 					}
 				});
 			}
@@ -100,7 +110,19 @@ var exports = function(app, db) {
 		// sem = 'Spring 2017';
 		// data = 'Student,ID\nKatie Han,B00666666\nStudent Tester,B00111111\nAnother Student,B00222222';
 
-		courses.addNewCourse(course_id, course_title, sem, user, data);
+		courses.addNewCourse(course_id, course_title, sem, user, data, function(stat) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({status : stat}));
+		});
+	});
+
+	app.post('/getCourses', function(req, res) {
+		var user = req.body.userID;
+
+		db.findUserCourses(user, function(crs) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({courses : crs}));
+		});
 	});
 
 	app.post('/sendExam', function(req, res) {
