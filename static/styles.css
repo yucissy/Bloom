@@ -280,9 +280,9 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 	color:white;
 	font-family: 'Lato', sans-serif;
 	font-size:1.2em;
-    position: absolute;
-    right:25px;
-    top:140px;
+    position:absolute;
+    top: 22.5px;
+    right: 20px;
 }
 
 #logout:hover {
