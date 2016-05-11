@@ -163,7 +163,7 @@ function Database() {
                 for (var i = 0; i < users.length; i++) {
                     User.findOne({_id: users[i]}, function(error, user){
                         if (error)
-                            callback("ERR: Could not find User: " + user + ".");
+                            callback("Warning: Could not find User: " + users[i] + ".");
                         else {
                             if (user != null) {
                                 user.courses.push(courseToInsert);
@@ -176,7 +176,7 @@ function Database() {
                                 });
                             }
                             else
-                                callback("ERR: Could not find User: " + user + ".");
+                                callback("Warning: Could not find User: " + users[i] + ".");
                         }
                     });
                 }

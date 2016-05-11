@@ -1,9 +1,11 @@
 var Reports = require('./reports.js');
 var Stormpath = require('./config/stormpath.js');
+var Courses = require('./courses.js');
 
 var exports = function(app, db) {
 	var reports = new Reports(db);
 	var storm = new Stormpath();
+	var courses = new Courses(db);
 	var loggedIn = {};
 
 	function generateSessionID() {
@@ -83,6 +85,22 @@ var exports = function(app, db) {
 	app.post('/logOut', function(req, res) {
 		var sessID = req.body.userID;
 		delete loggedIn[sessID];
+	});
+
+	app.post('/addNewCourse', function(req, res) {
+		var user = req.body.userID;
+		var course_id = req.body.couseID;
+		var course_title = req.body.title;
+		var sem = req.body.semester;
+		var data = req.body.data;
+
+		// user = 'B00999999';
+		// course_id = 'CSCI9999';
+		// course_title = 'Testing This Web App';
+		// sem = 'Spring 2017';
+		// data = 'Student,ID\nKatie Han,B00666666\nStudent Tester,B00111111\nAnother Student,B00222222';
+
+		courses.addNewCourse(course_id, course_title, sem, user, data);
 	});
 
 	app.post('/sendExam', function(req, res) {
@@ -255,11 +273,15 @@ var exports = function(app, db) {
 		var exam = req.body.examID;
 		// var exam = '5722c08ea598e9931e085fb8'
 		db.findReportForTest(exam, function(rts){
-			reports.downloadExamData(exam, rts, function(path) {
-				res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
-				res.setHeader('Content-type', 'text/csv');
-				res.download(path);
-			});
+			if (rts.length == 0) {
+				console.error('Should not be called. No reports to download.');
+			} else {
+				reports.downloadExamData(exam, rts, function(path) {
+					res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
+					res.setHeader('Content-type', 'text/csv');
+					res.download(path);
+				});
+			}
 		});
 	});
 
