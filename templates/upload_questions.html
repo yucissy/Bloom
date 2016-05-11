@@ -107,7 +107,8 @@
 <script src="chart.js"></script>
 <script>
 getExamList(false);
-visualizeScores(false, "student");
+var user = $("meta[name='user_id']").attr("content");
+visualizeScores(false, user);
 </script>
   </body>
 </html>

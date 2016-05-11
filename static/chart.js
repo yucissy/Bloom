@@ -1,6 +1,27 @@
-function visualizeScores(aggregate, page) {
+function examDataComplete(examID, button) {
+	var user_ID = $("meta[name='user_id']").attr("content");
+  	var course_ID = $("meta[name='course_id']").attr("content");
+  	var toSend = {userID: user_ID, courseID: course_ID, examID: examID};
+
+  	var request = new XMLHttpRequest();
+  	request.open('POST', '/readyForData', true);
+  	request.setRequestHeader('Content-Type', 'application/json');
+	request.send(JSON.stringify(toSend));
+
+	request.onreadystatechange = function() {
+		if (request.readyState == 4 && request.status == 200) {
+	        var response = JSON.parse(request.responseText);
+	        if (response.status == "false") {
+	        	button.attr('disabled', 'true');
+	        }
+	    } 
+	}
+}
+
+
+function visualizeScores(aggregate, userID) {
 	   	$("#part3").empty();
-  		var user_ID = $("meta[name='user_id']").attr("content");
+  		var user_ID = userID;
   		var course_ID = $("meta[name='course_id']").attr("content");
 	    var toSend = {userID: user_ID, courseID: course_ID};
 
@@ -20,11 +41,11 @@ function visualizeScores(aggregate, page) {
 					$('.score').css('display', 'none');
 					if (aggregate) {
 						$.each(response.aggregate, function(i, v) {
-	                	makeBarChart(v, true, page);
+	                	makeBarChart(v, true);
 	                });
 					} else {
 	                $.each(response.reports, function(i, v) {
-	                	makeBarChart(v, false, page);
+	                	makeBarChart(v, false);
 	                });
 	        	}
 	        	setTimeout(function() {
@@ -46,13 +67,17 @@ function getColor(percent) {
   return "#ED1B24";
 }
 
-function makeButton(div, examID, page) {
+function makeButton(div, examID, count) {
+
+	
 
 	var button = div.append("button")
 		.attr("type", "button")
 		.attr("class", "btn btn-default exam-report")
 		.attr("aria-label", "Left Align")
 		.attr("id", examID);
+
+	examDataComplete(examID, button);
 
 
 	button.append("span")
@@ -66,7 +91,8 @@ function makeButton(div, examID, page) {
 }
 
 //actual code
-function makeBarChart(data, agg, page) {
+function makeBarChart(data, agg) {
+
   var newDiv = d3.select("#part3")
             .append("div")
             .attr("class", "category");
@@ -75,9 +101,16 @@ function makeBarChart(data, agg, page) {
   var header = newDiv.append("h3")
   	.text(title);
 
-  if (page == "professor") {
-   makeButton(header, data.test._id); 	
-  }
+  var count = data.test.count;
+  var students = "STUDENTS";
+  if (count==1)
+  	students = "STUDENT";
+  if (count==undefined)
+	count = 0;
+
+
+  makeButton(header, data.test._id, count); 	
+
 
   newDiv.append("div")
   	.style("clear", "both");
@@ -97,14 +130,7 @@ function makeBarChart(data, agg, page) {
     .text(categoryTitle.toUpperCase());
 
 
-
   if (agg) {
-    	var count = data.test.count;
-    	var students = "STUDENTS";
-		if (count==1)
-		  students = "STUDENT";
-		if (count==undefined)
-			count = 0;
 		par.append("h2")
 		  	.attr("class", "right")
 		  	.text(count +" "+students);
