@@ -151,6 +151,7 @@ function getExamList(prof) {
     request.open('POST', '/getExams', true);
     request.setRequestHeader('Content-Type', 'application/json');
     request.send(JSON.stringify(toSend));
+
     request.onreadystatechange = function() {
        if (request.readyState == 4 && request.status == 200) {
             var response = JSON.parse(request.responseText);
@@ -163,51 +164,6 @@ function getExamList(prof) {
                     $('#exam_list').append("<p class='unselected exam'>"+v.title+"</p>");
                 }
             });
-
-            $("body").on("click", ".exam.unselected", function(){
-                $('#exam_list').empty();
-                var toSelect = $(this).text();
-                $.each(examlist, function(i, v) {
-                    if (v.title == toSelect) {
-                        $('#exam_list').append("<div class='curr exam'><p>"+v.title+"</p></div>");
-                    } else {
-                        $('#exam_list').append("<p class='unselected exam'>"+v.title+"</p>");
-                    }
-                });
-                var user = $("meta[name='user_id']").attr("content");
-                if (prof) {
-                    $("#part2").hide();
-                    $("#part3").show();
-
-                    $('#select_1').css('font-weight', 'normal');
-                    $('#select_2').css('font-weight', 'bold');
-
-                    
-                    visualizeScores(true, user);
-                } else {
-                    visualizeScores(false, user);
-                }
-            });
-
-            if (prof) {
-                $("#select_1").on('click', function() {
-                    $('#exam_list').empty();
-                    $.each(examlist, function(i, v) {
-                        $('#exam_list').append("<p class='unselected exam'>"+v.title+"</p>");
-                    });
-                });
-
-                $("#select_2").on('click', function() {
-                    $('#exam_list').empty();
-                    $.each(examlist, function(i, v) {
-                        if (i == 0) {
-                            $('#exam_list').append("<div class='curr exam'><p>"+v.title+"</p></div>");
-                        } else {
-                            $('#exam_list').append("<p class='unselected exam'>"+v.title+"</p>");
-                        }
-                    });
-                });
-            }
         }
     };
 }

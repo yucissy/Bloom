@@ -57,9 +57,6 @@
           {{/other}}
         {{/course}}
         </div>
-        <div class="new_exam">
-          <p>New Course</p>
-        </div>
         <div id="exam_container">
         <h2>EXAMS</h2>
         <div id="exam_list">
@@ -114,19 +111,28 @@
 
 <script>
 getExamList(false);
-<<<<<<< HEAD
 var user = $("meta[name='user_id']").attr("content");
 visualizeScores(false, user);
-=======
-visualizeScores(false, "student");
 
 $('body').on('click', '.course.unselected', function() {
   getCourseList($(this).text());
   $("meta[name='course_id']").attr("content", $(this).text());
-  visualizeScores(false, "student");
+  visualizeScores(false, user);
   getExamList(false);
 });
->>>>>>> 096f8750111e2d7b421f7cb30789de0903d02800
+
+$("body").on("click", ".exam.unselected", function(){
+    var curr = $('.exam.curr').text();
+    $('.exam.curr').replaceWith("<p class='unselected exam'>"+curr+"</p>");
+    var select = $(this).text();
+    var index = $('#exam_list').find('p:contains("'+select+'")').index();
+    
+    $(this).replaceWith("<div class='curr exam'><p>"+select+"</p></div>");
+
+    $('.category')[index].scrollIntoView( true );
+
+  });
+
 </script>
   </body>
 </html>

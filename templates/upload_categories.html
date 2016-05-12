@@ -176,6 +176,7 @@
 </div>
 
 <script>
+  var user = $("meta[name='user_id']").attr("content");
   $('#part3').hide();
 
   $('.new_exam').on('click', function() {
@@ -190,13 +191,23 @@
   $("#select_2").on('click', function() {
 	  $("#part2").hide();
 	  $("#part3").show();
-	  var user = $("meta[name='user_id']").attr("content");
+    if (!$('#exam_list').is(':empty')) {
+      var curr = $('.exam.curr').text();
+      $('.exam.curr').replaceWith("<p class='unselected exam'>"+curr+"</p>");
+      var select = $('#exam_list').contents().first().text();
+      $('#exam_list').contents().first().replaceWith("<div class='curr exam'><p>"+select+"</p></div>");
+    }
+    
 	  visualizeScores(true, user);
   });
 
   $("#select_1").on('click', function() {
 	  $("#part3").hide();
 	  $("#part2").show();
+    if (!$('#exam_list').is(':empty')) {
+      var curr = $('.exam.curr').text();
+      $('.exam.curr').replaceWith("<p class='unselected exam'>"+curr+"</p>");
+    }
 	  // visualizeRoster();
   });
 
@@ -205,9 +216,28 @@
   $('body').on('click', '.course.unselected', function() {
     getCourseList($(this).text());
     $("meta[name='course_id']").attr("content", $(this).text());
-    visualizeScores(true, "professor");
+    visualizeScores(true, user);
     visualizeRoster();
     getExamList(true);
+  });
+
+  $("body").on("click", ".exam.unselected", function(){
+    var curr = $('.exam.curr').text();
+    $('.exam.curr').replaceWith("<p class='unselected exam'>"+curr+"</p>");
+    var select = $(this).text();
+    var index = $('#exam_list').find('p:contains("'+select+'")').index();
+    
+    $(this).replaceWith("<div class='curr exam'><p>"+select+"</p></div>");
+
+    if (!$('#part3').is(':visible')) {
+      $("#part2").hide();
+      $("#part3").show();
+      visualizeScores(true, user);
+      setTimeout(function(){$('.category')[index].scrollIntoView( true );}, 1000);
+    } else {
+      $('.category')[index].scrollIntoView( true );
+    }
+
   });
 </script>
 
