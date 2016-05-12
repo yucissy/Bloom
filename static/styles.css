@@ -111,23 +111,23 @@ input {
 	bottom:0px;
 	left:0px;
 	right:0px;
-	overflow-y:scroll;
+	overflow-y:auto;
 	overflow-x:hidden;
 }
 .col-md-2 {
 	position:fixed;
-	height:100%;
+	top:190px;
+	bottom:0px;
 	background-color:#2B2A2A;
 	color:white;
-	overflow-y:scroll;
+	overflow-y:auto;
+	overflow-x:hidden;
 }
 #main {
 	left: 17%;
 	position:absolute;
 	background-color:#1A1A1A;
-	height:100%;
 	color:white;
-	padding-bottom:1000px;
 }
 .modal-content p, h4, h3, h2{
 	color:black;
@@ -374,7 +374,4 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 }
 .modal-content h2 {
 	text-align:left;
-}
-.modal-backdrop {
-
 }

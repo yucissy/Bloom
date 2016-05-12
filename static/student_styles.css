@@ -16,14 +16,13 @@
 }
 #exam_container {
 	background-color:#2f2c29;
-	height:100%;
 	margin-top:10px;
+	padding-bottom:15px;
 }
 #part1 {
 	color:black;
 	background-color:#eaeae3;
 	width:700px;
-	height:100%;
 	padding:40px;
 	border-radius:8px;
 }
