@@ -195,16 +195,6 @@ $(document).ready(function() {
         }
     );
 
-    $('#part3').on( 'click', '.exam-report', function() {
-    	var exam_ID = $(this).attr('id');
-    	var user_ID = $("meta[name='user_id']").attr("content");
-
-        $form = $('<form action="/downloadPublicData" method="POST"></form>');
-        $form.append("<input type='hidden' name='examID' value='"+exam_ID+"'/>");
-        $form.append("<input type='hidden' name='userID' value='"+user_ID+"'/>");
-        $form.submit();
-    });
-
     $('#submit').on('click', function() {
     	visualizeRoster();
     	var user = $("meta[name='user_id']").attr("content");
