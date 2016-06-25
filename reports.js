@@ -75,15 +75,36 @@ function Reports(db) {
 		csv.parse(data, {columns:true}, function(err, output) {
 			var check = output[0];
 			if ('qid' in check && 'max_points' in check && 'blooms' in check) {
-				var test = make(output);
-				db.insertTestForCourse(course, name, test, function(error){
-	                if (error != null) {
-	                	console.log(error);
-	                	callback('fail');
-	                } else {
-	                	callback('success');
-	                }
-	            });
+				var proper_input = true;
+				var qidList = []
+				for (var i = 0; i < output.length; i++) {
+					var questionData = output[i];
+					var qid = questionData['qid'];
+					var max_points = questionData['max_points'];
+					if (qidList.indexOf(qid) != -1) { //check if the qid is already used.
+						proper_input = false;
+						break;
+					}
+					qidList.push(qid);
+					if (max_points < 0) {
+						proper_input = false;
+						break;
+					}
+				}
+				if (proper_input) {
+					var test = make(output);
+					db.insertTestForCourse(course, name, test, function(error){
+						if (error != null) {
+							console.log(error);
+							callback('fail');
+						} else {
+							callback('success');
+						}
+					});
+				}
+				else {
+					console.log('ERROR: bad csv input, check for proper values');
+				}
 			} else {
 				console.error('ERROR: bad csv input');
 				//error
