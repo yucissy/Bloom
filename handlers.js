@@ -277,7 +277,7 @@ var exports = function(app, db) {
 		});
 	});
 
-	app.get('/getCumulative', function(req, res) {
+	app.post('/getCumulative', function(req, res) {
 		var user = req.body.userID;
 		// var user = "B00111111"
 		db.findReportForStudent(user, function(rts) {

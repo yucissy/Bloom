@@ -27,7 +27,87 @@ function getExam(exam_ID, user_ID) {
     }
 }
 
+function getCategoryColor(percent) {
+  if (percent > 80)
+    return "#009247";
+  if (percent > 60)
+    return "#86D500";
+  if (percent > 40)
+    return "#FFE200";
+  if (percent > 20)
+    return "#FF7A05";
+  return "#fc64bd";
+}
 
+function visualizeAreas() {
+    var user_ID = $("meta[name='user_id']").attr("content");
+    var course_ID = $("meta[name='course_id']").attr("content");
+    var toSend = {userID: user_ID, courseID: course_ID};
+
+    var request = new XMLHttpRequest();
+    request.open('POST', '/getCumulative', true);
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.send(JSON.stringify(toSend));
+
+    request.onreadystatechange = function() {
+        if (request.readyState == 4 && request.status == 200) {
+            var response = JSON.parse(request.responseText);
+            var listDiv = d3.select("#part2");
+            $("#part2").empty();
+
+            if (response.cumulative.length == 0) {
+                d3.select("#part2")
+                    .append("p")
+                    .text("No areas to show yet.");
+            }
+
+            $.each(response.cumulative, function(index, object) {
+                listDiv.append("h2")
+                    .text(object.main_cat_id.name.toUpperCase());
+
+                $.each(object.sub_cats, function(index, sub_cat) {
+                    var listRow = listDiv.append("div")
+                        .attr('class', 'category_row');
+
+                    listRow.append("div")
+                        .attr('class', 'category_name')
+                        .text(object.main_cat_id.sub_categories[index]);
+
+                    listRow.append("div")
+                        .attr('class', 'category_score')
+                        .text(sub_cat.percentage + ' %')
+                        .style('background-color', getCategoryColor(sub_cat.percentage));
+
+                    listRow.append("div")
+                        .attr('class', 'more')
+                        .text(' ? ')
+                        .style('border', '2px solid '+getCategoryColor(sub_cat.percentage));
+
+                    listDiv.append("hr")
+                        .style('border-color', '#e0e0de')
+                        .style('border-width', '3px')
+                        .style('margin', '0px');
+                });
+
+
+            });
+
+                
+            $('.more').hover(function() {
+                console.log($(this).siblings());
+                $(this).siblings('.category_name').css('background-color', 'white');
+                $(this).siblings('.category_name').css('color', '#4D4D4D');
+                $(this).parent().css('background-color', 'lightgrey');
+            }, function() {
+                $(this).siblings('.category_name').css('background-color', '#4D4D4D');
+                $(this).siblings('.category_name').css('color', 'white');
+                $(this).parent().css('background-color', 'initial');
+            }
+            );
+
+        } 
+    }
+}
 
 $(document).ready(function() {
 

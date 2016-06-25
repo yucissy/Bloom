@@ -183,6 +183,8 @@ $(function() {
     	reader.readAsText(selected);
 	});
 });
+
+
 $(document).ready(function() {
 	visualizeRoster();
 

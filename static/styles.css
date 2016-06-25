@@ -375,3 +375,48 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 .modal-content h2 {
 	text-align:left;
 }
+.category_row {
+	padding:10px;
+}
+.category_name {
+    display: inline-block;
+    border-radius: 15px;
+    font-size: .6em;
+    padding: 10px;
+    background-color: #4D4D4D;
+    min-width: 200px;
+    margin: 0 auto;
+    text-align: center;
+    color: white;
+    border:2px solid #b2b2b2;
+}
+.category_score {
+    display: inline-block;
+    margin-left: 150px;
+    min-width: 200px;
+    background-color: green;
+    border-radius: 15px;
+    padding: 10px 40px 10px 40px;
+    font-size: .6em;
+    text-align: center;
+    font-weight: bold;
+    color: #4D4D4D;
+}
+.more {
+    padding: 4px 15px 8px 15px;
+    background-color: #4D4D4D;
+    border-radius: 15px;
+    display: inline-block;
+    margin: 0 auto;
+    text-align: center;
+    margin-left: 10px;
+    font-size:.8em;
+    color:white;
+    font-weight:bold;
+}
+.more:hover {
+	background-color:white;
+	color: #4D4D4D;
+	cursor:pointer;
+	cursor:hand;
+}

@@ -70,10 +70,24 @@
    
 
         <h1 id="curr_title">{{course.0.title}}</h1>
-        	<div id="part3">
-        	</div>
-       
+        <div id="prof_selector">
+          <div class="prof_select"><h2 class="selected" id="select_1">EXAMS</h2></div>
+          <div class="prof_select"><h2 id="select_2">AREAS</h2></div>
+        </div>
+        <hr style="color:gray">
+           
+                        
+        <div id="part2" style="display:none">
+            
+            <!-- <div class="category_row">
+            <div class="category_name">Remembering</div>
+            <div class="category_score">55 %</div>
+            <div class="more"></div>
+            </div> -->
+        </div>
 
+        <div id="part3">
+        </div>
         </div>
       </div>
     </div>
@@ -133,6 +147,38 @@ $("body").on("click", ".exam.unselected", function(){
     $('.category')[index].scrollIntoView( true );
 
   });
+
+$('.prof_select').on('click', function() {
+    $(this).children("h2").css('font-weight', 'bold');
+    $(this).siblings('').children("h2").css('font-weight', 'normal');
+});
+    
+$("#select_2").on('click', function() {
+	  $("#part3").hide();
+	  $("#part2").show();
+
+    visualizeAreas();
+    
+    if (!$('#exam_list').is(':empty')) {
+      var curr = $('.exam.curr').text();
+      $('.exam.curr').replaceWith("<p class='unselected exam'>"+curr+"</p>");
+    }
+
+});
+                  
+$("#select_1").on('click', function() {
+	  $("#part2").hide();
+	  $("#part3").show();
+    if (!$('#exam_list').is(':empty')) {
+      var curr = $('.exam.curr').text();
+      $('.exam.curr').replaceWith("<p class='unselected exam'>"+curr+"</p>");
+      var select = $('#exam_list').contents().first().text();
+      $('#exam_list').contents().first().replaceWith("<div class='curr exam'><p>"+select+"</p></div>");
+    }
+    visualizeScores(false, user);
+  });
+                  
+
 
 </script>
   </body>
