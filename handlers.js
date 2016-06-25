@@ -103,16 +103,22 @@ var exports = function(app, db) {
 		var course_title = req.body.title;
 		var sem = req.body.semester;
 		var data = req.body.data;
-
+		
 		// user = 'B00999999';
 		// course_id = 'CSCI9999';
 		// course_title = 'Testing This Web App';
 		// sem = 'Spring 2017';
 		// data = 'Student,ID\nKatie Han,B00666666\nStudent Tester,B00111111\nAnother Student,B00222222';
-
-		courses.addNewCourse(course_id, course_title, sem, user, data, function(stat) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({status : stat}));
+		
+		db.getUserEmail(user, function(email) {
+			db.isUserStudent(email, function(result, person) {
+				if (!result) {
+					courses.addNewCourse(course_id, course_title, sem, user, data, function(stat) {
+						res.setHeader('Content-Type', 'application/json');
+						res.send(JSON.stringify({status : stat}));
+					});
+				}
+			});
 		});
 	});
 

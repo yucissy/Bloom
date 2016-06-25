@@ -294,6 +294,19 @@ function Database() {
             }
         });
     }
+	
+	this.findStudyTipsForCategory = function (categoryId, callback) {
+        Category.findOne({_id: categoryId}).exec(function(err, category) {
+            if (err)
+                callback("ERR: Could not find category: " + categoryId + ".");
+            else {
+                if (category != null)
+                    callback(category.tip);
+                else
+                    callback("ERR: Could not find category: " + categoryId + ".");
+            }
+        });
+	}
 
     this.getUID = function(em, callback) {
         User.findOne({email : em}).exec(function(err, user) {
@@ -307,6 +320,19 @@ function Database() {
             }
         });
     }
+	
+	this.getUserEmail = function (userId, callback) {
+        User.findOne({_id : userId}).exec(function(err, user) {
+            if (err)
+                callback("ERR: Could not find a user with id: " + userId + ".");
+            else {
+                if (user != null)
+                    callback(user.email);
+                else
+                    callback("ERR: Could not find a user with id: " + userId + ".");
+            }
+        });
+	}
 
     // functions for updating values (aggregate data + student count of those who inputted)
     this.updateTestAggregateData = function (testId, questions, callback) { //questions {1:4, 2:5, 3:6}
