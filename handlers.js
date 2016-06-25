@@ -277,6 +277,16 @@ var exports = function(app, db) {
 		});
 	});
 
+	app.get('/getCumulative', function(req, res) {
+		var user = req.body.userID;
+		// var user = "B00111111"
+		db.findReportForStudent(user, function(rts) {
+			var toReturn = reports.calculateCumulativeScore(rts);
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({cumulative: toReturn}));
+		});
+	});
+
 	app.post('/downloadAggregate', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;

@@ -54,7 +54,8 @@ function Database() {
     var categorySchema = new mongoose.Schema({
         _id: String,
         name: String,
-        sub_categories: [String]
+        sub_categories: [String],
+        tip: [String]
     });
 
     var User = mongoose.model('User', userSchema);

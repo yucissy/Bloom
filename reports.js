@@ -137,6 +137,38 @@ function Reports(db) {
 		return Math.round(points / total * 10000)/100;
 	}
 
+	this.calculateCumulativeScore = function(reports) {
+		var catTotalAndCount = {};
+
+		for (var i = 0; i < reports.length; i++) {
+			for (var k = 0; k < reports[i].categories.length; k++) {
+				var category = reports[i].categories[k].main_cat_id;
+				catTotalAndCount[category.id] = catTotalAndCount[category.id] 
+					|| {mainCat: category, count: 0, subCats: []};
+				catTotalAndCount[category.id].count++;
+
+				for (var j = 0; j < reports[i].categories[k].sub_cats.length; j++) {
+					catTotalAndCount[category.id].subCats[j] = (catTotalAndCount[category.id].subCats[j] || 0)
+						+ reports[i].categories[k].sub_cats[j].percentage;
+				}
+			}
+		}
+
+		var catToReturn = [];
+
+		for (var catId in catTotalAndCount) {
+			var catToAppend = {main_cat_id: catTotalAndCount[catId].mainCat, sub_cats: []};
+			var currentCategory = catTotalAndCount[catId];
+			for (var k = 0; k < currentCategory.subCats.length; k++) {
+				var cumulativePer = Math.round(currentCategory.subCats[k] / currentCategory.count * 100)/100;
+				catToAppend.sub_cats.push({_id: k, percentage: cumulativePer});
+			}
+			catToReturn.push(catToAppend);
+		}
+
+		return catToReturn;
+	}
+
 	// a text file!!!
 	// course name
 	// test name, test avg score, test avg categories score
