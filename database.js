@@ -53,9 +53,10 @@ function Database() {
 
     var categorySchema = new mongoose.Schema({
         _id: String,
+        creator: { type: String, ref: 'User' },
         name: String,
         sub_categories: [String],
-        tip: [String]
+        tips: [String]
     });
 
     var User = mongoose.model('User', userSchema);
@@ -130,18 +131,20 @@ function Database() {
         });
     }
 
-    this.insertCategory = function(categoryId, categoryName, categorySubcategories, callback) {
+    this.insertCategory = function(categoryId, creatorId, categoryName, categorySubcategories, categoryStudyTips, callback) {
         var categoryToInsert = new Category({
             _id: categoryId,
+            creator: creatorId,
             name: categoryName,
-            sub_categories: categorySubcategories
+            sub_categories: categorySubcategories,
+            tips: categoryStudyTips
         });
 
         categoryToInsert.save(function(err, category) {
             if (err) 
                 callback("ERR: Could not save Category: " + categoryName + ".");
             else 
-                callback(null);
+                callback("success");
         });
     }
 
@@ -294,6 +297,29 @@ function Database() {
             }
         });
     }
+	
+	this.findStudyTipsForCategory = function (categoryId, callback) {
+        Category.findOne({_id: categoryId}).exec(function(err, category) {
+            if (err)
+                callback("ERR: Could not find category: " + categoryId + ".");
+            else {
+                if (category != null)
+                    callback(category.tip);
+                else
+                    callback("ERR: Could not find category: " + categoryId + ".");
+            }
+        });
+	}
+	
+	//Get all categories created by the Professor + Bloom
+	this.findCategoriesForProfessor = function (profId, callback) {
+		Category.find({$or: [{'creator': profId}, {'_id': 'blooms'}]}).exec(function(err, categories) {
+			if (err)
+				callback("ERR: Could not find categories for " + profId + ".");
+			else
+				callback(categories);
+		});
+	}
 
     this.getUID = function(em, callback) {
         User.findOne({email : em}).exec(function(err, user) {
@@ -307,6 +333,19 @@ function Database() {
             }
         });
     }
+	
+	this.getUserEmail = function (userId, callback) {
+        User.findOne({_id : userId}).exec(function(err, user) {
+            if (err)
+                callback("ERR: Could not find a user with id: " + userId + ".");
+            else {
+                if (user != null)
+                    callback(user.email);
+                else
+                    callback("ERR: Could not find a user with id: " + userId + ".");
+            }
+        });
+	}
 
     // functions for updating values (aggregate data + student count of those who inputted)
     this.updateTestAggregateData = function (testId, questions, callback) { //questions {1:4, 2:5, 3:6}

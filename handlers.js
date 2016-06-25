@@ -103,16 +103,22 @@ var exports = function(app, db) {
 		var course_title = req.body.title;
 		var sem = req.body.semester;
 		var data = req.body.data;
-
+		
 		// user = 'B00999999';
 		// course_id = 'CSCI9999';
 		// course_title = 'Testing This Web App';
 		// sem = 'Spring 2017';
 		// data = 'Student,ID\nKatie Han,B00666666\nStudent Tester,B00111111\nAnother Student,B00222222';
-
-		courses.addNewCourse(course_id, course_title, sem, user, data, function(stat) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({status : stat}));
+		
+		db.getUserEmail(user, function(email) {
+			db.isUserStudent(email, function(result, person) {
+				if (!result) {
+					courses.addNewCourse(course_id, course_title, sem, user, data, function(stat) {
+						res.setHeader('Content-Type', 'application/json');
+						res.send(JSON.stringify({status : stat}));
+					});
+				}
+			});
 		});
 	});
 
@@ -122,6 +128,18 @@ var exports = function(app, db) {
 		db.findUserCourses(user, function(crs) {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({courses : crs}));
+		});
+	});
+
+	app.post('/makeNewCategory', function(req, res) {
+		var user = req.body.userID;
+		var catId = req.body.categoryID;
+		var catName = req.body.categoryName;
+		var subcategories = req.body.subCategories;
+		var tips = req.body.studyTips;
+		db.insertCategory(catId, user, catName, subcategories, tips, function(stat) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({status : stat}));
 		});
 	});
 
@@ -279,11 +297,31 @@ var exports = function(app, db) {
 
 	app.post('/getCumulative', function(req, res) {
 		var user = req.body.userID;
+		var course = req.body.courseID;
 		// var user = "B00111111"
-		db.findReportForStudent(user, function(rts) {
-			var toReturn = reports.calculateCumulativeScore(rts);
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({cumulative: toReturn}));
+
+		db.findTestFromCourse(course, function(data) {
+			db.findReportForStudent(user, function(rts) {
+				var reportsToCalculate = [];
+
+				for (var i = 0; i < data.length; i++) {
+					var flag = false;
+					for (var j = 0; j < rts.length; j++) {
+						if (String(data[i]._id) == String(rts[j].test_id)) {
+							flag = true;
+							break;
+						}
+					}
+					if (flag) {
+						reportsToCalculate.push(data[i]);
+					}
+				}
+
+				var toReturn = reports.calculateCumulativeScore(reportsToCalculate);
+
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({cumulative: toReturn}));
+			});
 		});
 	});
 

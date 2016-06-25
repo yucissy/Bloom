@@ -4,7 +4,7 @@ function Courses(db) {
 	this.addNewCourse = function(course, title, semester, professor, data, callback) {
 		csv.parse(data, {columns:true}, function(err, output) {
 			var check = output[0];
-			if ('Student' in check && 'ID' in check) {
+			if (check != null && 'Student' in check && 'ID' in check) {
 				var students = [];
 
 				for (var i=0; i < output.length; i++) {
