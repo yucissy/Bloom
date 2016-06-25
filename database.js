@@ -53,9 +53,10 @@ function Database() {
 
     var categorySchema = new mongoose.Schema({
         _id: String,
+        creator: { type: String, ref: 'User' },
         name: String,
         sub_categories: [String],
-        tip: [String]
+        tips: [String]
     });
 
     var User = mongoose.model('User', userSchema);
@@ -130,18 +131,20 @@ function Database() {
         });
     }
 
-    this.insertCategory = function(categoryId, categoryName, categorySubcategories, callback) {
+    this.insertCategory = function(categoryId, creatorId, categoryName, categorySubcategories, categoryStudyTips, callback) {
         var categoryToInsert = new Category({
             _id: categoryId,
+            creator: creatorId,
             name: categoryName,
-            sub_categories: categorySubcategories
+            sub_categories: categorySubcategories,
+            tips: categoryStudyTips
         });
 
         categoryToInsert.save(function(err, category) {
             if (err) 
                 callback("ERR: Could not save Category: " + categoryName + ".");
             else 
-                callback(null);
+                callback("success");
         });
     }
 
