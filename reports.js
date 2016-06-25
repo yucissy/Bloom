@@ -76,16 +76,16 @@ function Reports(db) {
 			var check = output[0];
 			if ('qid' in check && 'max_points' in check && 'blooms' in check) {
 				var proper_input = true;
-				var qidList = []
+				var qidDict = {}
 				for (var i = 0; i < output.length; i++) {
 					var questionData = output[i];
 					var qid = questionData['qid'];
 					var max_points = questionData['max_points'];
-					if (qidList.indexOf(qid) != -1) { //check if the qid is already used.
+					if (qid in qidDict) { //check if the qid is already used.
 						proper_input = false;
 						break;
 					}
-					qidList.push(qid);
+					qidDict[qid] = 1;
 					if (max_points < 0) {
 						proper_input = false;
 						break;
