@@ -310,6 +310,16 @@ function Database() {
             }
         });
 	}
+	
+	//Get all categories created by the Professor + Bloom
+	this.findCategoriesForProfessor = function (profId, callback) {
+		Category.find({$or: [{'creator': profId}, {'_id': 'blooms'}]}).exec(function(err, categories) {
+			if (err)
+				callback("ERR: Could not find categories for " + profId + ".");
+			else
+				callback(categories);
+		});
+	}
 
     this.getUID = function(em, callback) {
         User.findOne({email : em}).exec(function(err, user) {
