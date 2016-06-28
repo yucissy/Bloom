@@ -333,19 +333,6 @@ function Database() {
             }
         });
     }
-	
-	this.getUserEmail = function (userId, callback) {
-        User.findOne({_id : userId}).exec(function(err, user) {
-            if (err)
-                callback("ERR: Could not find a user with id: " + userId + ".");
-            else {
-                if (user != null)
-                    callback(user.email);
-                else
-                    callback("ERR: Could not find a user with id: " + userId + ".");
-            }
-        });
-	}
 
     // functions for updating values (aggregate data + student count of those who inputted)
     this.updateTestAggregateData = function (testId, questions, callback) { //questions {1:4, 2:5, 3:6}
@@ -500,6 +487,19 @@ function Database() {
         });
     }
 
+	this.isUserStudentById = function (userId, callback) {
+        User.findOne({_id: userId}).populate('courses', 'title').exec(function(error, user) {
+            if (error || user == null) {
+                callback("ERR: Could not find a user associated with the ID " + userId + ".", null);
+            }
+            else {
+                if (user.type === "Student")
+                    callback(true, user);
+                else
+                    callback(false, user);
+            }
+        });
+    }
 }
 
 module.exports = Database;

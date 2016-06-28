@@ -110,15 +110,13 @@ var exports = function(app, db) {
 		// sem = 'Spring 2017';
 		// data = 'Student,ID\nKatie Han,B00666666\nStudent Tester,B00111111\nAnother Student,B00222222';
 		
-		db.getUserEmail(user, function(email) {
-			db.isUserStudent(email, function(result, person) {
-				if (!result) {
-					courses.addNewCourse(course_id, course_title, sem, user, data, function(stat) {
-						res.setHeader('Content-Type', 'application/json');
-						res.send(JSON.stringify({status : stat}));
-					});
-				}
-			});
+		db.isUserStudentById(user, function(result, person) {
+			if (!result) {
+				courses.addNewCourse(course_id, course_title, sem, user, data, function(stat) {
+					res.setHeader('Content-Type', 'application/json');
+					res.send(JSON.stringify({status : stat}));
+				});
+			}
 		});
 	});
 
@@ -137,9 +135,14 @@ var exports = function(app, db) {
 		var catName = req.body.categoryName;
 		var subcategories = req.body.subCategories;
 		var tips = req.body.studyTips;
-		db.insertCategory(catId, user, catName, subcategories, tips, function(stat) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({status : stat}));
+		
+		db.isUserStudentById(user, function(result, person) {
+			if (!result) {
+				db.insertCategory(catId, user, catName, subcategories, tips, function(stat) {
+					res.setHeader('Content-Type', 'application/json');
+					res.send(JSON.stringify({status : stat}));
+				});
+			}
 		});
 	});
 
@@ -155,9 +158,13 @@ var exports = function(app, db) {
 
 	app.post('/getCategoriesForProfessor', function(req, res){
 		var user = req.body.userID;
-		db.findCategoriesForProfessor(user, function(profCategories) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({categories : profCategories}));
+		db.isUserStudentById (user, function(result, person) {
+			if (!result) {
+				db.findCategoriesForProfessor(user, function(profCategories) {
+					res.setHeader('Content-Type', 'application/json');
+					res.send(JSON.stringify({categories : profCategories}));
+				});
+			}
 		});
 	});
 
@@ -282,19 +289,22 @@ var exports = function(app, db) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
 		// var course = 'CSCI1230'
-		db.findPopulatedTestFromCourse(course, function(tests) {
-			var toReturn = [];
-			for (var i = 0; i < tests.length; i++) {
-				var calc = reports.calculateAggregate(tests[i]);
-				toReturn.push({test: {_id: tests[i]._id,
-									  title: tests[i].title,
-									  count: tests[i].count}, 
-							   categories: calc});
+		db.isUserStudentById (user, function(result, person) {
+			if (!result) {
+				db.findPopulatedTestFromCourse(course, function(tests) {
+					var toReturn = [];
+					for (var i = 0; i < tests.length; i++) {
+						var calc = reports.calculateAggregate(tests[i]);
+						toReturn.push({test: {_id: tests[i]._id,
+											  title: tests[i].title,
+											  count: tests[i].count}, 
+									   categories: calc});
+					}
+					res.setHeader('Content-Type', 'application/json');
+					res.send(JSON.stringify({aggregate: toReturn}));
+				});
 			}
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({aggregate: toReturn}));
 		});
-
 	});
 
 	// aggregate report for a test
