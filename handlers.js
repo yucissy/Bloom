@@ -143,6 +143,24 @@ var exports = function(app, db) {
 		});
 	});
 
+	app.post('/getStudyTips', function(req, res){
+		var user = req.body.userID;
+		var catId = req.body.categoryID;
+
+		db.findStudyTipsForCategory(categoryID, function(tips) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({studyTips : tips}));
+		});
+	});
+
+	app.post('/getCategoriesForProfessor', function(req, res){
+		var user = req.body.userID;
+		db.findCategoriesForProfessor(user, function(profCategories) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({categories : profCategories}));
+		});
+	});
+
 	app.post('/sendExam', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
@@ -298,22 +316,23 @@ var exports = function(app, db) {
 	app.post('/getCumulative', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
-		// var user = "B00111111"
+		// var course = 'CSCI1320';
+		// var user = "B00111111";
 
 		db.findTestFromCourse(course, function(data) {
 			db.findReportForStudent(user, function(rts) {
 				var reportsToCalculate = [];
 
-				for (var i = 0; i < data.length; i++) {
+				for (var i = 0; i < rts.length; i++) {
 					var flag = false;
-					for (var j = 0; j < rts.length; j++) {
-						if (String(data[i]._id) == String(rts[j].test_id)) {
+					for (var j = 0; j < data.length; j++) {
+						if (String(rts[i].test_id) == String(data[j]._id)) {
 							flag = true;
 							break;
 						}
 					}
 					if (flag) {
-						reportsToCalculate.push(data[i]);
+						reportsToCalculate.push(rts[i]);
 					}
 				}
 

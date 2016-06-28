@@ -8,16 +8,23 @@ function Reports(db) {
 		'max_points': parseFloat
 	};
 
-	this.makeExamHelper = function(output) {
+	this.makeExamHelper = function(validCategories, output) {
 		var test = [];
+
 		for (var i=0; i<output.length; i++) {
-			var insert = {'categories' : []};
+			var insert = {categories : []};
 			for (var key in output[i]) {
 				if (key in transformers) {
 					insert[key] = transformers[key](output[i][key]);
 				} else {
-					// find category id from db
-					insert['categories'].push({'main_cat_id': key, 'sub_cat_id': parseInt(output[i][key])});
+					var keyIsValid = validCategories.some(function(curr) {
+						return curr._id == key;
+					});
+					if (keyIsValid) {
+						insert.categories.push({'main_cat_id': key, 'sub_cat_id': parseInt(output[i][key])});
+					} else {
+						//error
+					}
 				}
 			}
 			test.push(insert);
@@ -70,10 +77,10 @@ function Reports(db) {
 		wstream.write('Average Raw Score: ' + avg + "%\n\n");
 	}
 
-	this.makeExam = function(course, name, data, callback) {
+	this.makeExam = function(course, name, data, user, callback) {
 		var make = this.makeExamHelper;
 		csv.parse(data, {columns:true}, function(err, output) {
-			var check = output[0];
+			var check = output[0]; // check if rows have all required keys using first row
 			if ('qid' in check && 'max_points' in check && 'blooms' in check) {
 				var proper_input = true;
 				var qidDict = {}
@@ -92,14 +99,16 @@ function Reports(db) {
 					}
 				}
 				if (proper_input) {
-					var test = make(output);
-					db.insertTestForCourse(course, name, test, function(error){
-						if (error != null) {
-							console.log(error);
-							callback('fail');
-						} else {
-							callback('success');
-						}
+					db.findCategoriesForProfessor(user, function(validCategories){
+						var test = make(validCategories, output);
+						db.insertTestForCourse(course, name, test, function(error){
+							if (error != null) {
+								console.log(error);
+								callback('fail');
+							} else {
+								callback('success');
+							}
+						});
 					});
 				}
 				else {
