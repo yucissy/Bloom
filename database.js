@@ -304,7 +304,7 @@ function Database() {
                 callback("ERR: Could not find category: " + categoryId + ".");
             else {
                 if (category != null)
-                    callback(category.tip);
+                    callback(category.tips);
                 else
                     callback("ERR: Could not find category: " + categoryId + ".");
             }

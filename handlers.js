@@ -146,8 +146,8 @@ var exports = function(app, db) {
 	app.post('/getStudyTips', function(req, res){
 		var user = req.body.userID;
 		var catId = req.body.categoryID;
-
-		db.findStudyTipsForCategory(categoryID, function(tips) {
+		// var catId = "blooms"
+		db.findStudyTipsForCategory(catId, function(tips) {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({studyTips : tips}));
 		});
