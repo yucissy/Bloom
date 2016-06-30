@@ -420,3 +420,10 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 	cursor:pointer;
 	cursor:hand;
 }
+.studyTips {
+    text-align: center;
+    background-color: white;
+    font-weight: bold;
+    font-size: .5em;
+    border-radius: 15px;
+}

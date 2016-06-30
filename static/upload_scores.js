@@ -36,7 +36,25 @@ function getCategoryColor(percent) {
     return "#FFE200";
   if (percent > 20)
     return "#FF7A05";
-  return "#fc64bd";
+  return "#f24f4f";
+}
+
+function getStudyTips(userID, categoryID) {
+    var request = new XMLHttpRequest();
+    var toSend = {userID: userID, categoryID: categoryID};
+    var response = "error";
+    
+    request.open('POST', '/getStudyTips', true);
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.send(JSON.stringify(toSend));
+
+    request.onreadystatechange = function() {
+        if (request.readyState == 4 && request.status == 200) {
+            response = JSON.parse(request.responseText);
+        }
+    };
+
+    return response;
 }
 
 function visualizeAreas() {
@@ -52,7 +70,9 @@ function visualizeAreas() {
     request.onreadystatechange = function() {
         if (request.readyState == 4 && request.status == 200) {
             var response = JSON.parse(request.responseText);
+
             var listDiv = d3.select("#part2");
+
             $("#part2").empty();
 
             if (response.cumulative.length == 0) {
@@ -61,9 +81,16 @@ function visualizeAreas() {
                     .text("No areas to show yet.");
             }
 
-            $.each(response.cumulative, function(index, object) {
+            $.each(response.cumulative, function(index, object) {   
                 listDiv.append("h2")
                     .text(object.main_cat_id.name.toUpperCase());
+
+                var studyTips = JSON.parse($.ajax({
+                        type: "POST",
+                        url: '/getStudyTips',
+                        data: {userID: user_ID, categoryID: object.main_cat_id._id},
+                        async: false
+                    }).responseText).studyTips;
 
                 $.each(object.sub_cats, function(index, sub_cat) {
                     var listRow = listDiv.append("div")
@@ -81,14 +108,52 @@ function visualizeAreas() {
                     listRow.append("div")
                         .attr('class', 'more')
                         .text(' ? ')
-                        .style('border', '2px solid '+getCategoryColor(sub_cat.percentage));
+                        .style('border', '2px solid ' + getCategoryColor(sub_cat.percentage))
+                        .on('click', function() {
+                            if ($(this).siblings('.studyTips').length > 0) {
+                                console.log('siblings');
+                                console.log($(this).siblings('.studyTips'));
+                                var that = d3.select(this.parentNode.childNodes[3]);
+                                that.transition()
+                                    .duration(1000)
+                                    .style('color', 'lightgrey')
+                                    .style('opacity', '0')
+                                    .style('height', '0px')
+                                    .style('padding', '0px')
+                                    .style('margin', '0px');
+
+                                var tips = $(this).siblings('.studyTips');
+                                
+                                setInterval(function() { tips.remove();}, 1000);
+
+                            } else {
+                                d3.select(this.parentNode)
+                                    .append("div")
+                                    .attr('class', 'studyTips')
+                                    .style('border', '2px solid ' + getCategoryColor(sub_cat.percentage))                                   
+                                    .style('height', '0px')
+                                    .style('padding', '0px')
+                                    .style('opacity', '0')
+                                    .text('STUDY TIP: '+studyTips[index])
+                                    .style('color', 'white')
+                                    .style('margin', '0px')
+                                    .transition()
+                                    .duration(1000)
+                                    .style('padding', '20px')
+                                    .style('color', 'black')
+                                    .style('height', '100%')
+                                    .style('margin', '20px')
+                                    .style('opacity', '1');
+                                    
+                            }
+                        });
 
                     listDiv.append("hr")
                         .style('border-color', '#e0e0de')
                         .style('border-width', '3px')
                         .style('margin', '0px');
                 });
-
+    
 
             });
 
@@ -104,7 +169,6 @@ function visualizeAreas() {
                 $(this).parent().css('background-color', 'initial');
             }
             );
-
         } 
     }
 }
