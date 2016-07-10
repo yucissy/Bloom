@@ -7,7 +7,7 @@ function getExam(exam_ID, user_ID) {
     var user = $("meta[name='user_id']").attr("content");
     var toSend = {userID: user, examID: exam_ID};
     var request = new XMLHttpRequest();
-    request.open('POST', '/getExam', true);
+    request.open('POST', '/getExamById', true);
     request.setRequestHeader('Content-Type', 'application/json');
     request.send(JSON.stringify(toSend));
     request.onreadystatechange = function() {
@@ -44,7 +44,7 @@ function getStudyTips(userID, categoryID) {
     var toSend = {userID: userID, categoryID: categoryID};
     var response = "error";
     
-    request.open('POST', '/getStudyTips', true);
+    request.open('POST', '/getStudyTipsForCategory', true);
     request.setRequestHeader('Content-Type', 'application/json');
     request.send(JSON.stringify(toSend));
 
@@ -63,7 +63,7 @@ function visualizeAreas() {
     var toSend = {userID: user_ID, courseID: course_ID};
 
     var request = new XMLHttpRequest();
-    request.open('POST', '/getCumulative', true);
+    request.open('POST', '/getCumulativeReportForStudent', true);
     request.setRequestHeader('Content-Type', 'application/json');
     request.send(JSON.stringify(toSend));
 
@@ -87,7 +87,7 @@ function visualizeAreas() {
 
                 var studyTips = JSON.parse($.ajax({
                         type: "POST",
-                        url: '/getStudyTips',
+                        url: '/getStudyTipsForCategory',
                         data: {userID: user_ID, categoryID: object.main_cat_id._id},
                         async: false
                     }).responseText).studyTips;
@@ -183,7 +183,7 @@ $(document).ready(function() {
         var toSend = {userID: user_ID, examID: exam_ID};
 
         var request = new XMLHttpRequest();
-        request.open('POST', '/getScores', true);
+        request.open('POST', '/getScoreReportForExam', true);
         request.setRequestHeader('Content-Type', 'application/json');
         request.send(JSON.stringify(toSend));
         request.onreadystatechange = function() {
@@ -232,7 +232,7 @@ $(document).ready(function() {
 
             var toSend = {userID: userID, examID: examID, scores: scores};
             var request = new XMLHttpRequest();
-            request.open('POST', '/sendScores', true);
+            request.open('POST', '/submitStudentScoresForExam', true);
             request.setRequestHeader('Content-Type', 'application/json');
             request.send(JSON.stringify(toSend));
             request.onreadystatechange = function() {
@@ -275,7 +275,7 @@ function getCourseList(current) {
     var user_ID = $("meta[name='user_id']").attr("content");
     var toSend = {userID: user_ID};
     var request = new XMLHttpRequest();
-    request.open('POST', '/getCourses', true);
+    request.open('POST', '/getCoursesForUser', true);
     request.setRequestHeader('Content-Type', 'application/json');
     request.send(JSON.stringify(toSend));
 
@@ -302,7 +302,7 @@ function getExamList(prof) {
     var course_ID = $("meta[name='course_id']").attr("content");
     var toSend = {userID: user_ID, courseID: course_ID};
     var request = new XMLHttpRequest();
-    request.open('POST', '/getExams', true);
+    request.open('POST', '/getExamListForCourse', true);
     request.setRequestHeader('Content-Type', 'application/json');
     request.send(JSON.stringify(toSend));
 

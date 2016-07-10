@@ -29,7 +29,7 @@ function visualizeScores(aggregate, userID) {
 	    if (aggregate)
 	    	request.open('POST', '/getAllAggregate', true);
 	    else
-	    	request.open('POST', '/getAllScores', true);
+	    	request.open('POST', '/getAllScoresForStudent', true);
 	    request.setRequestHeader('Content-Type', 'application/json');
 	    request.send(JSON.stringify(toSend));
 	    request.onreadystatechange = function() {

@@ -13,7 +13,7 @@ function visualizeRoster() {
 	var postParameters = {courseID: course_ID, userID: user_ID};
 
 	var request = new XMLHttpRequest();
-	request.open('POST', '/getExams', true);
+	request.open('POST', '/getExamListForCourse', true);
     request.setRequestHeader('Content-Type', 'application/json');
     request.send(JSON.stringify(postParameters));
     request.onreadystatechange = function() {
@@ -27,7 +27,7 @@ function visualizeRoster() {
     }
 
     var request2 = new XMLHttpRequest();
-	request2.open('POST', '/getRoster', true);
+	request2.open('POST', '/getRosterForCourse', true);
     request2.setRequestHeader('Content-Type', 'application/json');
     request2.send(JSON.stringify(postParameters));
 
@@ -127,7 +127,7 @@ $(function() {
             var toSend = {courseID: course_ID, exam: examName, data: dataURL};
 
             var request = new XMLHttpRequest();
-            request.open('POST', '/sendExam', true);
+            request.open('POST', '/makeNewExam', true);
             request.setRequestHeader('Content-Type', 'application/json');
             request.send(JSON.stringify(toSend));
 

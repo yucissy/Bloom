@@ -120,7 +120,7 @@ var exports = function(app, db) {
 		});
 	});
 
-	app.post('/getCourses', function(req, res) {
+	app.post('/getCoursesForUser', function(req, res) {
 		var user = req.body.userID;
 
 		db.findUserCourses(user, function(crs) {
@@ -135,6 +135,12 @@ var exports = function(app, db) {
 		var catName = req.body.categoryName;
 		var subcategories = req.body.subCategories;
 		var tips = req.body.studyTips;
+
+		// user = "B00999999";
+		// catId = "test_cat";
+		// catName = "Test Category";
+		// subcategories = ["Chapter 1", "Chapter 2", "Chapter 3"];
+		// tips = ["Study ch 1", "study ch 2", "study ch 3"];
 		
 		db.isUserStudentById(user, function(result, person) {
 			if (!result) {
@@ -146,7 +152,7 @@ var exports = function(app, db) {
 		});
 	});
 
-	app.post('/getStudyTips', function(req, res){
+	app.post('/getStudyTipsForCategory', function(req, res){
 		var user = req.body.userID;
 		var catId = req.body.categoryID;
 		// var catId = "blooms"
@@ -158,6 +164,7 @@ var exports = function(app, db) {
 
 	app.post('/getCategoriesForProfessor', function(req, res){
 		var user = req.body.userID;
+		user = "B00999999";
 		db.isUserStudentById (user, function(result, person) {
 			if (!result) {
 				db.findCategoriesForProfessor(user, function(profCategories) {
@@ -168,7 +175,7 @@ var exports = function(app, db) {
 		});
 	});
 
-	app.post('/sendExam', function(req, res) {
+	app.post('/makeNewExam', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
 		var name = req.body.exam;
@@ -179,7 +186,7 @@ var exports = function(app, db) {
 		});
 	});
 
-	app.post('/sendScores', function(req, res) {
+	app.post('/submitStudentScoresForExam', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		var scores = req.body.scores;
@@ -191,7 +198,7 @@ var exports = function(app, db) {
 		});
 	});
 
-	app.post('/getExam', function(req, res) {
+	app.post('/getExamById', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		db.findTest({_id : exam}, function(data){
@@ -200,7 +207,7 @@ var exports = function(app, db) {
 		});
 	});
 
-	app.post('/getExams', function(req, res) {
+	app.post('/getExamListForCourse', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
 		db.findTestFromCourse(course, function(data) {
@@ -209,6 +216,7 @@ var exports = function(app, db) {
 		});
 	});
 
+	// exams where students have not submitted their scores yet
 	app.post('/getPendingExams', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
@@ -236,7 +244,7 @@ var exports = function(app, db) {
 	});
 
 	// A list of all categories report for a student in a course
-	app.post('/getAllScores', function(req, res) {
+	app.post('/getAllScoresForStudent', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
 		// var course = 'CSCI1230'
@@ -262,7 +270,7 @@ var exports = function(app, db) {
 	});
 
 	// categories report for student's test
-	app.post('/getScores', function(req, res) {
+	app.post('/getScoreReportForExam', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		// var exam = '5722c08ea598e9931e085fb8'
@@ -273,7 +281,7 @@ var exports = function(app, db) {
 		});
 	});
 
-	app.post('/getAverageScore', function(req, res){
+	app.post('/getClassAverageScoreForExam', function(req, res){
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		// var exam = '5722c08ea598e9931e085fb8'
@@ -323,7 +331,8 @@ var exports = function(app, db) {
 		});
 	});
 
-	app.post('/getCumulative', function(req, res) {
+	// scores to display along with study tips
+	app.post('/getCumulativeReportForStudent', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
 		// var course = 'CSCI1320';
@@ -354,6 +363,7 @@ var exports = function(app, db) {
 		});
 	});
 
+	// aggregate data for course - for professor use
 	app.post('/downloadAggregate', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
@@ -367,6 +377,7 @@ var exports = function(app, db) {
 		});
 	});
 
+	// individual exam data with student details - for professor only
 	app.post('/downloadExamData', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
@@ -384,6 +395,7 @@ var exports = function(app, db) {
 		});
 	});
 
+	// returns whether all students have submitted their scores (aka ready output class data)
 	app.post('/readyForData', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
@@ -399,6 +411,7 @@ var exports = function(app, db) {
 		});
 	});
 
+	// public data for individual exams - for students
 	app.post('/downloadPublicData', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
@@ -412,7 +425,7 @@ var exports = function(app, db) {
 		});
 	});
 
-	app.post('/getRoster', function(req, res) {
+	app.post('/getRosterForCourse', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
 
