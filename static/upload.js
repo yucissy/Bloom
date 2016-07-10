@@ -216,7 +216,15 @@ function getAvailableCategories() {
 $(document).ready(function() {
 	visualizeRoster();
 
+    $('#prof_categories').hide();
     getAvailableCategories();
+    $('#categories_button').click(function() {
+        if ($('#prof_categories').is(":visible")) {
+            $('#prof_categories').hide(500);
+        } else {
+            $('#prof_categories').show(500);
+        }
+    });
 
     $('#user_settings').hover(
         function() {
