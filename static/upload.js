@@ -184,9 +184,39 @@ $(function() {
 	});
 });
 
+function getAvailableCategories() {
+    var toSend = {userID: $("meta[name='user_id']").attr("content")}
+    var request = new XMLHttpRequest();
+    request.open('POST', '/getCategoriesForProfessor', true);
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.send(JSON.stringify(toSend));
+
+    request.onreadystatechange = function() {
+        if (request.readyState == 4 && request.status == 200) {
+            var response = JSON.parse(request.responseText);
+            for (var i = 0; i < response.categories.length; i++) {
+                var category = response.categories[i];
+                var categoryItem = document.createElement('li');
+                categoryItem.appendChild(document.createTextNode(category._id));
+                var subCategoryList = document.createElement('ul');
+                subCategoryList.setAttribute("style", "list-style: none;");
+                for (var j = 0; j < category.sub_categories.length; j++) {
+                    var subCategoryItem = document.createElement('li');
+                    subCategoryItem.appendChild(document.createTextNode(j + " : " + category.sub_categories[j]));
+                    subCategoryList.appendChild(subCategoryItem);
+                }
+                categoryItem.appendChild(subCategoryList);
+                $('#prof_categories').append(categoryItem);
+            }
+        }
+    }
+}
+
 
 $(document).ready(function() {
 	visualizeRoster();
+
+    getAvailableCategories();
 
     $('#user_settings').hover(
         function() {
@@ -202,4 +232,6 @@ $(document).ready(function() {
     	var user = $("meta[name='user_id']").attr("content");
     	visualizeScores(true, user);
     });
+
+
 });
