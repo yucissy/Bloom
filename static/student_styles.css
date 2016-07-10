@@ -91,7 +91,7 @@ th:nth-child(1) {
 .score {
 	display:none;
 }
-table {
+#roster {
 	background-color:white;
 	padding:0px;
 	border: solid #ccc 1px;
@@ -103,14 +103,14 @@ table {
 	border-collapse:separate !important;
 
 }
-td, th {
+#roster td, #roster th {
 	font-size:.6em;
 	padding-top:10px;
 	padding-bottom:10px;
 	padding-right:10px;
 	border:.5px solid #ccc;
 }
-thead tr {
+#roster thead tr {
 /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f9d49d+0,feb645+100 */
 background: #f9d49d; /* Old browsers */
 background: -moz-linear-gradient(top, #f9d49d 0%, #feb645 100%); /* FF3.6-15 */
@@ -118,20 +118,20 @@ background: -webkit-linear-gradient(top, #f9d49d 0%,#feb645 100%); /* Chrome10-2
 background: linear-gradient(to bottom, #f9d49d 0%,#feb645 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9d49d', endColorstr='#feb645',GradientType=0 ); /* IE6-9 */
 }
-tbody td {
+#roster tbody td {
 	text-align:right;
 }
-tbody td:nth-child(1) {
+#roster tbody td:nth-child(1) {
 	text-align:left;
 }
 
-th:nth-last-child(1) {
+#roster th:nth-last-child(1) {
 	border-radius:0 10px 0 0;
 }
-tr:last-child td:nth-child(1){
+#roster tr:last-child td:nth-child(1){
 	border-radius:0 0 0 10px;
 }
-tr:last-child td:nth-last-child(1) {
+#roster tr:last-child td:nth-last-child(1) {
 	border-radius:0 0 10px 0;
 }
 .y {

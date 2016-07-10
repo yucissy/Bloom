@@ -33,7 +33,7 @@
 
     <div class="container" id="wrapper">
     <div class="row" id="header_top">
-      <img src="images/bloom_logo.png" alt="">
+      <img src="images/ileaf logo.png" alt="">
     </div>
     <div class="row" id="navbar">
       <div id="user_banner">
@@ -67,6 +67,10 @@
         <div class="new_exam" data-toggle="modal" data-target="#myModal">
           <p>New Exam</p>
         </div>
+        
+        </div>
+        <div class="new_exam" data-toggle="modal" data-target="#uploadCategory">
+          <p>New Category</p>
         </div>
       </div>
       <div class="col-md-10" id="main">
@@ -168,6 +172,48 @@
         <div id="modal-alert"></div>
         <button type="button" id="close" class="btn btn-default" data-dismiss="modal">Close</button>
         <button id="upload-course" type="button" class="btn btn-success">Upload</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="uploadCategory" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <h2 class="modal-title">Add New Category
+        <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button></h2>
+        
+      </div>
+      <div class="modal-body">
+        <p>1. Category Name:</p>
+        <input type="text" name="categoryName" placeholder="e.g. Bloom's Taxonomy" id="categoryName"><br>
+        <p>2. Category ID (your column title when uploading a .csv):</p>
+        <input type="text" name="categoryId" placeholder="e.g. blooms" id="categoryId"><br>
+        <p>3. Sub-categories:</p>
+        <table id="subcats">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Study Tip</th>
+          </tr>
+          <tr class="subcat">
+            <td>
+            0
+            </td>
+            <td>
+            <input type="text" name="exam" placeholder="e.g. Remembering" id="title">
+            </td>
+            <td>
+            <input type="text" name="tip" placeholder="e.g. Make flashcards." class="lastTip">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <div id="modal-alert"></div>
+        <button type="button" id="close" class="btn btn-default subcat-close" data-dismiss="modal">Close</button>
+        <button id="uploadCategory" type="button" class="btn btn-success">Add Category</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

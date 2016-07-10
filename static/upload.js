@@ -1,3 +1,4 @@
+var subCatId = 0;
 
 function inputScores(id, studentID) {
 	
@@ -40,7 +41,8 @@ function visualizeRoster() {
             	.append("div")
             	.attr('class', 'table-responsive')
             	.append("table")
-            	.attr('class', 'table-hover');
+            	.attr('class', 'table-hover')
+                .attr('id', 'roster');
 
             var thead = table.append('thead')
             	.append('tr');
@@ -109,6 +111,31 @@ function visualizeRoster() {
             });
         }
     }
+}
+
+function addSubCatInput() {
+    subCatId += 1;
+    var subcatTable = d3.select('#subcats');
+    var subcatRow = subcatTable.append('tr');
+    subcatRow.append('td')
+        .text(subCatId);
+    subcatRow.append('td')
+        .append('input')
+        .attr('type', 'text')
+        .attr('name', 'tip')
+        .attr('id', 'lastName')
+        .attr('placeholder', 'e.g. Remembering');
+    subcatRow.append('td')
+        .append('input')
+        .attr('type', 'text')
+        .attr('name', 'tip')
+        .attr('class', 'lastTip')
+        .attr('placeholder', 'e.g. Make flashcards.')
+        .on('keydown', function() {
+            listenForTabPress(d3.event, $(this));
+        });
+    $('#lastName').focus();
+
 }
 
 $(function() {
@@ -182,7 +209,26 @@ $(function() {
     	};
     	reader.readAsText(selected);
 	});
+
+    $("#uploadCategory").on('click', function() {
+        if (!$("#categoryName").val() || !$("#categoryId").val()) {
+            console.log('null');
+            return;
+        }
+        
+    });
 });
+
+function listenForTabPress(e, div) {
+    var keyCode = e.keyCode || e.which; 
+
+      if (keyCode == 9) { 
+        e.preventDefault();
+        $('#lastName').removeAttr('id', 'lastName');
+        div.removeClass('lastTip');
+        addSubCatInput();
+    }
+}
 
 
 $(document).ready(function() {
@@ -201,5 +247,13 @@ $(document).ready(function() {
     	visualizeRoster();
     	var user = $("meta[name='user_id']").attr("content");
     	visualizeScores(true, user);
+    });
+
+    $(".lastTip").on('keydown', function(e) {
+        listenForTabPress(e, $(this));
+    });
+
+    $('.subcat-close').on('click', function(e) {
+     $("#subcats").find("tr:gt(1)").remove();
     });
 });
