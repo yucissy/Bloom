@@ -124,12 +124,13 @@ function addSubCatInput() {
         .attr('type', 'text')
         .attr('name', 'tip')
         .attr('id', 'lastName')
-        .attr('placeholder', 'e.g. Remembering');
+        .attr('placeholder', 'e.g. Remembering')
+        .attr('class', 'subcatName');
     subcatRow.append('td')
         .append('input')
         .attr('type', 'text')
         .attr('name', 'tip')
-        .attr('class', 'lastTip')
+        .attr('class', 'lastTip tipName')
         .attr('placeholder', 'e.g. Make flashcards.')
         .on('keydown', function() {
             listenForTabPress(d3.event, $(this));
@@ -210,11 +211,54 @@ $(function() {
     	reader.readAsText(selected);
 	});
 
-    $("#uploadCategory").on('click', function() {
+    $("#addCategory").on('click', function() {
+        console.log('click');
         if (!$("#categoryName").val() || !$("#categoryId").val()) {
-            console.log('null');
+            $("#categoryErrorDiv").html('Fields are empty!');
             return;
         }
+        var userID = $("meta[name='user_id']").attr("content");
+        $.ajax({
+            type : 'POST',
+            url : "checkIfCategoryIdValid",
+            data : {userID : userID, categoryID : $("#categoryId").val()},
+            dataType : 'json'
+        }).done(function(response) {
+            console.log(response.status);
+            if (response.status == 'success') {
+                $("#categoryErrorDiv").empty();
+                var catName = $("#categoryName").val();
+                var catID = $("#categoryId").val();
+                var subcatNames = [];
+                var tipNames = [];
+                $('.subcatName').each(function() {
+                    subcatNames.push($(this).val());
+                });
+                $('.tipName').each(function() {
+                    tipNames.push($(this).val());
+                });
+                var toSend = {userID : userID, categoryID : catID, categoryName : catName, subCategories : subcatNames, studyTips : tipNames};
+                $.ajax({
+                    type : 'POST',
+                    url : 'makeNewCategory',
+                    data : toSend,
+                    dataType : 'json'
+                }).done(function(response) {
+                    console.log('success making category');
+                    $('#uploadCategory').modal('hide');
+                    $('#uploadCategory').find('input:text').val(''); 
+                    $("#subcats").find("tr:gt(1)").remove();
+                }).fail(function(response) {
+                    console.log('error : could not make new category');
+                })
+                
+            } 
+            else {
+                $("#categoryErrorDiv").html(response.status);
+            }
+        }).fail(function() {
+            console.log('error checking if category ID valid');
+        });
         
     });
 });
@@ -287,15 +331,12 @@ $(document).ready(function() {
     	visualizeScores(true, user);
     });
 
-<<<<<<< HEAD
     $(".lastTip").on('keydown', function(e) {
         listenForTabPress(e, $(this));
     });
 
     $('.subcat-close').on('click', function(e) {
      $("#subcats").find("tr:gt(1)").remove();
+     $("#categoryErrorDiv").empty();
     });
-=======
-
->>>>>>> bdde055edd886219138f8f6ec56038f8d02f0394
 });

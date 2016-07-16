@@ -206,18 +206,19 @@
             0
             </td>
             <td>
-            <input type="text" name="exam" placeholder="e.g. Remembering" id="title">
+            <input type="text" name="exam" placeholder="e.g. Remembering" id="title" class="subcatName">
             </td>
             <td>
-            <input type="text" name="tip" placeholder="e.g. Make flashcards." class="lastTip">
+            <input type="text" name="tip" placeholder="e.g. Make flashcards." class="lastTip tipName">
             </td>
           </tr>
         </table>
+        <div id="categoryErrorDiv"></div>
       </div>
       <div class="modal-footer">
         <div id="modal-alert"></div>
         <button type="button" id="close" class="btn btn-default subcat-close" data-dismiss="modal">Close</button>
-        <button id="uploadCategory" type="button" class="btn btn-success">Add Category</button>
+        <button id="addCategory" type="button" class="btn btn-success">Add Category</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

@@ -154,7 +154,7 @@ var exports = function(app, db) {
 
 	app.post('/checkIfCategoryIdValid', function(req, res){
 		var user = req.body.userID;
-		var catId = req.body.categoryID;
+		var catID = req.body.categoryID;
 		// catID = "blooms";
 
 		db.doesCategoryExist(catID, function(exists) {
