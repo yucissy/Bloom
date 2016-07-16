@@ -297,6 +297,16 @@ function Database() {
             }
         });
     }
+
+    this.doesCategoryExist = function (categoryId, callback) {
+        Category.count({_id: categoryId}, function (err, count) {
+            if (count > 0) {
+                callback(true);
+            } else {
+                callback(false);
+            }
+        });
+    } 
 	
 	this.findStudyTipsForCategory = function (categoryId, callback) {
         Category.findOne({_id: categoryId}).exec(function(err, category) {

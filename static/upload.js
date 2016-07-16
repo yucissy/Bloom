@@ -222,7 +222,7 @@ $(function() {
 function listenForTabPress(e, div) {
     var keyCode = e.keyCode || e.which; 
 
-      if (keyCode == 9) { 
+    if (keyCode == 9) { 
         e.preventDefault();
         $('#lastName').removeAttr('id', 'lastName');
         div.removeClass('lastTip');
@@ -230,9 +230,47 @@ function listenForTabPress(e, div) {
     }
 }
 
+function getAvailableCategories() {
+    var toSend = {userID: $("meta[name='user_id']").attr("content")}
+    var request = new XMLHttpRequest();
+    request.open('POST', '/getCategoriesForProfessor', true);
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.send(JSON.stringify(toSend));
+
+    request.onreadystatechange = function() {
+        if (request.readyState == 4 && request.status == 200) {
+            var response = JSON.parse(request.responseText);
+            for (var i = 0; i < response.categories.length; i++) {
+                var category = response.categories[i];
+                var categoryItem = document.createElement('li');
+                categoryItem.appendChild(document.createTextNode(category._id));
+                var subCategoryList = document.createElement('ul');
+                subCategoryList.setAttribute("style", "list-style: none;");
+                for (var j = 0; j < category.sub_categories.length; j++) {
+                    var subCategoryItem = document.createElement('li');
+                    subCategoryItem.appendChild(document.createTextNode(j + " : " + category.sub_categories[j]));
+                    subCategoryList.appendChild(subCategoryItem);
+                }
+                categoryItem.appendChild(subCategoryList);
+                $('#prof_categories').append(categoryItem);
+            }
+        }
+    }
+}
+
 
 $(document).ready(function() {
 	visualizeRoster();
+
+    $('#prof_categories').hide();
+    getAvailableCategories();
+    $('#categories_button').click(function() {
+        if ($('#prof_categories').is(":visible")) {
+            $('#prof_categories').hide(500);
+        } else {
+            $('#prof_categories').show(500);
+        }
+    });
 
     $('#user_settings').hover(
         function() {
@@ -249,6 +287,7 @@ $(document).ready(function() {
     	visualizeScores(true, user);
     });
 
+<<<<<<< HEAD
     $(".lastTip").on('keydown', function(e) {
         listenForTabPress(e, $(this));
     });
@@ -256,4 +295,7 @@ $(document).ready(function() {
     $('.subcat-close').on('click', function(e) {
      $("#subcats").find("tr:gt(1)").remove();
     });
+=======
+
+>>>>>>> bdde055edd886219138f8f6ec56038f8d02f0394
 });

@@ -152,6 +152,23 @@ var exports = function(app, db) {
 		});
 	});
 
+	app.post('/checkIfCategoryIdValid', function(req, res){
+		var user = req.body.userID;
+		var catId = req.body.categoryID;
+		// catID = "blooms";
+
+		db.doesCategoryExist(catID, function(exists) {
+			var message;
+			if (exists) {
+				message = "This ID already exists. Please try a different ID.";
+			} else {
+				message = "success";
+			}
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({status : message}));
+		});
+	});
+
 	app.post('/getStudyTipsForCategory', function(req, res){
 		var user = req.body.userID;
 		var catId = req.body.categoryID;
@@ -164,7 +181,7 @@ var exports = function(app, db) {
 
 	app.post('/getCategoriesForProfessor', function(req, res){
 		var user = req.body.userID;
-		user = "B00999999";
+		// user = "B00999999";
 		db.isUserStudentById (user, function(result, person) {
 			if (!result) {
 				db.findCategoriesForProfessor(user, function(profCategories) {
