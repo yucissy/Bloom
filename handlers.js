@@ -38,8 +38,8 @@ var exports = function(app, db) {
 	app.post('/lti_launch', function(req, res) {
 		console.log("test here");
 		
-		var consumerKey = req.body.oauth_consumer_key;
-		var consumerSecret = 'secret';
+		var consumerKey = req.body.oauth_consumer_key; 
+		var consumerSecret = 'secret'; //change to canvas consumer secret
 		
 		var provider = new lti.Provider(consumerKey, consumerSecret);
 		
