@@ -17,6 +17,7 @@
     "express": "^4.13.4",
     "hogan": "^1.0.2",
     "hogan-engine": "^0.9.2",
+    "ims-lti": "^3.0.2",
     "jasmine": "^2.4.1",
     "mongoose": "^4.4.11",
     "stormpath": "^0.18.2"

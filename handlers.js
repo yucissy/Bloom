@@ -1,6 +1,7 @@
 var Reports = require('./reports.js');
 var Stormpath = require('./config/stormpath.js');
 var Courses = require('./courses.js');
+var lti = require('ims-lti');
 
 var exports = function(app, db) {
 	var reports = new Reports(db);
@@ -16,7 +17,7 @@ var exports = function(app, db) {
 		}
 		return result;
 	}
-
+	
 	app.get('/', function(req, res) {
 		res.render('index.html');
 	});
@@ -32,6 +33,35 @@ var exports = function(app, db) {
 	app.get('/forgot', function(req, res) {
 		res.render('forgot.html');
 	});
+	
+	//in progress; need to test out
+	app.post('/lti_launch', function(req, res) {
+		console.log("test here");
+		
+		var consumerKey = req.body.oauth_consumer_key;
+		var consumerSecret = 'secret';
+		
+		var provider = new lti.Provider(consumerKey, consumerSecret);
+		
+		provider.valid_request(req, function(err, isValid) {
+			if (err || !isValid) {
+				return next(err || new Error('invalid lti'));
+			}
+			
+			var body = {};
+			[
+				'roles', 'admin', 'alumni', 'content_developer', 'guest', 'instructor',
+				'manager', 'member', 'mentor', 'none', 'observer', 'other', 'prospective_student',
+				'student', 'ta', 'launch_request', 'username', 'userId', 'mentor_user_ids',
+				'context_id', 'context_label', 'context_title', 'body'
+			].forEach(function (key) {
+				body[key] = provider[key];
+			});
+			
+			//render appropriate pages here if student or professor
+			res.render('index.html')	
+		});		
+	});	
 
 	app.post('/home', function(req, res) {
 		var email = req.body.email;
