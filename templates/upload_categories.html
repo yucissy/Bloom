@@ -232,6 +232,8 @@
 
   $('.new_exam').on('click', function() {
     $("#modal-alert").empty();
+    $("#prof_categories").empty();
+    getAvailableCategories();
   });
 
   $('.prof_select').on('click', function() {

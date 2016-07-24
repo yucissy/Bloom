@@ -244,7 +244,7 @@ var exports = function(app, db) {
 				res.setHeader('Content-Type', 'application/json');
 				res.send(JSON.stringify({status : stat}));
 			});
-		}
+		});
 	});
 
 	app.post('/submitStudentScoresForExam', function(req, res) {
