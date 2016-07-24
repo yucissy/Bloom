@@ -38,7 +38,7 @@ function Exams(db) {
 				return;
 			}
 			var check = output[0]; // check if rows have all required keys using first row
-			if ('qid' in check && 'max_points' in check && 'blooms' in check) {
+			if ('qid' in check && 'max_points' in check) {
 				var proper_input = true;
 				var qidDict = {}
 				for (var i = 0; i < output.length; i++) {
