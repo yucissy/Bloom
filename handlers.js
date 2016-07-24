@@ -129,6 +129,7 @@ var exports = function(app, db) {
 		delete loggedIn[sessID];
 	});
 
+	// WILL BE DEAD CODE
 	app.post('/addNewCourse', function(req, res) {
 		var user = req.body.userID;
 		var course_id = req.body.courseID;

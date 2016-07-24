@@ -142,6 +142,7 @@ function addSubCatInput() {
 $(function() {
     $("#upload").click(function(e) {
 
+        var user_ID = $("meta[name='user_id']").attr("content");
     	var course_ID = $("meta[name='course_id']").attr("content");
     	var input = e.target;
         var examName = $("#title").val()
@@ -152,7 +153,7 @@ $(function() {
 
     		//this variable holds the csv data!
     		var dataURL = reader.result;
-            var toSend = {courseID: course_ID, exam: examName, data: dataURL};
+            var toSend = {userID: user_ID, courseID: course_ID, exam: examName, data: dataURL};
 
             var request = new XMLHttpRequest();
             request.open('POST', '/makeNewExam', true);
