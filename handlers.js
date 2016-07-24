@@ -1,10 +1,12 @@
 var Reports = require('./reports.js');
+var Exams = require('./exams.js');
 var Stormpath = require('./config/stormpath.js');
 var Courses = require('./courses.js');
 var lti = require('ims-lti');
 
 var exports = function(app, db) {
 	var reports = new Reports(db);
+	var exams = new Exams(db);
 	var storm = new Stormpath();
 	var courses = new Courses(db);
 	var loggedIn = {};
@@ -227,10 +229,22 @@ var exports = function(app, db) {
 		var course = req.body.courseID;
 		var name = req.body.exam;
 		var data = req.body.data;
-		reports.makeExam(course, name, data, function(stat) {
+		exams.makeExam(course, name, data, user, function(stat) {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({status : stat}));
 		});
+	});
+
+	app.post('/submitStudentScoreListCsvForExam', function(req, res) {
+		var user = req.body.userID;
+		var exam = req.body.examID;
+		var data = req.body.data;
+		db.findTest({_id: exam}, function(test) {
+			reports.inputScores(test, data, function(stat) {
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({status : stat}));
+			});
+		}
 	});
 
 	app.post('/submitStudentScoresForExam', function(req, res) {

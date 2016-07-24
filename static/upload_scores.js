@@ -19,7 +19,7 @@ function getExam(exam_ID, user_ID) {
             $('#questions').empty();
             $('#questions').show();
             $.each(questions, function(i, v) {
-                $('#questions').append('<div class="question">'+v.qid+'. '+'<input class="q" type="text"></input>'
+                $('#questions').append('<div class="question">'+v.qid+'. '+'<input class="q" id="'+v.qid+'" type="text"></input>'
                     +'/ '+v.max_points+'</div>');
                 maxPoints[v.qid] = v.max_points;
             });
@@ -216,17 +216,16 @@ $(document).ready(function() {
     });
 
     $("#submit").on('click', function() {
-        var scores = [];
+        var scores = {};
         var valid = true;
-        var num = 1;
 
         $('.q').each(function() {
             var val = parseFloat($(this).val());
-            if (!isNaN(val) && val <= parseFloat(maxPoints[num]) && val >= 0)
-                scores[num] = val;
+            var qid = $(this).attr('id');
+            if (!isNaN(val) && val <= parseFloat(maxPoints[qid]) && val >= 0)
+                scores[qid] = val;
             else
                 valid = false;
-            num++;
         });
         if (valid) {
 
