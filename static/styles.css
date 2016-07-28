@@ -194,7 +194,7 @@ input {
 	margin-bottom:8px;
 	height:40px;
 }
-#close {
+.modal-close {
 	width:71px;
 	margin:0px;
 	height:35px;
@@ -439,4 +439,11 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 #categoryErrorDiv {
 	padding-top:20px;
 	color:red;
+}
+#newExamError {
+	padding:10px;
+	color:red;
+}
+#newSubCat {
+	padding-left:10px;
 }

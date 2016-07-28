@@ -1,7 +1,6 @@
 var subCatId = 0;
 
 function inputScores(id, studentID) {
-	
 	getExam(id, studentID);
 	$('#newExam1').modal('show');
 }
@@ -102,7 +101,6 @@ function visualizeRoster() {
             $('#course_report').on('click', function() {
                 var user_ID = $("meta[name='user_id']").attr("content");
                 var course_ID = $("meta[name='course_id']").attr("content");
-                console.log('here');
                 $form = $('<form action="/downloadAggregate" method="POST"></form>');
                 $form.append("<input type='hidden' name='courseID' value='"+course_ID+"'/>");
                 $form.append("<input type='hidden' name='userID' value='"+user_ID+"'/>");
@@ -114,6 +112,9 @@ function visualizeRoster() {
 }
 
 function addSubCatInput() {
+    $("#newSubCat").remove();
+    $('#lastName').removeAttr('id', 'lastName');
+    $('.lastTip').removeClass('lastTip');
     subCatId += 1;
     var subcatTable = d3.select('#subcats');
     var subcatRow = subcatTable.append('tr');
@@ -126,17 +127,53 @@ function addSubCatInput() {
         .attr('id', 'lastName')
         .attr('placeholder', 'e.g. Remembering')
         .attr('class', 'subcatName');
-    subcatRow.append('td')
-        .append('input')
+    var lastTipTd = subcatRow.append('td');
+
+    lastTipTd.append('input')
         .attr('type', 'text')
         .attr('name', 'tip')
         .attr('class', 'lastTip tipName')
         .attr('placeholder', 'e.g. Make flashcards.')
         .on('keydown', function() {
             listenForTabPress(d3.event, $(this));
+        })
+    lastTipTd.append('a')
+        .attr('href', '#')
+        .attr('id', 'newSubCat')
+        .append('span')
+        .attr('class', 'glyphicon glyphicon-plus')
+        .on('click', function() {
+            addSubCatInput();
         });
     $('#lastName').focus();
 
+}
+
+function areWordsDistinct(wordArray) {
+    var newArray = [];
+    var found = false;
+    $.each(wordArray, function(i, v) {
+        if ($.inArray(v, newArray) != -1) {
+            found = true;
+            return false;
+        }
+        newArray.push(v);
+    });
+    return !found;
+}
+
+function areWordsBlank(wordArray) {
+    var seenBlanks = false;
+    var blanksInArray = false;
+    $.each(wordArray, function(i, v) {
+        if (v == '') {
+            seenBlanks = true;
+        } else if (seenBlanks) {
+            blanksInArray = true;
+            return true;
+        }
+    });
+    return blanksInArray;
 }
 
 $(function() {
@@ -163,15 +200,24 @@ $(function() {
                 if (request.readyState == 4 && request.status == 200) {
                     var response = JSON.parse(request.responseText);
                     if (response.status == 'success') {
+                        $('#newExamError').empty();
                         $('#myModal').modal('hide');
                         visualizeRoster();
                     } else {
-                        $('#modal-alert').text('Something went wrong :(');
+                        $('#newExamError').text('Something went wrong :(');
                     }
                 }
-            }
+            } 
     	};
-    	reader.readAsText(selected);
+        if (selected == null) {
+            $('#newExamError').text('No file uploaded.');
+        } else if (examName == '') {
+            $('#newExamError').text('Please enter an exam name.');
+        }
+        else {
+            $('#newExamError').empty();
+            reader.readAsText(selected);
+        }
 	});
 
 	$('#upload-course').click(function(e) {
@@ -212,7 +258,6 @@ $(function() {
 	});
 
     $("#addCategory").on('click', function() {
-        console.log('click');
         if (!$("#categoryName").val() || !$("#categoryId").val()) {
             $("#categoryErrorDiv").html('Fields are empty!');
             return;
@@ -224,7 +269,6 @@ $(function() {
             data : {userID : userID, categoryID : $("#categoryId").val()},
             dataType : 'json'
         }).done(function(response) {
-            console.log(response.status);
             if (response.status == 'success') {
                 $("#categoryErrorDiv").empty();
                 var catName = $("#categoryName").val();
@@ -237,21 +281,28 @@ $(function() {
                 $('.tipName').each(function() {
                     tipNames.push($(this).val());
                 });
-                var toSend = {userID : userID, categoryID : catID, categoryName : catName, subCategories : subcatNames, studyTips : tipNames};
-                $.ajax({
-                    type : 'POST',
-                    url : 'makeNewCategory',
-                    data : toSend,
-                    dataType : 'json'
-                }).done(function(response) {
-                    console.log('success making category');
-                    $('#uploadCategory').modal('hide');
-                    $('#uploadCategory').find('input:text').val(''); 
-                    $("#subcats").find("tr:gt(1)").remove();
-                }).fail(function(response) {
-                    console.log('error : could not make new category');
-                })
-                
+                if (!areWordsDistinct(subcatNames)) {
+                    $("#categoryErrorDiv").html("Don't enter duplicate subcategories.");
+                } else if (areWordsBlank(subcatNames)) {
+                    $("#categoryErrorDiv").html("Please leave blank subcategories only at the end.");
+                } else if (subcatNames[0] == '') {
+                    $("#categoryErrorDiv").html("You need at least one subcategory.");
+                } else {
+                    var toSend = {userID : userID, categoryID : catID, categoryName : catName, subCategories : subcatNames, studyTips : tipNames};
+                    $.ajax({
+                        type : 'POST',
+                        url : 'makeNewCategory',
+                        data : toSend,
+                        dataType : 'json'
+                    }).done(function(response) {
+                        console.log('success making category');
+                        $('#uploadCategory').modal('hide');
+                        $('#uploadCategory').find('input:text').val(''); 
+                        $("#subcats").find("tr:gt(1)").remove();
+                    }).fail(function(response) {
+                        console.log('error : could not make new category');
+                    });
+                }              
             } 
             else {
                 $("#categoryErrorDiv").html(response.status);
@@ -268,8 +319,6 @@ function listenForTabPress(e, div) {
 
     if (keyCode == 9) { 
         e.preventDefault();
-        $('#lastName').removeAttr('id', 'lastName');
-        div.removeClass('lastTip');
         addSubCatInput();
     }
 }
@@ -336,7 +385,27 @@ $(document).ready(function() {
     });
 
     $('.subcat-close').on('click', function(e) {
-     $("#subcats").find("tr:gt(1)").remove();
+     if ($("#subcats").find("tr:gt(1)") != null) {
+        $("#subcats").find("tr:gt(1)").remove();
+        var newButton = $("#hiddenNewSubCat");
+        newButton.clone().appendTo('#firstTip');
+        newButton.removeAttr('hiddenNewSubCat');
+        newButton.attr('id', 'newSubCat');
+        newButton.show();        
+        $('#newSubCat').click(addSubCatInput);
+     }
+     
+     
      $("#categoryErrorDiv").empty();
     });
+
+    $('#examModalClose').click(function() {
+        $('#newExamError').empty();
+    });
+
+    $('#catModalClose').click(function() {
+        subCatId = 0;
+    });
+
+    $('#newSubCat').click(addSubCatInput);
 });
