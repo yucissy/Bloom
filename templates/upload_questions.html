@@ -71,8 +71,8 @@
 
         <h1 id="curr_title">{{course.0.title}}</h1>
         <div id="prof_selector">
-          <div class="prof_select"><h2 class="selected" id="select_1">EXAMS</h2></div>
-          <div class="prof_select"><h2 id="select_2">AREAS</h2></div>
+          <div class="prof_select selected" id="select_1"><h2>EXAMS</h2></div>
+          <div class="prof_select" id="select_2"><h2>AREAS</h2></div>
         </div>
         <hr style="color:gray">
            
@@ -106,12 +106,8 @@
       <div class="modal-body">
       	<p>Submit your scores:</p>
         <div id="questions">
-        
         </div>
         </div>
-
-
-
         <div class="modal-footer">
         <div id="error"></div>
         <button type="button" id="close" class="btn btn-default modal-close" data-dismiss="modal">Close</button>
@@ -137,15 +133,16 @@ $('body').on('click', '.course.unselected', function() {
 });
 
 $("body").on("click", ".exam.unselected", function(){
-    var curr = $('.exam.curr').text();
-    $('.exam.curr').replaceWith("<p class='unselected exam'>"+curr+"</p>");
-    var select = $(this).text();
-    var index = $('#exam_list').find('p:contains("'+select+'")').index();
-    
-    $(this).replaceWith("<div class='curr exam'><p>"+select+"</p></div>");
+  if ($('#part3').is(':visible')) {
+      var curr = $('.exam.curr').text();
+      $('.exam.curr').replaceWith("<p class='unselected exam'>"+curr+"</p>");
+      var select = $(this).text();
+      var index = $('#exam_list').find('p:contains("'+select+'")').index();
+      
+      $(this).replaceWith("<div class='curr exam'><p>"+select+"</p></div>");
 
-    $('.category')[index].scrollIntoView( true );
-
+      $('.category')[index].scrollIntoView( true );
+    }
   });
 
 $('.prof_select').on('click', function() {

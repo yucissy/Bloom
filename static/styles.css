@@ -331,7 +331,8 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 }
 .course.unselected:hover, .exam.unselected:hover {
 	color:white;
-	cursor: default;
+	cursor: pointer;
+	cursor:hand;
 }
 .new_exam {
 	height:50px;
@@ -446,4 +447,8 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 }
 #newSubCat {
 	padding-left:10px;
+}
+.prof_select h2:hover {
+	cursor:hand;
+	cursor:pointer;
 }

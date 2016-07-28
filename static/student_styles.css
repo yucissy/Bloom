@@ -37,7 +37,8 @@
 	font-size:.55em;
 	letter-spacing:2px;
 	padding-bottom:0;
-	cursor:context-menu;
+	cursor:hand;
+	cursor:pointer;
 }
 #part1 hr {
 	margin-top:-3px;
@@ -67,7 +68,12 @@
 }
 .prof_select {
 	float:left;
-	margin-right:100px;
+	padding-right:100px;	
+}
+.prof_select:hover {
+	cursor:pointer;
+	cursor:hand;
+	font-weight:bold;
 }
 .selected {
 	font-weight:bold;
