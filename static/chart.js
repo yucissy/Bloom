@@ -36,7 +36,7 @@ function visualizeScores(aggregate, userID) {
 
 	       if (request.readyState == 4 && request.status == 200) {
 	            var response = JSON.parse(request.responseText);
-
+              console.log(response);
 		
 					$('.score').css('display', 'none');
 					if (aggregate) {
@@ -118,22 +118,18 @@ function makeBarChart(data, agg) {
   var chartArea = newDiv.append("div")
     .attr("id", id);
 
-  if (data.categories != null) {
+  if (data.categories.length != 0) {
   	var categoryTitle = data.categories[0].main_cat_id.name;
-  
-
-  
-  
-  var par = chartArea.append("div");
-  par.append("h2")
-  	.attr("class", "left")
-    .text(categoryTitle.toUpperCase());
+    var par = chartArea.append("div");
+    par.append("h2")
+    	.attr("class", "left")
+      .text(categoryTitle.toUpperCase());
 
 
-  if (agg) {
-		par.append("h2")
-		  	.attr("class", "right")
-		  	.text(count +" "+students);
+    if (agg) {
+  		par.append("h2")
+  		  	.attr("class", "right")
+  		  	.text(count +" "+students);
   }
   
 
@@ -212,7 +208,7 @@ chart.selectAll("text.name")
   	return d;
 	return '';}); 
 
-} else {
+} else if (agg==false) {
 	var user_ID = $("meta[name='user_id']").attr("content");
 
 	var btn = chartArea.append('button')

@@ -189,6 +189,8 @@ $(function() {
 
     		//this variable holds the csv data!
     		var dataURL = reader.result;
+            console.log(dataURL);
+            console.log(dataURL[0]);
             var toSend = {courseID: course_ID, exam: examName, data: dataURL};
 
             var request = new XMLHttpRequest();
@@ -203,9 +205,12 @@ $(function() {
                         $('#newExamError').empty();
                         $('#myModal').modal('hide');
                         visualizeRoster();
+                        var user = $("meta[name='user_id']").attr("content");
+                        visualizeScores(true, user);
                         getExamList(true);
                     } else {
-                        $('#newExamError').text('Something went wrong :(');
+                        console.log('error');
+                        $('#newExamError').text('Something went wrong. Please check that the .csv is formatted correctly.');
                     }
                 }
             } 

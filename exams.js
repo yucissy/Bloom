@@ -33,7 +33,7 @@ function Exams(db) {
 	this.makeExam = function(course, name, data, user, callback) {
 		var make = this.makeExamHelper;
 		csv.parse(data, {columns:true}, function(err, output) {
-			if (output == null) {
+			if (output == null || output.length == 0) {
 				callback('fail');
 				return;
 			}
@@ -70,10 +70,13 @@ function Exams(db) {
 				}
 				else {
 					console.log('ERROR: bad csv input, check for proper values');
+					callback('fail');
+					return;
 				}
 			} else {
 				console.error('ERROR: bad csv input');
-				//error
+				callback('fail');
+				return;
 			}
 		});
 	}

@@ -273,7 +273,6 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 }
 #user_settings:hover {
 	background-color:#494949;
-	cursor:pointer;
 	box-shadow: 3px 3px 1px #888888;
 }
 
