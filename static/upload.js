@@ -232,7 +232,7 @@ $(function() {
 		var course_ID = $("#course-id").val();
 		var course_title = $("#course-title").val();
         var sem = $("#semester-level").val();
-        var selected = $("#roster").get(0).files[0];
+        var selected = $("#roster-file").get(0).files[0];
 
     	//TODO: null check all input
     	var reader = new FileReader();
@@ -391,7 +391,7 @@ $(document).ready(function() {
     });
 
     $('.subcat-close').on('click', function(e) {
-     if ($("#subcats").find("tr:gt(1)") != null) {
+     if ($("#subcats").find("tr:gt(1)").length > 0) {
         $("#subcats").find("tr:gt(1)").remove();
         var newButton = $("#hiddenNewSubCat");
         newButton.clone().appendTo('#firstTip');
