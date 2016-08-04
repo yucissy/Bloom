@@ -145,8 +145,35 @@
 
         <div class="modal-footer">
         <div id="error"></div>
-        <button type="button" id="close" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="close" class="btn btn-default modal-close" data-dismiss="modal">Close</button>
         <button id="submit" type="button" class="btn btn-success">Submit</button>
+      </div>
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="submitScoresAggregate" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <h2 class="modal-title"><span id="exam-title"></span>
+        <button type="button" style="color:white;" class="close closebut" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></h2>
+        
+      </div>
+      <div class="modal-body">
+        <p id="submitLine">Upload a .csv file in the following format:</p>
+        <img src="images/exam_agg_scores.png" alt="">
+        <input type="file" name="file" id="aggregate-scores-file">
+        
+        </div>
+
+
+
+        <div class="modal-footer">
+        <div id="submitAggError"></div>
+        <button type="button" id="close" class="btn btn-default modal-close" data-dismiss="modal">Close</button>
+        <button id="uploadScoresAggregate" type="button" class="btn btn-success">Submit</button>
       </div>
 
     </div><!-- /.modal-content -->

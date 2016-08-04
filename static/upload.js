@@ -1,4 +1,5 @@
 var subCatId = 0;
+var examID;
 
 function inputScores(id, studentID) {
 	getExam(id, studentID);
@@ -209,7 +210,6 @@ $(function() {
                         visualizeScores(true, user);
                         getExamList(true);
                     } else {
-                        console.log('error');
                         $('#newExamError').text('Something went wrong. Please check that the .csv is formatted correctly.');
                     }
                 }
@@ -225,6 +225,50 @@ $(function() {
             reader.readAsText(selected);
         }
 	});
+
+    $('#uploadScoresAggregate').click(function(e) {
+        var user_ID = $("meta[name='user_id']").attr("content");
+        var exam_ID = examID;
+        var selected = $("#aggregate-scores-file").get(0).files[0];
+
+        var reader = new FileReader();
+        reader.onload = function() {
+
+            //this variable holds the csv data!
+            var dataURL = reader.result;
+   
+            var toSend = {userID: user_ID, examID: exam_ID, data: dataURL};
+            console.log(toSend);
+
+            var request = new XMLHttpRequest();
+            request.open('POST', '/submitStudentScoreListCsvForExam', true);
+            request.setRequestHeader('Content-Type', 'application/json');
+            request.send(JSON.stringify(toSend));
+
+            request.onreadystatechange = function() {
+                if (request.readyState == 4 && request.status == 200) {
+                    var response = JSON.parse(request.responseText);
+                    if (response.status == 'success') {
+                        $('#submitAggError').empty();
+                        $('#submitScoresAggregate').modal('hide');
+                        visualizeRoster();
+                        var user = $("meta[name='user_id']").attr("content");
+                        visualizeScores(true, user);
+                        getExamList(true);
+                    } else {
+                        $('#submitAggError').text('Something went wrong. Please check that the .csv is formatted correctly.');
+                    }
+                }
+            } 
+        };
+        if (selected == null) {
+            $('#submitAggError').text('No file uploaded.');
+        }
+        else {
+            $('#submitAggError').empty();
+            reader.readAsText(selected);
+        }
+    });
 
 	$('#upload-course').click(function(e) {
 

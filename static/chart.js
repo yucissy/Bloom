@@ -118,7 +118,7 @@ function makeBarChart(data, agg) {
   var chartArea = newDiv.append("div")
     .attr("id", id);
 
-  if (data.categories.length != 0) {
+  if (data.categories != null && data.categories.length != 0) {
   	var categoryTitle = data.categories[0].main_cat_id.name;
     var par = chartArea.append("div");
     par.append("h2")
@@ -208,7 +208,7 @@ chart.selectAll("text.name")
   	return d;
 	return '';}); 
 
-} else if (agg==false) {
+} else {
 	var user_ID = $("meta[name='user_id']").attr("content");
 
 	var btn = chartArea.append('button')
@@ -221,7 +221,12 @@ chart.selectAll("text.name")
 			getExam($(this).parent().attr('id'), user_ID);
 		})
 		.attr('data-toggle', 'modal')
-		.attr('data-target', '#newExam1')
+		.attr('data-target', function() {
+      if (agg)
+        return '#submitScoresAggregate';
+      else
+        return '#newExam1';
+    })
 		.append('span')
 		.attr('class', 'glyphicon glyphicon-plus pull-left')
 		.attr('aria-hidden', 'true')
