@@ -78,8 +78,8 @@
         <div id="part1">
         <h1>{{course.0.title}}</h1>
         <div id="prof_selector">
-          <div class="prof_select"><h2 class="selected" id="select_1">STUDENTS</h2></div>
-          <div class="prof_select"><h2 id="select_2">EXAMS</h2></div>
+          <div class="prof_select selected" id="select_1"><h2>STUDENTS</h2></div>
+          <div class="prof_select"  id="select_2"><h2>EXAMS</h2></div>
 
         </div>
         <hr style="color:gray">
@@ -118,8 +118,8 @@
         <p>To add a new category to the exam, please click "New Category" on the sidebar.</p>
       </div>
       <div class="modal-footer">
-        <div id="modal-alert"></div>
-        <button type="button" id="close" class="btn btn-default" data-dismiss="modal">Close</button>
+        <div id="newExamError"></div>
+        <button type="button" id="examModalClose" class="btn btn-default modal-close" data-dismiss="modal">Close</button>
         <button id="upload" type="button" class="btn btn-success">Upload</button>
       </div>
     </div><!-- /.modal-content -->
@@ -145,8 +145,35 @@
 
         <div class="modal-footer">
         <div id="error"></div>
-        <button type="button" id="close" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="close" class="btn btn-default modal-close" data-dismiss="modal">Close</button>
         <button id="submit" type="button" class="btn btn-success">Submit</button>
+      </div>
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="submitScoresAggregate" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <h2 class="modal-title"><span id="exam-title"></span>
+        <button type="button" style="color:white;" class="close closebut" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></h2>
+        
+      </div>
+      <div class="modal-body">
+        <p id="submitLine">Upload a .csv file in the following format:</p>
+        <img src="images/exam_agg_scores.png" alt="">
+        <input type="file" name="file" id="aggregate-scores-file">
+        
+        </div>
+
+
+
+        <div class="modal-footer">
+        <div id="submitAggError"></div>
+        <button type="button" id="close" class="btn btn-default modal-close" data-dismiss="modal">Close</button>
+        <button id="uploadScoresAggregate" type="button" class="btn btn-success">Submit</button>
       </div>
 
     </div><!-- /.modal-content -->
@@ -170,11 +197,11 @@
         <input type="text" id="semester-level" placeholder="e.g. Fall 2016"><br>
         <p>4. Upload a csv file in the following format:</p>
         <img src="images/categories.png" alt="">
-        <input type="file" name="file" id="roster">
+        <input type="file" name="file" id="roster-file">
       </div>
       <div class="modal-footer">
         <div id="modal-alert"></div>
-        <button type="button" id="close" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="course-modal-close" class="btn btn-default modal-close" data-dismiss="modal">Close</button>
         <button id="upload-course" type="button" class="btn btn-success">Upload</button>
       </div>
     </div><!-- /.modal-content -->
@@ -208,8 +235,10 @@
             <td>
             <input type="text" name="exam" placeholder="e.g. Remembering" id="title" class="subcatName">
             </td>
-            <td>
+            <td id="firstTip">
             <input type="text" name="tip" placeholder="e.g. Make flashcards." class="lastTip tipName">
+            <a href="#" id="newSubCat"><span class="glyphicon glyphicon-plus"></span></a>
+            <a hidden href="#" id="hiddenNewSubCat"><span class="glyphicon glyphicon-plus"></span></a>
             </td>
           </tr>
         </table>
@@ -217,7 +246,7 @@
       </div>
       <div class="modal-footer">
         <div id="modal-alert"></div>
-        <button type="button" id="close" class="btn btn-default subcat-close" data-dismiss="modal">Close</button>
+        <button type="button" id="catModalClose" class="btn btn-default subcat-close modal-close" data-dismiss="modal">Close</button>
         <button id="addCategory" type="button" class="btn btn-success">Add Category</button>
       </div>
     </div><!-- /.modal-content -->
@@ -232,8 +261,6 @@
 
   $('.new_exam').on('click', function() {
     $("#modal-alert").empty();
-    $("#prof_categories").empty();
-    getAvailableCategories();
   });
 
   $('.prof_select').on('click', function() {
@@ -275,20 +302,19 @@
   });
 
   $("body").on("click", ".exam.unselected", function(){
-    var curr = $('.exam.curr').text();
-    $('.exam.curr').replaceWith("<p class='unselected exam'>"+curr+"</p>");
-    var select = $(this).text();
-    var index = $('#exam_list').find('p:contains("'+select+'")').index();
-    
-    $(this).replaceWith("<div class='curr exam'><p>"+select+"</p></div>");
-
-    if (!$('#part3').is(':visible')) {
+    if ($('#part3').is(':visible')) {
+        var curr = $('.exam.curr').text();
+        $('.exam.curr').replaceWith("<p class='unselected exam'>"+curr+"</p>");
+        var select = $(this).text();
+        var index = $('#exam_list').find('p:contains("'+select+'")').index();
+        $(this).replaceWith("<div class='curr exam'><p>"+select+"</p></div>");
+        $('.category')[index].scrollIntoView( true );
+    } else if ($("#part2").is(':visible')) {
       $("#part2").hide();
       $("#part3").show();
+      $("#select_2").trigger('click');
       visualizeScores(true, user);
       setTimeout(function(){$('.category')[index].scrollIntoView( true );}, 1000);
-    } else {
-      $('.category')[index].scrollIntoView( true );
     }
 
   });

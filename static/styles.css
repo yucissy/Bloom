@@ -194,7 +194,7 @@ input {
 	margin-bottom:8px;
 	height:40px;
 }
-#close {
+.modal-close {
 	width:71px;
 	margin:0px;
 	height:35px;
@@ -273,7 +273,6 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 }
 #user_settings:hover {
 	background-color:#494949;
-	cursor:pointer;
 	box-shadow: 3px 3px 1px #888888;
 }
 
@@ -331,7 +330,8 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 }
 .course.unselected:hover, .exam.unselected:hover {
 	color:white;
-	cursor: default;
+	cursor: pointer;
+	cursor:hand;
 }
 .new_exam {
 	height:50px;
@@ -439,4 +439,15 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 #categoryErrorDiv {
 	padding-top:20px;
 	color:red;
+}
+#newExamError {
+	padding:10px;
+	color:red;
+}
+#newSubCat {
+	padding-left:10px;
+}
+.prof_select h2:hover {
+	cursor:hand;
+	cursor:pointer;
 }

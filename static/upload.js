@@ -1,7 +1,7 @@
 var subCatId = 0;
+var examID;
 
 function inputScores(id, studentID) {
-	
 	getExam(id, studentID);
 	$('#newExam1').modal('show');
 }
@@ -102,7 +102,6 @@ function visualizeRoster() {
             $('#course_report').on('click', function() {
                 var user_ID = $("meta[name='user_id']").attr("content");
                 var course_ID = $("meta[name='course_id']").attr("content");
-                console.log('here');
                 $form = $('<form action="/downloadAggregate" method="POST"></form>');
                 $form.append("<input type='hidden' name='courseID' value='"+course_ID+"'/>");
                 $form.append("<input type='hidden' name='userID' value='"+user_ID+"'/>");
@@ -114,6 +113,9 @@ function visualizeRoster() {
 }
 
 function addSubCatInput() {
+    $("#newSubCat").remove();
+    $('#lastName').removeAttr('id', 'lastName');
+    $('.lastTip').removeClass('lastTip');
     subCatId += 1;
     var subcatTable = d3.select('#subcats');
     var subcatRow = subcatTable.append('tr');
@@ -126,23 +128,58 @@ function addSubCatInput() {
         .attr('id', 'lastName')
         .attr('placeholder', 'e.g. Remembering')
         .attr('class', 'subcatName');
-    subcatRow.append('td')
-        .append('input')
+    var lastTipTd = subcatRow.append('td');
+
+    lastTipTd.append('input')
         .attr('type', 'text')
         .attr('name', 'tip')
         .attr('class', 'lastTip tipName')
         .attr('placeholder', 'e.g. Make flashcards.')
         .on('keydown', function() {
             listenForTabPress(d3.event, $(this));
+        })
+    lastTipTd.append('a')
+        .attr('href', '#')
+        .attr('id', 'newSubCat')
+        .append('span')
+        .attr('class', 'glyphicon glyphicon-plus')
+        .on('click', function() {
+            addSubCatInput();
         });
     $('#lastName').focus();
 
 }
 
+function areWordsDistinct(wordArray) {
+    var newArray = [];
+    var found = false;
+    $.each(wordArray, function(i, v) {
+        if ($.inArray(v, newArray) != -1) {
+            found = true;
+            return false;
+        }
+        newArray.push(v);
+    });
+    return !found;
+}
+
+function areWordsBlank(wordArray) {
+    var seenBlanks = false;
+    var blanksInArray = false;
+    $.each(wordArray, function(i, v) {
+        if (v == '') {
+            seenBlanks = true;
+        } else if (seenBlanks) {
+            blanksInArray = true;
+            return true;
+        }
+    });
+    return blanksInArray;
+}
+
 $(function() {
     $("#upload").click(function(e) {
 
-        var user_ID = $("meta[name='user_id']").attr("content");
     	var course_ID = $("meta[name='course_id']").attr("content");
     	var input = e.target;
         var examName = $("#title").val()
@@ -153,7 +190,9 @@ $(function() {
 
     		//this variable holds the csv data!
     		var dataURL = reader.result;
-            var toSend = {userID: user_ID, courseID: course_ID, exam: examName, data: dataURL};
+            console.log(dataURL);
+            console.log(dataURL[0]);
+            var toSend = {courseID: course_ID, exam: examName, data: dataURL};
 
             var request = new XMLHttpRequest();
             request.open('POST', '/makeNewExam', true);
@@ -164,16 +203,72 @@ $(function() {
                 if (request.readyState == 4 && request.status == 200) {
                     var response = JSON.parse(request.responseText);
                     if (response.status == 'success') {
+                        $('#newExamError').empty();
                         $('#myModal').modal('hide');
                         visualizeRoster();
+                        var user = $("meta[name='user_id']").attr("content");
+                        visualizeScores(true, user);
+                        getExamList(true);
                     } else {
-                        $('#modal-alert').text('Something went wrong :(');
+                        $('#newExamError').text('Something went wrong. Please check that the .csv is formatted correctly.');
                     }
                 }
-            }
+            } 
     	};
-    	reader.readAsText(selected);
+        if (selected == null) {
+            $('#newExamError').text('No file uploaded.');
+        } else if (examName == '') {
+            $('#newExamError').text('Please enter an exam name.');
+        }
+        else {
+            $('#newExamError').empty();
+            reader.readAsText(selected);
+        }
 	});
+
+    $('#uploadScoresAggregate').click(function(e) {
+        var user_ID = $("meta[name='user_id']").attr("content");
+        var exam_ID = examID;
+        var selected = $("#aggregate-scores-file").get(0).files[0];
+
+        var reader = new FileReader();
+        reader.onload = function() {
+
+            //this variable holds the csv data!
+            var dataURL = reader.result;
+   
+            var toSend = {userID: user_ID, examID: exam_ID, data: dataURL};
+            console.log(toSend);
+
+            var request = new XMLHttpRequest();
+            request.open('POST', '/submitStudentScoreListCsvForExam', true);
+            request.setRequestHeader('Content-Type', 'application/json');
+            request.send(JSON.stringify(toSend));
+
+            request.onreadystatechange = function() {
+                if (request.readyState == 4 && request.status == 200) {
+                    var response = JSON.parse(request.responseText);
+                    if (response.status == 'success') {
+                        $('#submitAggError').empty();
+                        $('#submitScoresAggregate').modal('hide');
+                        visualizeRoster();
+                        var user = $("meta[name='user_id']").attr("content");
+                        visualizeScores(true, user);
+                        getExamList(true);
+                    } else {
+                        $('#submitAggError').text('Something went wrong. Please check that the .csv is formatted correctly.');
+                    }
+                }
+            } 
+        };
+        if (selected == null) {
+            $('#submitAggError').text('No file uploaded.');
+        }
+        else {
+            $('#submitAggError').empty();
+            reader.readAsText(selected);
+        }
+    });
 
 	$('#upload-course').click(function(e) {
 
@@ -181,7 +276,7 @@ $(function() {
 		var course_ID = $("#course-id").val();
 		var course_title = $("#course-title").val();
         var sem = $("#semester-level").val();
-        var selected = $("#roster").get(0).files[0];
+        var selected = $("#roster-file").get(0).files[0];
 
     	//TODO: null check all input
     	var reader = new FileReader();
@@ -213,7 +308,6 @@ $(function() {
 	});
 
     $("#addCategory").on('click', function() {
-        console.log('click');
         if (!$("#categoryName").val() || !$("#categoryId").val()) {
             $("#categoryErrorDiv").html('Fields are empty!');
             return;
@@ -225,7 +319,6 @@ $(function() {
             data : {userID : userID, categoryID : $("#categoryId").val()},
             dataType : 'json'
         }).done(function(response) {
-            console.log(response.status);
             if (response.status == 'success') {
                 $("#categoryErrorDiv").empty();
                 var catName = $("#categoryName").val();
@@ -238,21 +331,28 @@ $(function() {
                 $('.tipName').each(function() {
                     tipNames.push($(this).val());
                 });
-                var toSend = {userID : userID, categoryID : catID, categoryName : catName, subCategories : subcatNames, studyTips : tipNames};
-                $.ajax({
-                    type : 'POST',
-                    url : 'makeNewCategory',
-                    data : toSend,
-                    dataType : 'json'
-                }).done(function(response) {
-                    console.log('success making category');
-                    $('#uploadCategory').modal('hide');
-                    $('#uploadCategory').find('input:text').val(''); 
-                    $("#subcats").find("tr:gt(1)").remove();
-                }).fail(function(response) {
-                    console.log('error : could not make new category');
-                })
-                
+                if (!areWordsDistinct(subcatNames)) {
+                    $("#categoryErrorDiv").html("Don't enter duplicate subcategories.");
+                } else if (areWordsBlank(subcatNames)) {
+                    $("#categoryErrorDiv").html("Please leave blank subcategories only at the end.");
+                } else if (subcatNames[0] == '') {
+                    $("#categoryErrorDiv").html("You need at least one subcategory.");
+                } else {
+                    var toSend = {userID : userID, categoryID : catID, categoryName : catName, subCategories : subcatNames, studyTips : tipNames};
+                    $.ajax({
+                        type : 'POST',
+                        url : 'makeNewCategory',
+                        data : toSend,
+                        dataType : 'json'
+                    }).done(function(response) {
+                        console.log('success making category');
+                        $('#uploadCategory').modal('hide');
+                        $('#uploadCategory').find('input:text').val(''); 
+                        $("#subcats").find("tr:gt(1)").remove();
+                    }).fail(function(response) {
+                        console.log('error : could not make new category');
+                    });
+                }              
             } 
             else {
                 $("#categoryErrorDiv").html(response.status);
@@ -269,8 +369,6 @@ function listenForTabPress(e, div) {
 
     if (keyCode == 9) { 
         e.preventDefault();
-        $('#lastName').removeAttr('id', 'lastName');
-        div.removeClass('lastTip');
         addSubCatInput();
     }
 }
@@ -308,6 +406,7 @@ $(document).ready(function() {
 	visualizeRoster();
 
     $('#prof_categories').hide();
+    getAvailableCategories();
     $('#categories_button').click(function() {
         if ($('#prof_categories').is(":visible")) {
             $('#prof_categories').hide(500);
@@ -336,7 +435,27 @@ $(document).ready(function() {
     });
 
     $('.subcat-close').on('click', function(e) {
-     $("#subcats").find("tr:gt(1)").remove();
+     if ($("#subcats").find("tr:gt(1)").length > 0) {
+        $("#subcats").find("tr:gt(1)").remove();
+        var newButton = $("#hiddenNewSubCat");
+        newButton.clone().appendTo('#firstTip');
+        newButton.removeAttr('hiddenNewSubCat');
+        newButton.attr('id', 'newSubCat');
+        newButton.show();        
+        $('#newSubCat').click(addSubCatInput);
+     }
+     
+     
      $("#categoryErrorDiv").empty();
     });
+
+    $('#examModalClose').click(function() {
+        $('#newExamError').empty();
+    });
+
+    $('#catModalClose').click(function() {
+        subCatId = 0;
+    });
+
+    $('#newSubCat').click(addSubCatInput);
 });
