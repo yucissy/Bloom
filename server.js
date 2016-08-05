@@ -5,6 +5,10 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 var Data = require('./database.js');
+var Reports = require('./reports.js');
+var Exams = require('./exams.js');
+var Category = require('./categories.js');
+var Courses = require('./courses.js');
 var handlers = require('./handlers.js');
 
 var app = express();
@@ -18,8 +22,12 @@ app.use(bodyParser.urlencoded({
 }));
 
 var db = new Data();
+var reportService = new Reports(db);
+var examService = new Exams(db);
+var categoryService = new Category(db);
+var courseService = new Courses(db);
 
-handlers(app, db);
+handlers(app, reportService, examService, categoryService, courseService, db);
 
 app.listen(8080, function(){
 	console.log('- Server listening on port 8080');

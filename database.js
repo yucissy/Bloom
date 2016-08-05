@@ -87,7 +87,8 @@ function Database() {
     this.insertTestForCourse = function(courseId, testName, qs, callback) {
         var testToInsert = new Test({
                 title: testName,
-                questions: qs
+                questions: qs,
+                count: 0
             });
 
         testToInsert.save(function(err) {

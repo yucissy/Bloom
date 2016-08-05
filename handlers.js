@@ -1,14 +1,13 @@
 var Reports = require('./reports.js');
 var Exams = require('./exams.js');
+var Category = require('./categories.js');
 var Stormpath = require('./config/stormpath.js');
 var Courses = require('./courses.js');
 var lti = require('ims-lti');
 
-var exports = function(app, db) {
-	var reports = new Reports(db);
-	var exams = new Exams(db);
+var exports = function(app, reportService, examService, categoryService, courseService, db) {
+
 	var storm = new Stormpath();
-	var courses = new Courses(db);
 	var loggedIn = {};
 
 	function generateSessionID() {
@@ -145,7 +144,7 @@ var exports = function(app, db) {
 		
 		db.isUserStudentById(user, function(result, person) {
 			if (!result) {
-				courses.addNewCourse(course_id, course_title, sem, user, data, function(stat) {
+				courseService.addNewCourse(course_id, course_title, sem, user, data, function(stat) {
 					res.setHeader('Content-Type', 'application/json');
 					res.send(JSON.stringify({status : stat}));
 				});
@@ -155,8 +154,7 @@ var exports = function(app, db) {
 
 	app.post('/getCoursesForUser', function(req, res) {
 		var user = req.body.userID;
-
-		db.findUserCourses(user, function(crs) {
+		courseService.getCoursesForUser(user, function(courses) {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({courses : crs}));
 		});
@@ -175,13 +173,9 @@ var exports = function(app, db) {
 		// subcategories = ["Chapter 1", "Chapter 2", "Chapter 3"];
 		// tips = ["Study ch 1", "study ch 2", "study ch 3"];
 		
-		db.isUserStudentById(user, function(result, person) {
-			if (!result) {
-				db.insertCategory(catId, user, catName, subcategories, tips, function(stat) {
-					res.setHeader('Content-Type', 'application/json');
-					res.send(JSON.stringify({status : stat}));
-				});
-			}
+		categoryService.makeNewCategory(user, catId, catName, subcategories, tips, function(stat) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({status : stat}));
 		});
 	});
 
@@ -190,15 +184,9 @@ var exports = function(app, db) {
 		var catID = req.body.categoryID;
 		// catID = "blooms";
 
-		db.doesCategoryExist(catID, function(exists) {
-			var message;
-			if (exists) {
-				message = "This ID already exists. Please try a different ID.";
-			} else {
-				message = "success";
-			}
+		categoryService.isCategoryValid(catID, function(stat) {
 			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({status : message}));
+			res.send(JSON.stringify({status : stat}));
 		});
 	});
 
@@ -206,7 +194,7 @@ var exports = function(app, db) {
 		var user = req.body.userID;
 		var catId = req.body.categoryID;
 		// var catId = "blooms"
-		db.findStudyTipsForCategory(catId, function(tips) {
+		categoryService.getStudyTipsForCategory(catId, function(tips) {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({studyTips : tips}));
 		});
@@ -215,13 +203,9 @@ var exports = function(app, db) {
 	app.post('/getCategoriesForProfessor', function(req, res){
 		var user = req.body.userID;
 		// user = "B00999999";
-		db.isUserStudentById (user, function(result, person) {
-			if (!result) {
-				db.findCategoriesForProfessor(user, function(profCategories) {
-					res.setHeader('Content-Type', 'application/json');
-					res.send(JSON.stringify({categories : profCategories}));
-				});
-			}
+		categoryService.getCategoriesForProfessor(user, function(profCategories) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({categories : profCategories}));
 		});
 	});
 
@@ -230,21 +214,19 @@ var exports = function(app, db) {
 		var course = req.body.courseID;
 		var name = req.body.exam;
 		var data = req.body.data;
-		exams.makeExam(course, name, data, user, function(stat) {
+		examService.makeExam(course, name, data, user, function(stat) {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({status : stat}));
 		});
 	});
 
-	app.post('/submitStudentScoreListCsvForExam', function(req, res) {
+	app.post('/submitScoreCsvForExam', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		var data = req.body.data;
-		db.findTest({_id: exam}, function(test) {
-			reports.inputScores(test, data, function(stat) {
-				res.setHeader('Content-Type', 'application/json');
-				res.send(JSON.stringify({status : stat}));
-			});
+		reportService.inputScoreCsv(exam, data, function(stat) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({status : stat}));
 		});
 	});
 
@@ -252,18 +234,16 @@ var exports = function(app, db) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		var scores = req.body.scores;
-		db.findTest({_id: exam}, function(data) {
-			reports.calculateReport(user, data, scores, function(stat) {
-				res.setHeader('Content-Type', 'application/json');
-				res.send(JSON.stringify({status : stat}));
-			});
+		reportService.inputScore(user, exam, scores, function(stat) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({status : stat}));
 		});
 	});
 
 	app.post('/getExamById', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
-		db.findTest({_id : exam}, function(data){
+		examService.getExamById(exam, function(data){
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({exam : data}));
 		});
@@ -272,9 +252,9 @@ var exports = function(app, db) {
 	app.post('/getExamListForCourse', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
-		db.findTestFromCourse(course, function(data) {
+		examService.getExamsByCourseId(course, function(examList) {
 			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({exams : data}));
+			res.send(JSON.stringify({exams : examList}));
 		});
 	});
 
@@ -282,26 +262,10 @@ var exports = function(app, db) {
 	app.post('/getPendingExams', function(req, res) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
-		db.findTestFromCourse(course, function(data) {
-			db.findReportForStudent(user, function(reports) {
-				var testsToReturn = [];
-
-				for (var i = 0; i < data.length; i++) {
-					var flag = true;
-					for (var j = 0; j < reports.length; j++) {
-						if (String(data[i]._id) == String(reports[j].test_id)) {
-							flag = false;
-							break;
-						}
-					}
-					if (flag) {
-						testsToReturn.push(data[i]);
-					}
-				}
-
-				res.setHeader('Content-Type', 'application/json');
-				res.send(JSON.stringify({exams : testsToReturn}));
-			});
+		
+		examService.getPendingExamsByStudentAndCourse(courseId, studentId, function(examList) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({exams : examList}));
 		});
 	});
 
@@ -311,23 +275,9 @@ var exports = function(app, db) {
 		var course = req.body.courseID;
 		// var course = 'CSCI1230'
 		// var user = 'B0004567'
-		db.findTestFromCourse(course, function(tests) {
-			db.findReportForStudent(user, function(reports) {
-				var toReturn = [];
-				for (var i = 0; i < tests.length; i++) {
-					var toAppend = {test: tests[i], categories: null};
-					for (var j = 0; j < reports.length; j++) {
-						if (String(reports[j].test_id) == String(tests[i]._id)) {
-							toAppend.categories = reports[j].categories;
-							break;
-						}
-					}
-					toReturn.push(toAppend);
-				}
-
-				res.setHeader('Content-Type', 'application/json');
-				res.send(JSON.stringify({reports : toReturn}));
-			});
+		reportService.getReportsByStudentAndCourse(user, course, function(reportList) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({reports : reportList}));
 		});
 	});
 
@@ -337,9 +287,9 @@ var exports = function(app, db) {
 		var exam = req.body.examID;
 		// var exam = '5722c08ea598e9931e085fb8'
 		// var user = 'B0004567'
-		db.findReport(user, exam, function(data) {
+		reportService.getReportByStudentAndExam(user, exam, function(rep) {
 			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({report : data}));
+			res.send(JSON.stringify({report : rep}));
 		});
 	});
 
@@ -347,8 +297,7 @@ var exports = function(app, db) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		// var exam = '5722c08ea598e9931e085fb8'
-		db.findTest(exam, function(test) {
-			var avg = reports.calculateAverageScore(test);
+		reportService.getAverageScore(exam, function(avg) {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({average : avg}));
 		});
@@ -359,38 +308,17 @@ var exports = function(app, db) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
 		// var course = 'CSCI1230'
-		db.isUserStudentById (user, function(result, person) {
-			if (!result) {
-				db.findPopulatedTestFromCourse(course, function(tests) {
-					var toReturn = [];
-					for (var i = 0; i < tests.length; i++) {
-						var calc = reports.calculateAggregate(tests[i]);
-						toReturn.push({test: {_id: tests[i]._id,
-											  title: tests[i].title,
-											  count: tests[i].count}, 
-									   categories: calc});
-					}
-					res.setHeader('Content-Type', 'application/json');
-					res.send(JSON.stringify({aggregate: toReturn}));
-				});
-			}
-		});
-	});
 
-	// aggregate report for a test
-	app.post('/getAggregate', function(req, res) {
-		var user = req.body.userID;
-		var exam = req.body.examID;
-		// var exam = '5722c08ea598e9931e085fb8'
-		db.findTest(exam, function(data){
-			var calc = reports.calculateAggregate(data);
-			var toReturn = {test: {_id: data._id,
-									  title: data.title,
-									  count: data.count}, 
-							   categories: calc};
+		reportService.getAllAggregate(course, function(agg) {
 			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({aggregate: toReturn}));
+			res.send(JSON.stringify({aggregate: agg}));
 		});
+
+		// find better ways for these checks
+		// db.isUserStudentById (user, function(result, person) {
+		// 	if (!result) {
+		// 	}
+		// });
 	});
 
 	// scores to display along with study tips
@@ -400,28 +328,9 @@ var exports = function(app, db) {
 		// var course = 'CSCI1320';
 		// var user = "B00111111";
 
-		db.findTestFromCourse(course, function(data) {
-			db.findReportForStudent(user, function(rts) {
-				var reportsToCalculate = [];
-
-				for (var i = 0; i < rts.length; i++) {
-					var flag = false;
-					for (var j = 0; j < data.length; j++) {
-						if (String(rts[i].test_id) == String(data[j]._id)) {
-							flag = true;
-							break;
-						}
-					}
-					if (flag) {
-						reportsToCalculate.push(rts[i]);
-					}
-				}
-
-				var toReturn = reports.calculateCumulativeScore(reportsToCalculate);
-
-				res.setHeader('Content-Type', 'application/json');
-				res.send(JSON.stringify({cumulative: toReturn}));
-			});
+		reportService.getCumulativeReportForStudent(user, course, function(cumul) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({cumulative: cumul}));
 		});
 	});
 
@@ -430,12 +339,10 @@ var exports = function(app, db) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
 		// course = 'CSCI1320';
-		db.findPopulatedTestFromCourse(course, function(tests) {
-			reports.downloadCourseData(course, tests, function(path) {
-				res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
-				res.setHeader('Content-type', 'text/plain');
-				res.download(path);
-			});
+		reportService.downloadCourseData(course, function(path) {
+			res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
+			res.setHeader('Content-type', 'text/plain');
+			res.download(path);
 		});
 	});
 
@@ -444,32 +351,11 @@ var exports = function(app, db) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		// var exam = '5722c08ea598e9931e085fb8'
-		db.findReportForTest(exam, function(rts){
-			if (rts.length == 0) {
-				console.error('Should not be called. No reports to download.');
-			} else {
-				reports.downloadExamData(exam, rts, function(path) {
-					res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
-					res.setHeader('Content-type', 'text/csv');
-					res.download(path);
-				});
-			}
-		});
-	});
-
-	// returns whether all students have submitted their scores (aka ready output class data)
-	app.post('/readyForData', function(req, res) {
-		var user = req.body.userID;
-		var exam = req.body.examID;
-		var course = req.body.courseID;
-		db.getStudentsAndTestsFromCourse(course, function(stu, t) {
-			db.findTest(exam, function(test) {
-				var ready = "false";
-				if (stu.length == test.count) {
-					ready = "true";
-				}
-				res.send(JSON.stringify({status: ready}));
-			});
+		
+		reportService.downloadExamData(exam, function(path) {
+			res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
+			res.setHeader('Content-type', 'text/csv');
+			res.download(path);
 		});
 	});
 
@@ -478,12 +364,21 @@ var exports = function(app, db) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		// exam = '5730c484f1a94d4245c40c76'
-		db.findTest(exam, function(test) {
-			reports.downloadPublicData(test, function(path) {
-				res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
-				res.setHeader('Content-type', 'text/csv');
-				res.download(path);
-			});
+		reportService.downloadPublicData(exam, function(path) {
+			res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
+			res.setHeader('Content-type', 'text/csv');
+			res.download(path);
+		});
+	});
+
+	// returns whether all students have submitted their scores (aka ready output class data)
+	app.post('/readyForData', function(req, res) {
+		var user = req.body.userID;
+		var exam = req.body.examID;
+		var course = req.body.courseID;
+		
+		reportService.checkIfAllReportsReady(course, exam, function(ready) {
+			res.send(JSON.stringify({status: ready}));
 		});
 	});
 
@@ -491,38 +386,9 @@ var exports = function(app, db) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
 
-		db.getStudentsAndTestsFromCourse(course, function(students, tests) {
-			var toReturn = [];
-			students.forEach(function(stu, i){
-				var studentToAdd = {_id: stu._id, name: stu.name, exams: []}
-				db.findReportForStudent(stu._id, function(rts) {
-					for (var k=0; k < tests.length; k++) {
-						var flag = true;
-						for (var j=0; j < rts.length; j++) {
-							if (String(tests[k]._id) == String(rts[j].test_id)) {
-								var toPush = {};
-								toPush[tests[k].title] = true;
-								studentToAdd.exams.push(toPush);
-								flag = false;
-								break;
-							}
-						}
-						if (flag) {
-							var toPush = {};
-							toPush[tests[k].title] = false;
-							studentToAdd.exams.push(toPush);
-						}
-					}
-
-					toReturn.push(studentToAdd);
-
-					if (toReturn.length == students.length) {
-						res.setHeader('Content-Type', 'application/json');
-						res.send(JSON.stringify({roster : toReturn}));
-					}
-				});
-
-			});
+		courseService.getRoster(course, function(rost) {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({roster : rost}));
 		});
 	});
 }

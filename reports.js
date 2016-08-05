@@ -31,10 +31,14 @@ function Reports(db) {
 		return catToReturn;
 	}
 
-	this.writeTestReportHelper = function(test, wstream) {
+	this.writeTestReportHelper = function(test, wstream, reportService) {
 		wstream.write('Exam Title: ' + test.title + '\n');
 		wstream.write('Number of Submitted Scores: ' + test.count + '\n\n');
-		var calc = this.calculateAggregate(test);
+		if (test.count == 0) {
+			wstream.write('No data to display.\n\n');
+			return;
+		}
+		var calc = reportService.calculateAggregate(test, reportService);
 		for (var k=0; k < calc.length; k++) {
 			wstream.write('Category: ' + calc[k].main_cat_id.name + '\n');
 			for (var j=0; j < calc[k].sub_cats.length; j++) {
@@ -49,27 +53,36 @@ function Reports(db) {
 		wstream.write('Average Raw Score: ' + avg + "%\n\n");
 	}
 
-	this.inputScores = function(exam, data, callback) {
-		var calculate = this.calculateReport;
-		csv.parse(data, {columns:true}, function(err, output) {
-			if (output == null) {
-				callback('fail');
-				return;
-			}
-			var check = output[0];
-			if ('id' in check && check.length-1 == exam.questions.length) {
-				for (var i = 0; i < output.length; i++) {
-					var currentScores = output[i];
-					var studentId = currentScores.id;
-					delete currentScores.id;
-					calculateReport(studentId, exam, currentScores, callback);
+	this.inputScoreCsv = function(examId, data, callback) {
+		var reportService = this;
+		db.findTest({_id : examId}, function(exam) {
+			csv.parse(data, {columns:true}, function(err, output) {
+				if (output == null) {
+					callback('fail');
+					return;
 				}
-			}
+				var check = output[0];
+				if ('id' in check && check.length-1 == exam.questions.length) {
+					for (var i = 0; i < output.length; i++) {
+						var currentScores = output[i];
+						var studentId = currentScores.id;
+						delete currentScores.id;
+						reportService.calculateReport(studentId, exam, currentScores, callback, reportService);
+					}
+				}
+			});
 		});
 	}
 
-	this.calculateReport = function(userId, exam, scores, callback) {
-		var cats = this.calculateHelper(exam.questions, scores, 1);
+	this.inputScore = function(userId, examId, scores, callback) {
+		var reportService = this;
+		db.findTest({_id : examId}, function(exam) {
+			reportService.calculateReport(userId, exam, scores, callback, reportService);
+		});
+	}
+
+	this.calculateReport = function(userId, exam, scores, callback, reportService) {
+		var cats = reportService.calculateHelper(exam.questions, scores, 1);
 
 		db.insertStudentReport(userId, exam._id, cats, function(error) {
             if (error != null) {
@@ -91,14 +104,14 @@ function Reports(db) {
         });
 	}
 
-	this.calculateAggregate = function(exam) {
+	this.calculateAggregate = function(exam, reportService) {
 		var qs = exam.questions;
 		var scores = {};
 		for (var i = 0; i < qs.length; i++) {
 			scores[qs[i].qid] = qs[i].sum_points;
 		}
 
-		return this.calculateHelper(qs, scores, exam.count);
+		return reportService.calculateHelper(qs, scores, exam.count);
 	}
 
 	this.calculateAverageScore = function(exam) {
@@ -146,88 +159,184 @@ function Reports(db) {
 		return catToReturn;
 	}
 
+	this.getReportsByStudentAndCourse = function(studentId, courseId, callback) {
+		db.findTestFromCourse(courseId, function(exams) {
+			db.findReportForStudent(studentId, function(reports) {
+				var toReturn = [];
+				for (var i = 0; i < exams.length; i++) {
+					var toAppend = {test: exams[i], categories: null};
+					for (var j = 0; j < reports.length; j++) {
+						if (String(reports[j].test_id) == String(exams[i]._id)) {
+							toAppend.categories = reports[j].categories;
+							break;
+						}
+					}
+					toReturn.push(toAppend);
+				}
+
+				callback(toReturn);
+			});
+		});
+	}
+
+	this.getReportByStudentAndExam = function(studentId, examId, callback) {
+		db.findReport(studentId, examId, callback);
+	}
+
+	this.getAverageScore = function(examId, callback) {
+		db.findTest(examId, function(exam) {
+			var avg = calculateAverageScore(exam);
+			callback(avg);
+		});
+	}
+
+	this.getAllAggregate = function(courseId, callback) {
+		var reportService = this;
+		db.findPopulatedTestFromCourse(courseId, function(tests) {
+			var toReturn = [];
+			for (var i = 0; i < tests.length; i++) {
+				var result = reportService.calculateAggregate(tests[i], reportService);
+				toReturn.push({test: {_id: tests[i]._id,
+									  title: tests[i].title,
+									  count: tests[i].count}, 
+							   categories: result});
+			}
+
+			callback(toReturn);
+		});
+	}
+
+	this.getCumulativeReportForStudent = function(studentId, courseId, callback) {
+		var calculate = this.calculateCumulativeScore;
+		db.findTestFromCourse(courseId, function(tests) {
+			db.findReportForStudent(studentId, function(reports) {
+				var reportsToCalculate = [];
+
+				for (var i = 0; i < reports.length; i++) {
+					var flag = false;
+					for (var j = 0; j < tests.length; j++) {
+						if (String(reports[i].test_id) == String(tests[j]._id)) {
+							flag = true;
+							break;
+						}
+					}
+					if (flag) {
+						reportsToCalculate.push(reports[i]);
+					}
+				}
+
+				var toReturn = calculate(reportsToCalculate);
+				callback(toReturn);
+			});
+		});
+	}
+
 	// a text file!!!
 	// course name
 	// test name, test avg score, test avg categories score
-	this.downloadCourseData = function(course, tests, callback) {
-		var date = Date.now();
-		var filePath = "./local_storage/" + course + "_" + date + ".txt";
+	this.downloadCourseData = function(course, callback) {
+		var reportService = this;
+		db.findPopulatedTestFromCourse(course, function(tests) {
+			var date = Date.now();
+			var filePath = "./local_storage/" + course + "_" + date + ".txt";
 
-		var wstream = fs.createWriteStream(filePath);
-		wstream.write('Report Generated On: ' + (new Date(date)).toString() + '\n');
-		wstream.write('Course: ' + course + '\n\n');
-		for (var i=0; i < tests.length; i++) {
-			wstream.write('-------------------------\n');
-			this.writeTestReportHelper(tests[i], wstream);
-		}
-		wstream.end();
-		wstream.on('finish', function() {
-			callback(filePath);
+			var wstream = fs.createWriteStream(filePath);
+			wstream.write('Report Generated On: ' + (new Date(date)).toString() + '\n');
+			wstream.write('Course: ' + course + '\n\n');
+			for (var i=0; i < tests.length; i++) {
+				wstream.write('-------------------------\n');
+				reportService.writeTestReportHelper(tests[i], wstream, reportService);
+			}
+			wstream.end();
+			wstream.on('finish', function() {
+				callback(filePath);
+			});
 		});
 	}
 
 	// should check if everyone submitted before generating this
-	this.downloadPublicData = function(test, callback) {
-		var date = Date.now();
-		var filePath = "./local_storage/" + test._id + "_PUBLIC_" + date + ".txt";
+	this.downloadPublicData = function(examId, callback) {
+		var reportService = this;
+		db.findTest(examId, function(test) {
+			var date = Date.now();
+			var filePath = "./local_storage/" + test._id + "_PUBLIC_" + date + ".txt";
 
-		var wstream = fs.createWriteStream(filePath);
-		wstream.write('Report Generated On: ' + (new Date(date)).toString() + '\n');
-		this.writeTestReportHelper(test, wstream);
-		wstream.write('Question Breakdown\n');
-		var qs = test.questions;
-		for (var i=0; i < qs.length; i++) {
-			var pt = qs[i].sum_points;
-			var total = test.count * qs[i].max_points;
-			wstream.write(qs[i].qid + ':' + Math.round(pt/total * 10000)/100 + '%\n');
-		}
-		wstream.end();
-		wstream.on('finish', function() {
-			callback(filePath);
+			var wstream = fs.createWriteStream(filePath);
+			wstream.write('Report Generated On: ' + (new Date(date)).toString() + '\n');
+			reportService.writeTestReportHelper(test, wstream, reportService);
+			wstream.write('Question Breakdown\n');
+			var qs = test.questions;
+			for (var i=0; i < qs.length; i++) {
+				var pt = qs[i].sum_points;
+				var total = test.count * qs[i].max_points;
+				wstream.write(qs[i].qid + ':' + Math.round(pt/total * 10000)/100 + '%\n');
+			}
+			wstream.end();
+			wstream.on('finish', function() {
+				callback(filePath);
+			});
 		});
 	}
 
 	// a csv file!!!
 	// student bloom0 bloom1 bloom2 ...
-	this.downloadExamData = function(test, reports, callback) {
-		var date = Date.now();
-		var filePath = "./local_storage/" + test + "_" + date + ".csv";
+	this.downloadExamData = function(test, callback) {
+		db.findReportForTest(exam, function(reports){
+			if (rts.length == 0) {
+				console.error('Should not be called. No reports to download.');
+			} else {
+				var date = Date.now();
+				var filePath = "./local_storage/" + test + "_" + date + ".csv";
 
-		var hdr = ["student_id", "student_name"];
-		var sample_cats = reports[0].categories;
-		for (var i=0; i < sample_cats.length; i++) {
-			var cat = sample_cats[i].main_cat_id;
-			for (var c=0; c < cat.sub_categories.length; c++) {
-				hdr.push(cat._id + "_" + c);
-			}
-		}
-
-		var writer = csvWriter({ headers: hdr});
-		var wstream = fs.createWriteStream(filePath);
-		writer.pipe(wstream);
-
-		for (var j=0; j < reports.length; j++) {
-			var toWrite = [];
-			toWrite.push(reports[j].student_id._id);
-			toWrite.push(reports[j].student_id.name);
-			var cats = reports[j].categories;
-			var count = 2;
-			for (var k=0; k < cats.length; k++) {
-				for (var m=0; m < cats[k].sub_cats.length; m++) {
-					var number = parseInt(hdr[count].substr(hdr[count].length-1));
-					if (number == m) {
-						toWrite.push(cats[k].sub_cats[m].percentage);
-					} else {
-						toWrite.push('-');
+				var hdr = ["student_id", "student_name"];
+				var sample_cats = reports[0].categories;
+				for (var i=0; i < sample_cats.length; i++) {
+					var cat = sample_cats[i].main_cat_id;
+					for (var c=0; c < cat.sub_categories.length; c++) {
+						hdr.push(cat._id + "_" + c);
 					}
-					count++;
 				}
+
+				var writer = csvWriter({ headers: hdr});
+				var wstream = fs.createWriteStream(filePath);
+				writer.pipe(wstream);
+
+				for (var j=0; j < reports.length; j++) {
+					var toWrite = [];
+					toWrite.push(reports[j].student_id._id);
+					toWrite.push(reports[j].student_id.name);
+					var cats = reports[j].categories;
+					var count = 2;
+					for (var k=0; k < cats.length; k++) {
+						for (var m=0; m < cats[k].sub_cats.length; m++) {
+							var number = parseInt(hdr[count].substr(hdr[count].length-1));
+							if (number == m) {
+								toWrite.push(cats[k].sub_cats[m].percentage);
+							} else {
+								toWrite.push('-');
+							}
+							count++;
+						}
+					}
+					writer.write(toWrite);
+				}
+				writer.end();
+				wstream.on('finish', function() {
+					callback(filePath);
+				});
 			}
-			writer.write(toWrite);
-		}
-		writer.end();
-		wstream.on('finish', function() {
-			callback(filePath);
+		});
+	}
+
+	this.checkIfAllReportsReady = function(courseId, examId, callback) {
+		db.getStudentsAndTestsFromCourse(courseId, function(students, t) {
+			db.findTest(examId, function(test) {
+				var ready = "false";
+				if (students.length == test.count) {
+					ready = "true";
+				}
+				callback(ready);
+			});
 		});
 	}
 }
