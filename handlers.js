@@ -60,7 +60,17 @@ var exports = function(app, reportService, examService, categoryService, courseS
 			});
 			
 			//render appropriate pages here if student or professor
-			res.render('index.html')	
+			res.status(200).json(body);
+			
+			//test code 
+			/*
+				if (body[instructor]) {
+					res.render('upload_categories.html', {});
+				}
+				else {
+					res.render('upload_questions.html', {});
+				}
+			*/
 		});		
 	});	
 
