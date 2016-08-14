@@ -432,19 +432,19 @@ function Database() {
         });
     }
 	
-	this.insertCourseIntoStudent = function (studentId, course, callback) {
-		User.findOne({_id: studentId}, function(err, student) {
-			if(student != null) {
-				student.courses.push(course);
-				student.save(function(error, success) {
+	this.insertCourseIntoUser = function (userId, course, callback) {
+		User.findOne({_id: userId}, function(err, user) {
+			if(user != null) {
+				user.courses.push(course);
+				user.save(function(error, success) {
 								if(error)
-									callback("ERR: Could not insert Course: " + course + "into Student" + studentId + ".")
+									callback("ERR: Could not insert Course: " + course + "into User" + userId + ".")
 								else
 									callback(null);
 							});
 			}
 			else
-				callback("ERR: Could not insert Course: " + course + "into Student" + studentId + ".");
+				callback("ERR: Could not insert Course: " + course + "into User" + userId + ".");
 		});
 	}
 
