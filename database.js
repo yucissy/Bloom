@@ -191,7 +191,7 @@ function Database() {
             }
         });
     }
-
+	
     //functions for accessing certain fields of a document
     this.findTestFromCourse = function(course, callback) {        
         Course.findOne({_id: course}).populate('tests', 'title').exec(function(err, course) {
@@ -332,15 +332,17 @@ function Database() {
 		});
 	}
 	
+
+	// finds a user with the given user id
 	this.findUID = function(uid, callback) {
         User.findOne({_id : uid}).exec(function(err, user) {
             if (err)
                 callback("ERR: Could not find a user id: " + uid + ".");
             else {
                 if (user != null)
-                    callback(user._id);
+                    callback(user);
                 else
-                    callback("ERR: Could not find a user id: " + em + ".");
+                    callback("ERR: Could not find a user id: " + uid + ".");
             }
         });
     }	
@@ -430,6 +432,22 @@ function Database() {
                 callback("ERR: Could not insert Student: " + student + "into Course: " + courseId + ".");
         });
     }
+	
+	this.insertCourseIntoUser = function (userId, course, callback) {
+		User.findOne({_id: userId}, function(err, user) {
+			if(user != null) {
+				user.courses.push(course);
+				user.save(function(error, success) {
+								if(error)
+									callback("ERR: Could not insert Course: " + course + "into User" + userId + ".")
+								else
+									callback(null);
+							});
+			}
+			else
+				callback("ERR: Could not insert Course: " + course + "into User" + userId + ".");
+		});
+	}
 
     this.deleteStudentFromCourse = function (courseId, student, callback) {
         Course.update({'_id': courseId}, {'$pull': {

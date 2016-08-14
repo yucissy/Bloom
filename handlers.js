@@ -36,9 +36,7 @@ var exports = function(app, reportService, examService, categoryService, courseS
 	});
 	
 	//in progress; need to test out
-	app.post('/lti_launch', function(req, res) {
-		console.log("test here");
-		
+	app.post('/lti_launch', function(req, res) {		
 		var consumerKey = req.body.oauth_consumer_key; 
 		var consumerSecret = 'secret'; //change to canvas consumer secret
 		
@@ -48,6 +46,7 @@ var exports = function(app, reportService, examService, categoryService, courseS
 			if (err || !isValid) {
 				return next(err || new Error('invalid lti'));
 			}
+			
 			
 			var body = {};
 			[
@@ -59,7 +58,11 @@ var exports = function(app, reportService, examService, categoryService, courseS
 				body[key] = provider[key];
 			});
 			
+			res.status(200).json(body);
+			
+			
 			//render appropriate pages here if student or professor
+
 			res.status(200).json(body);
 			
 			//test code 
@@ -70,6 +73,34 @@ var exports = function(app, reportService, examService, categoryService, courseS
 				else {
 					res.render('upload_questions.html', {});
 				}
+
+			/*
+			var userId = provider['userId'];
+			var student = provider['student'];
+			var email = provider['body']['lis_person_contact_email_primary'];
+			var name = provider['body']['lis_person_name_full'];
+			
+			db.findUID (userId, function(us) {
+				//error message, set up new user account
+				if (typeof user === "string") {
+					if (student)
+						db.insertUser(userId, name, email, "Student", function(newUser) {
+							res.render('upload_questions.html', {user: us, course:[]});
+						});
+					else
+						db.insertUser(userId, name, email, "Professor", function(newUser) {
+							res.render('upload_categories.html', {user: us, course:[]});
+						});
+				}
+				else {
+					if (student) {
+						res.render('upload_questions.html', {user: us, course:[]});
+					}
+					else {
+						res.render('upload_categories.html', {user: us, course:[]});
+					}
+				}
+			});
 			*/
 		});		
 	});	
