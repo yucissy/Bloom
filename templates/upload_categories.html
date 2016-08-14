@@ -14,12 +14,16 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+    <!--Flip Library-->
+    <script src="https://cdn.rawgit.com/nnattawat/flip/master/dist/jquery.flip.min.js"></script>
       
     <script src="upload.js"></script>
     <script src="upload_scores.js"></script>
     <script src="chart.js"></script>
 
     <script src="http://d3js.org/d3.v3.min.js"></script>
+
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
@@ -75,21 +79,24 @@
       </div>
       <div class="col-md-10" id="main">
         <div id="main_content">
-        <div id="part1">
-        <h1>{{course.0.title}}</h1>
-        <div id="prof_selector">
-          <div class="prof_select selected" id="select_1"><h2>STUDENTS</h2></div>
-          <div class="prof_select"  id="select_2"><h2>EXAMS</h2></div>
-
+        <div class="front">
+          <div id="part1">
+            <h1>{{course.0.title}}</h1>
+            <div id="prof_selector">
+              <div class="prof_select selected" id="select_1"><h2>STUDENTS</h2></div>
+              <div class="prof_select"  id="select_2"><h2>EXAMS</h2></div>
+            </div>
+            <hr style="color:gray">
+            <div id="part2">
+            </div>
+            <div id="part3">
+            </div>
+          </div>
         </div>
-        <hr style="color:gray">
-
-        <div id="part2">
-
-        </div>
-
-        <div id="part3">
-        </div>
+        <div class="back">
+          <div id="part4">
+            <p id="back-prof-roster">Back</p>
+          </div>
         </div>
 
         </div>

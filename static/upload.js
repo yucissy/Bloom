@@ -56,9 +56,30 @@ function visualizeRoster() {
             var tbody = table.append('tbody');
             $.each(response.roster, function(i,v) {
             	var trow = tbody.append('tr').attr('id', v._id);
-            	trow.append('td').text(v.name);
-            	var studentID = v._id;
-            	var studentName = v.name;
+
+                var studentID = v._id;
+                var studentName = v.name;
+
+            	// append the student name as first td, and set its hover & click behavior
+                // HOVER: the row changes color to indicate possible click
+                // CLICK: shows the professor that student's exam scores
+                var studentNameTd = trow.append('td')
+                                    .text(studentName)
+                                    .attr('class', 'student-name-td')
+                                    .on('mouseover', function() {
+                                        $(this).siblings().css('background-color', '#f2ed98');
+                                        $(this).css('background-color', 'gold');
+                                    })
+                                    .on('mouseout', function() {
+                                        $(this).siblings().css('background-color', 'white');
+                                        $(this).css('background-color', 'white');
+                                    })
+                                    .on('click', function() {
+                                        visualizeStudentExamScores(studentID);
+                                    });
+
+
+            	
             	$.each(v.exams, function(i,v) {
             		if (v[examTitles[i].title] == true)
             			trow.append('td').attr('class','y');
@@ -110,6 +131,28 @@ function visualizeRoster() {
             });
         }
     }
+}
+
+// Flips the main visualization card so the professor sees student name & list of exams with results
+// BACK button returns to student roster
+function visualizeStudentExamScores(studentID) {
+    console.log('here');
+
+    var toggleVisibility = function() {
+
+        if (e.css('visibility') == 'hidden') {
+            e.css('visibility', 'visible');
+        } else {
+            e.css('visibility', 'hidden');
+        }
+    }
+    
+    var toggleFrontBack = function() {
+        toggleVisibility($('.back'));
+        toggleVisibility($('.front'));
+    }
+    
+    $('#main_content').flip(toggleFrontBack);
 }
 
 function addSubCatInput() {
@@ -458,4 +501,9 @@ $(document).ready(function() {
     });
 
     $('#newSubCat').click(addSubCatInput);
+
+
+    $('#back-prof-roster').click(function() {
+        visualizeStudentExamScores(null);
+    });
 });

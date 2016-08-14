@@ -8,6 +8,7 @@ function Exams(db) {
 
 	this.makeExamHelper = function(validCategories, output) {
 		var test = [];
+		console.log(JSON.stringify(output));
 
 		for (var i=0; i<output.length; i++) {
 			var insert = {categories : []};
@@ -19,6 +20,7 @@ function Exams(db) {
 						return curr._id == key;
 					});
 					if (keyIsValid) {
+						console.log("key: " + key);
 						insert.categories.push({'main_cat_id': key, 'sub_cat_id': parseInt(output[i][key])});
 					} else {
 						//error
@@ -78,6 +80,37 @@ function Exams(db) {
 				callback('fail');
 				return;
 			}
+		});
+	}
+
+	this.getExamById = function(examId, callback) {
+		db.findTest({_id : examId}, callback);
+	}
+
+	this.getExamsByCourseId = function(courseId, callback) {
+		db.findTestFromCourse(courseId, callback);
+	}
+
+	this.getPendingExamsByStudentAndCourse = function(courseId, studentId, callback) {
+		db.findTestFromCourse(courseId, function(data) {
+			db.findReportForStudent(studentId, function(reports) {
+				var testsToReturn = [];
+
+				for (var i = 0; i < data.length; i++) {
+					var flag = true;
+					for (var j = 0; j < reports.length; j++) {
+						if (String(data[i]._id) == String(reports[j].test_id)) {
+							flag = false;
+							break;
+						}
+					}
+					if (flag) {
+						testsToReturn.push(data[i]);
+					}
+				}
+
+				callback(testsToReturn);
+			});
 		});
 	}
 }

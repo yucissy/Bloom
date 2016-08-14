@@ -451,3 +451,19 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 	cursor:hand;
 	cursor:pointer;
 }
+.student-name-td:hover {
+	cursor:pointer;
+	cursor:hand;
+	font-weight:bold;
+	background-color:#eadb67;
+}
+#part4 {
+	color:black;
+	background-color:#eaeae3;
+	width:710px;
+	padding:40px;
+	border-radius:8px;
+}
+.back {
+	visibility:hidden;
+}
