@@ -331,6 +331,19 @@ function Database() {
 				callback(categories);
 		});
 	}
+	
+	this.findUID = function(uid, callback) {
+        User.findOne({_id : uid}).exec(function(err, user) {
+            if (err)
+                callback("ERR: Could not find a user id: " + uid + ".");
+            else {
+                if (user != null)
+                    callback(user._id);
+                else
+                    callback("ERR: Could not find a user id: " + em + ".");
+            }
+        });
+    }	
 
     this.getUID = function(em, callback) {
         User.findOne({email : em}).exec(function(err, user) {
