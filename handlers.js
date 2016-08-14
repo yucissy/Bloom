@@ -47,7 +47,7 @@ var exports = function(app, reportService, examService, categoryService, courseS
 				return next(err || new Error('invalid lti'));
 			}
 			
-			
+			/*
 			var body = {};
 			[
 				'roles', 'admin', 'alumni', 'content_developer', 'guest', 'instructor',
@@ -59,26 +59,36 @@ var exports = function(app, reportService, examService, categoryService, courseS
 			});
 			
 			res.status(200).json(body);
-			
+			*/
 			
 			//render appropriate pages here if student or professor
 			
-			/*var userId = provider['userId'];
-			db.findUID (userId, function(user) {
-				
-			});
-			
-			
+			var userId = provider['userId'];
 			var student = provider['student'];
+			var email = provider['body']['lis_person_contact_email_primary'];
 			var name = provider['body']['lis_person_name_full'];
 			
-			if (student) { //instructor
-				res.render('upload_questions.html', {});
-			}
-			else {
-				res.render('upload_categories.html', {});
-			}*/
-		
+			db.findUID (userId, function(us) {
+				//error message, set up new user account
+				if (typeof user === "string") {
+					if (student)
+						db.insertUser(userId, name, email, "Student", function(newUser) {
+							res.render('upload_questions.html', {user: us, course:[]});
+						});
+					else
+						db.insertUser(userId, name, email, "Professor", function(newUser) {
+							res.render('upload_categories.html', {user: us, course:[]});
+						});
+				}
+				else {
+					if (student) {
+						res.render('upload_questions.html', {user: us, course:[]});
+					}
+					else {
+						res.render('upload_categories.html', {user: us, course:[]});
+					}
+				}
+			});
 		});		
 	});	
 
