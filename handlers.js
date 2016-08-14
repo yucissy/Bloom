@@ -36,9 +36,7 @@ var exports = function(app, reportService, examService, categoryService, courseS
 	});
 	
 	//in progress; need to test out
-	app.post('/lti_launch', function(req, res) {
-		console.log("test here");
-		
+	app.post('/lti_launch', function(req, res) {		
 		var consumerKey = req.body.oauth_consumer_key; 
 		var consumerSecret = 'secret'; //change to canvas consumer secret
 		
@@ -48,6 +46,7 @@ var exports = function(app, reportService, examService, categoryService, courseS
 			if (err || !isValid) {
 				return next(err || new Error('invalid lti'));
 			}
+			
 			
 			var body = {};
 			[
@@ -59,18 +58,27 @@ var exports = function(app, reportService, examService, categoryService, courseS
 				body[key] = provider[key];
 			});
 			
-			//render appropriate pages here if student or professor
 			res.status(200).json(body);
 			
-			//test code 
-			/*
-				if (body[instructor]) {
-					res.render('upload_categories.html', {});
-				}
-				else {
-					res.render('upload_questions.html', {});
-				}
-			*/
+			
+			//render appropriate pages here if student or professor
+			
+			/*var userId = provider['userId'];
+			db.findUID (userId, function(user) {
+				
+			});
+			
+			
+			var student = provider['student'];
+			var name = provider['body']['lis_person_name_full'];
+			
+			if (student) { //instructor
+				res.render('upload_questions.html', {});
+			}
+			else {
+				res.render('upload_categories.html', {});
+			}*/
+		
 		});		
 	});	
 
