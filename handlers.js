@@ -47,7 +47,7 @@ var exports = function(app, reportService, examService, categoryService, courseS
 				return next(err || new Error('invalid lti'));
 			}
 			
-			/*
+			
 			var body = {};
 			[
 				'roles', 'admin', 'alumni', 'content_developer', 'guest', 'instructor',
@@ -59,10 +59,10 @@ var exports = function(app, reportService, examService, categoryService, courseS
 			});
 			
 			res.status(200).json(body);
-			*/
+			
 			
 			//render appropriate pages here if student or professor
-			
+			/*
 			var userId = provider['userId'];
 			var student = provider['student'];
 			var email = provider['body']['lis_person_contact_email_primary'];
@@ -89,6 +89,7 @@ var exports = function(app, reportService, examService, categoryService, courseS
 					}
 				}
 			});
+			*/
 		});		
 	});	
 
