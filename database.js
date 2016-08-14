@@ -332,15 +332,16 @@ function Database() {
 		});
 	}
 	
+	// finds a user with the given user id
 	this.findUID = function(uid, callback) {
         User.findOne({_id : uid}).exec(function(err, user) {
             if (err)
                 callback("ERR: Could not find a user id: " + uid + ".");
             else {
                 if (user != null)
-                    callback(user._id);
+                    callback(user);
                 else
-                    callback("ERR: Could not find a user id: " + em + ".");
+                    callback("ERR: Could not find a user id: " + uid + ".");
             }
         });
     }	
