@@ -242,7 +242,7 @@ $(document).ready(function() {
                     	$("#error").empty();
                         $('#newExam1').modal('hide');
                         var user = $("meta[name='user_id']").attr("content");
-                        visualizeScores(false, user);
+                        visualizeScores(false, user, '#part3');
                         visualizeRoster();
                     } else {
                         $('#error').text('Something went wrong :(');

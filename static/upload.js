@@ -75,7 +75,7 @@ function visualizeRoster() {
                                         $(this).css('background-color', 'white');
                                     })
                                     .on('click', function() {
-                                        visualizeStudentExamScores(studentID);
+                                        flipCard(studentID, studentName, true);
                                     });
 
 
@@ -135,24 +135,27 @@ function visualizeRoster() {
 
 // Flips the main visualization card so the professor sees student name & list of exams with results
 // BACK button returns to student roster
-function visualizeStudentExamScores(studentID) {
-    console.log('here');
+function flipCard(nStudentID, sStudentName, bFrontBack) {
 
-    var toggleVisibility = function() {
-
+    var toggleVisibility = function(e) {
         if (e.css('visibility') == 'hidden') {
             e.css('visibility', 'visible');
         } else {
             e.css('visibility', 'hidden');
         }
+    } 
+
+    toggleVisibility($('.back'));
+    toggleVisibility($('.front'));
+
+    $('#main_content').flip(bFrontBack);
+
+    // If the card has just been flipped to visualize a student's scores
+    // Populate the card with that student's exam data
+    if (bFrontBack == true) {
+        $('#part4-student-name').html(sStudentName);
+        visualizeScores(false, nStudentID, '#part5');
     }
-    
-    var toggleFrontBack = function() {
-        toggleVisibility($('.back'));
-        toggleVisibility($('.front'));
-    }
-    
-    $('#main_content').flip(toggleFrontBack);
 }
 
 function addSubCatInput() {
@@ -250,7 +253,7 @@ $(function() {
                         $('#myModal').modal('hide');
                         visualizeRoster();
                         var user = $("meta[name='user_id']").attr("content");
-                        visualizeScores(true, user);
+                        visualizeScores(true, user, '#part3');
                         getExamList(true);
                     } else {
                         $('#newExamError').text('Something went wrong. Please check that the .csv is formatted correctly.');
@@ -296,7 +299,7 @@ $(function() {
                         $('#submitScoresAggregate').modal('hide');
                         visualizeRoster();
                         var user = $("meta[name='user_id']").attr("content");
-                        visualizeScores(true, user);
+                        visualizeScores(true, user, '#part3');
                         getExamList(true);
                     } else {
                         $('#submitAggError').text('Something went wrong. Please check that the .csv is formatted correctly.');
@@ -470,7 +473,7 @@ $(document).ready(function() {
     $('#submit').on('click', function() {
     	visualizeRoster();
     	var user = $("meta[name='user_id']").attr("content");
-    	visualizeScores(true, user);
+    	visualizeScores(true, user, '#part3');
     });
 
     $(".lastTip").on('keydown', function(e) {
@@ -502,8 +505,9 @@ $(document).ready(function() {
 
     $('#newSubCat').click(addSubCatInput);
 
-
-    $('#back-prof-roster').click(function() {
-        visualizeStudentExamScores(null);
+    // Flipping the professor's card functions to see individual student scores
+    $('#main_content').flip({trigger:'manual'});
+    $('#part4-back').click(function() {
+        flipCard(null, null, false);
     });
 });

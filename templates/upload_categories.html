@@ -95,7 +95,9 @@
         </div>
         <div class="back">
           <div id="part4">
-            <p id="back-prof-roster">Back</p>
+            <p id="part4-back"><span id="glyphicon-back" class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>BACK</p>
+            <h1 id="part4-student-name"></h1>
+            <div id="part5"></div>
           </div>
         </div>
 
@@ -285,7 +287,7 @@
       $('#exam_list').contents().first().replaceWith("<div class='curr exam'><p>"+select+"</p></div>");
     }
     
-	  visualizeScores(true, user);
+	  visualizeScores(true, user, '#part3');
   });
 
   $("#select_1").on('click', function() {
@@ -303,7 +305,7 @@
   $('body').on('click', '.course.unselected', function() {
     getCourseList($(this).text());
     $("meta[name='course_id']").attr("content", $(this).text());
-    visualizeScores(true, user);
+    visualizeScores(true, user, '#part3');
     visualizeRoster();
     getExamList(true);
   });
@@ -320,7 +322,7 @@
       $("#part2").hide();
       $("#part3").show();
       $("#select_2").trigger('click');
-      visualizeScores(true, user);
+      visualizeScores(true, user, '#part3');
       setTimeout(function(){$('.category')[index].scrollIntoView( true );}, 1000);
     }
 

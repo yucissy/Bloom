@@ -111,12 +111,12 @@
 <script>
 getExamList(false);
 var user = $("meta[name='user_id']").attr("content");
-visualizeScores(false, user);
+visualizeScores(false, user, '#part3');
 
 $('body').on('click', '.course.unselected', function() {
   getCourseList($(this).text());
   $("meta[name='course_id']").attr("content", $(this).text());
-  visualizeScores(false, user);
+  visualizeScores(false, user, '#part3');
   getExamList(false);
 });
 
@@ -160,7 +160,7 @@ $("#select_1").on('click', function() {
       var select = $('#exam_list').contents().first().text();
       $('#exam_list').contents().first().replaceWith("<div class='curr exam'><p>"+select+"</p></div>");
     }
-    visualizeScores(false, user);
+    visualizeScores(false, user, '#part3');
   });
                   
 

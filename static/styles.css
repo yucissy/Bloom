@@ -454,6 +454,7 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 .student-name-td:hover {
 	cursor:pointer;
 	cursor:hand;
+	text-decoration:underline;
 	font-weight:bold;
 	background-color:#eadb67;
 }
@@ -466,4 +467,38 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 }
 .back {
 	visibility:hidden;
+}
+#part4-back {
+	padding:10px;
+	border-radius:5px;
+	color:#939090;
+	font-size:0.8em;
+	width:200px;
+}
+#part4-back:hover {
+	cursor:pointer;
+	cursor:hand;
+	text-decoration:underline;
+	color:black;
+	background-color:#a5f28c;
+}
+#part4 h1 {
+	font-weight:100;
+	padding-bottom:20px;
+	margin-left:-2px;
+}
+#part4 h2 {
+	color:gray;
+	font-size:.55em;
+	letter-spacing:2px;
+	padding-bottom:0;
+	cursor:hand;
+	cursor:pointer;
+}
+#part4 hr {
+	margin-top:-3px;
+	border-color:gray;
+}
+#glyphicon-back {
+	padding-right:5px;
 }

@@ -19,8 +19,8 @@ function examDataComplete(examID, button) {
 }
 
 
-function visualizeScores(aggregate, userID) {
-	   	$("#part3").empty();
+function visualizeScores(aggregate, userID, scoresDiv) {
+	   	$(scoresDiv).empty();
   		var user_ID = userID;
   		var course_ID = $("meta[name='course_id']").attr("content");
 	    var toSend = {userID: user_ID, courseID: course_ID};
@@ -41,11 +41,11 @@ function visualizeScores(aggregate, userID) {
 					$('.score').css('display', 'none');
 					if (aggregate) {
 						$.each(response.aggregate, function(i, v) {
-	                	makeBarChart(v, true);
+	                	makeBarChart(v, true, scoresDiv);
 	                });
 					} else {
 	                $.each(response.reports, function(i, v) {
-	                	makeBarChart(v, false);
+	                	makeBarChart(v, false, scoresDiv);
 	                });
 	        	}
 	        	setTimeout(function() {
@@ -91,9 +91,9 @@ function makeButton(div, examID, count) {
 }
 
 //actual code
-function makeBarChart(data, agg) {
+function makeBarChart(data, agg, scoresDiv) {
 
-  var newDiv = d3.select("#part3")
+  var newDiv = d3.select(scoresDiv)
             .append("div")
             .attr("class", "category");
 
