@@ -283,7 +283,8 @@ $(function() {
             //this variable holds the csv data!
             var dataURL = reader.result;
    
-            var toSend = {userID: user_ID, examID: exam_ID, data: dataURL};
+            var toSend = {userID: user_ID, examID: exam_ID, scores: dataURL};
+            console.log(toSend);
 
             var request = new XMLHttpRequest();
             request.open('POST', '/submitScoreCsvForExam', true);
