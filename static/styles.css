@@ -474,6 +474,7 @@ background-image: linear-gradient(to top, #505052 0%, #9E9E9E 100%);
 	color:#939090;
 	font-size:0.7em;
 	width:200px;
+	border:1px solid #bab6b6;
 }
 #part4-back:hover {
 	cursor:pointer;

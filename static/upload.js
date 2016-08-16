@@ -284,10 +284,9 @@ $(function() {
             var dataURL = reader.result;
    
             var toSend = {userID: user_ID, examID: exam_ID, data: dataURL};
-            console.log(toSend);
 
             var request = new XMLHttpRequest();
-            request.open('POST', '/submitStudentScoreListCsvForExam', true);
+            request.open('POST', '/submitScoreCsvForExam', true);
             request.setRequestHeader('Content-Type', 'application/json');
             request.send(JSON.stringify(toSend));
 
