@@ -67,13 +67,31 @@ function Reports(db) {
 					return;
 				}
 				var check = output[0];
-				if ('id' in check && check.length-1 == exam.questions.length) {
+				if ('id' in check && Object.keys(check).length-1 == exam.questions.length) {
+					var status = 'success';
+					var countForCallback = 0;
 					for (var i = 0; i < output.length; i++) {
 						var currentScores = output[i];
 						var studentId = currentScores.id;
 						delete currentScores.id;
-						reportService.calculateReport(studentId, exam, currentScores, callback, reportService);
+						reportService.calculateReport(studentId, exam, currentScores, function(stat) {
+							console.log(stat);
+							if (stat == 'fail') {
+								status = stat;
+							}
+							countForCallback++;
+
+							console.log(countForCallback);
+							console.log(output.length);
+							if (countForCallback == output.length - 1) {
+								callback(status);
+							}
+						}, reportService);
 					}
+				} else {
+					console.error('ERROR: bad csv input');
+					callback('fail');
+					return;
 				}
 			});
 		});
@@ -93,7 +111,7 @@ function Reports(db) {
 
 	this.calculateReport = function(userId, exam, scores, callback, reportService) {
 		var cats = reportService.calculateHelper(exam.questions, scores, 1);
-
+		console.log(cats);
 		db.insertStudentReport(userId, exam._id, cats, function(error) {
             if (error != null) {
                 console.log(error);

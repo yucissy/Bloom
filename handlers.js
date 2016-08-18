@@ -276,8 +276,10 @@ var exports = function(app, reportService, examService, categoryService, courseS
 	app.post('/submitScoreCsvForExam', function(req, res) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
-		var data = req.body.data;
+		var data = req.body.scores;
+		console.log(data);
 		reportService.inputScoreCsv(exam, data, function(stat) {
+			console.log(stat);
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({status : stat}));
 		});
