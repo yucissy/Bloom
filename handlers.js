@@ -193,11 +193,15 @@ var exports = function(app, reportService, examService, categoryService, courseS
 		});
 	});
 
-	app.post('/getCoursesForUser', function(req, res) {
+	app.post('/getCoursesForUser', function(req, res, next) {
 		var user = req.body.userID;
-		courseService.getCoursesForUser(user, function(courses) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({courses : crs}));
+		courseService.getCoursesForUser(user, function(courses, error) {
+			if (courses == null) {
+				next(error);
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({courses : crs}));
+			}
 		});
 	});
 
@@ -231,22 +235,30 @@ var exports = function(app, reportService, examService, categoryService, courseS
 		});
 	});
 
-	app.post('/getStudyTipsForCategory', function(req, res){
+	app.post('/getStudyTipsForCategory', function(req, res, next){
 		var user = req.body.userID;
 		var catId = req.body.categoryID;
 		// var catId = "blooms"
-		categoryService.getStudyTipsForCategory(catId, function(tips) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({studyTips : tips}));
+		categoryService.getStudyTipsForCategory(catId, function(tips, error) {
+			if (tips == null) {
+				next(error);
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({studyTips : tips}));
+			}
 		});
 	});
 
-	app.post('/getCategoriesForProfessor', function(req, res){
+	app.post('/getCategoriesForProfessor', function(req, res, next){
 		var user = req.body.userID;
 		// user = "B00999999";
-		categoryService.getCategoriesForProfessor(user, function(profCategories) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({categories : profCategories}));
+		categoryService.getCategoriesForProfessor(user, function(profCategories, error) {
+			if (profCategories == null) {
+				next(error);
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({categories : profCategories}));
+			}
 		});
 	});
 
@@ -281,78 +293,106 @@ var exports = function(app, reportService, examService, categoryService, courseS
 		});
 	});
 
-	app.post('/getExamById', function(req, res) {
+	app.post('/getExamById', function(req, res, next) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
-		examService.getExamById(exam, function(data){
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({exam : data}));
+		examService.getExamById(exam, function(data, error){
+			if (data == null) {
+				next(error);
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({exam : data}));
+			}
 		});
 	});
 
-	app.post('/getExamListForCourse', function(req, res) {
+	app.post('/getExamListForCourse', function(req, res, next) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
-		examService.getExamsByCourseId(course, function(examList) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({exams : examList}));
+		examService.getExamsByCourseId(course, function(examList, error) {
+			if (examList == null) {
+				next(error);
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({exams : examList}));
+			}
 		});
 	});
 
 	// exams where students have not submitted their scores yet
-	app.post('/getPendingExams', function(req, res) {
+	app.post('/getPendingExams', function(req, res, next) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
 		
-		examService.getPendingExamsByStudentAndCourse(courseId, studentId, function(examList) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({exams : examList}));
+		examService.getPendingExamsByStudentAndCourse(courseId, studentId, function(examList, error) {
+			if (examList == null) {
+				next(error);
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({exams : examList}));
+			}
 		});
 	});
 
 	// A list of all categories report for a student in a course
-	app.post('/getAllScoresForStudent', function(req, res) {
+	app.post('/getAllScoresForStudent', function(req, res, next) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
 		// var course = 'CSCI1230'
 		// var user = 'B0004567'
-		reportService.getReportsByStudentAndCourse(user, course, function(reportList) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({reports : reportList}));
+		reportService.getReportsByStudentAndCourse(user, course, function(reportList, error) {
+			if (reportList == null) {
+				next(error);
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({reports : reportList}));
+			}
 		});
 	});
 
 	// categories report for student's test
-	app.post('/getScoreReportForExam', function(req, res) {
+	app.post('/getScoreReportForExam', function(req, res, next) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		// var exam = '5722c08ea598e9931e085fb8'
 		// var user = 'B0004567'
-		reportService.getReportByStudentAndExam(user, exam, function(rep) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({report : rep}));
+		reportService.getReportByStudentAndExam(user, exam, function(rep, error) {
+			if (rep == null) {
+				next(error);
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({report : rep}));
+			}
 		});
 	});
 
-	app.post('/getClassAverageScoreForExam', function(req, res){
+	app.post('/getClassAverageScoreForExam', function(req, res, next){
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		// var exam = '5722c08ea598e9931e085fb8'
-		reportService.getAverageScore(exam, function(avg) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({average : avg}));
+		reportService.getAverageScore(exam, function(avg, error) {
+			if (avg == null) {
+				next(error);
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({average : avg}));
+			}
 		});
 	});
 
 	// a list of aggregate reports for a professor in a course
-	app.post('/getAllAggregate', function(req, res) {
+	app.post('/getAllAggregate', function(req, res, next) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
 		// var course = 'CSCI1230'
 
-		reportService.getAllAggregate(course, function(agg) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({aggregate: agg}));
+		reportService.getAllAggregate(course, function(agg, error) {
+			if (agg == null) {
+				next(error);
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({aggregate: agg}));
+			}
 		});
 
 		// find better ways for these checks
@@ -363,52 +403,68 @@ var exports = function(app, reportService, examService, categoryService, courseS
 	});
 
 	// scores to display along with study tips
-	app.post('/getCumulativeReportForStudent', function(req, res) {
+	app.post('/getCumulativeReportForStudent', function(req, res, next) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
 		// var course = 'CSCI1320';
 		// var user = "B00111111";
 
-		reportService.getCumulativeReportForStudent(user, course, function(cumul) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({cumulative: cumul}));
+		reportService.getCumulativeReportForStudent(user, course, function(cumul, error) {
+			if (cumul == null) {
+				next(error);
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({cumulative: cumul}));
+			}
 		});
 	});
 
 	// aggregate data for course - for professor use
-	app.post('/downloadAggregate', function(req, res) {
+	app.post('/downloadAggregate', function(req, res, next) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
 		// course = 'CSCI1320';
-		reportService.downloadCourseData(course, function(path) {
-			res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
-			res.setHeader('Content-type', 'text/plain');
-			res.download(path);
+		reportService.downloadCourseData(course, function(path, error) {
+			if (path == null) {
+				next(error);
+			} else {
+				res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
+				res.setHeader('Content-type', 'text/plain');
+				res.download(path);
+			}
 		});
 	});
 
 	// individual exam data with student details - for professor only
-	app.post('/downloadExamData', function(req, res) {
+	app.post('/downloadExamData', function(req, res, next) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		// var exam = '5722c08ea598e9931e085fb8'
 		
-		reportService.downloadExamData(exam, function(path) {
-			res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
-			res.setHeader('Content-type', 'text/csv');
-			res.download(path);
+		reportService.downloadExamData(exam, function(path, error) {
+			if (path == null) {
+				next(error);
+			} else {
+				res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
+				res.setHeader('Content-type', 'text/csv');
+				res.download(path);
+			}
 		});
 	});
 
 	// public data for individual exams - for students
-	app.post('/downloadPublicData', function(req, res) {
+	app.post('/downloadPublicData', function(req, res, next) {
 		var user = req.body.userID;
 		var exam = req.body.examID;
 		// exam = '5730c484f1a94d4245c40c76'
-		reportService.downloadPublicData(exam, function(path) {
-			res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
-			res.setHeader('Content-type', 'text/csv');
-			res.download(path);
+		reportService.downloadPublicData(exam, function(path, error) {
+			if (path == null) {
+				next(error);
+			} else {
+				res.setHeader('Content-disposition', 'attachment; filename=' + path.substr(16));
+				res.setHeader('Content-type', 'text/csv');
+				res.download(path);
+			}
 		});
 	});
 
@@ -423,13 +479,17 @@ var exports = function(app, reportService, examService, categoryService, courseS
 		});
 	});
 
-	app.post('/getRosterForCourse', function(req, res) {
+	app.post('/getRosterForCourse', function(req, res, next) {
 		var user = req.body.userID;
 		var course = req.body.courseID;
 
-		courseService.getRoster(course, function(rost) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify({roster : rost}));
+		courseService.getRoster(course, function(rost, error) {
+			if (rost == null) {
+				next(error);
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({roster : rost}));
+			}
 		});
 	});
 }

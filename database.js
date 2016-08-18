@@ -195,13 +195,13 @@ function Database() {
     //functions for accessing certain fields of a document
     this.findTestFromCourse = function(course, callback) {        
         Course.findOne({_id: course}).populate('tests', 'title').exec(function(err, course) {
-            if (err) 
-                callback("ERR: Could not find Course: " + course + ".");
-            else {
+            if (err) {
+                callback(null, "ERR: Could not find Course: " + course + ".");
+            } else {
                 if (course != null)
                     callback(course.tests);
                 else
-                    callback("ERR: Could not find Course: " + course + ".");
+                    callback(null, "ERR: Could not find Course: " + course + ".");
             }
         });
     }
@@ -210,13 +210,13 @@ function Database() {
         Course.findOne({_id: course}).populate({path: 'tests',
                                                 populate: { path: 'questions.categories.main_cat_id' }
                                                }).exec(function(err, course) {
-            if (err) 
-                callback("ERR: Could not find Course: " + course + ".");
-            else {
+            if (err) {
+                callback(null, "ERR: Could not find Course: " + course + ".");
+            } else {
                 if (course != null)
                     callback(course.tests);
                 else
-                    callback("ERR: Could not find Course: " + course + ".");
+                    callback(null, "ERR: Could not find Course: " + course + ".");
             }
         });
     }
@@ -224,12 +224,12 @@ function Database() {
     this.getStudentsAndTestsFromCourse = function (courseId, callback) {
         Course.findOne({_id: courseId}).populate('students', 'name').populate('tests', 'title').exec(function(error, course) {
             if (error)
-                callback("ERR: Could not find students from Course: " + courseId + ".", null);
+                callback(null, "ERR: Could not find students from Course: " + courseId + ".");
             else {
                 if (course != null)
                     callback(course.students, course.tests);
                 else
-                    callback("ERR: Could not find students from Course: " + courseId + ".", null);
+                    callback(null, "ERR: Could not find students from Course: " + courseId + ".");
             }
         });
     }
@@ -237,12 +237,12 @@ function Database() {
     this.findTest = function(testId, callback) {
         Test.findOne({_id: testId}).populate('questions.categories.main_cat_id').exec(function(err, test) {
             if (err) 
-                callback("ERR: Could not find Test: " + testId + ".");
+                callback(null, "ERR: Could not find Test: " + testId + ".");
             else {
                 if (test != null)
                     callback(test);
                 else
-                    callback("ERR: Could not find Test: " + testId + ".");
+                    callback(null, "ERR: Could not find Test: " + testId + ".");
             }
         });
     }
@@ -250,12 +250,12 @@ function Database() {
     this.findReportForStudent = function(userId, callback) {
         Report.find({student_id : userId}).populate('categories.main_cat_id').exec(function(err, reports) {
             if (err) 
-                callback("ERR: Could not find reports for Student: " + userId + ".");
+                callback(null, "ERR: Could not find reports for Student: " + userId + ".");
             else {
                 if (reports != null)
                     callback(reports);
                 else
-                    callback("ERR: Could not find reports for Student: " + userId + ".");
+                    callback(null, "ERR: Could not find reports for Student: " + userId + ".");
             }
         });
     }
@@ -263,48 +263,50 @@ function Database() {
     this.findReportForTest = function(testId, callback) {
         Report.find({test_id: testId}).populate('student_id').populate('categories.main_cat_id').exec(function(err, reports) {
             if (err) {
-                callback("ERR: Could not find reports for Test: " + testId + ".");
+                callback(null, "ERR: Could not find reports for Test: " + testId + ".");
             } else {
                 if (reports != null)
                     callback(reports);
                 else
-                    callback("ERR: Could not find reports for Test: " + testId + ".");
+                    callback(null, "ERR: Could not find reports for Test: " + testId + ".");
             }
         });
     }
 
     this.findReport = function(userId, testId, callback) {
         Report.findOne({student_id: userId, test_id: testId}).populate('test_id', 'title').populate('categories.main_cat_id').exec(function(err, report) {
-            if (err) 
-                callback("ERR: Could not find report for Student: " + userId + " and Test: " + testId + ".");
-            else {
+            if (err) {
+                callback(null, "ERR: Could not find report for Student: " + userId + " and Test: " + testId + ".");
+            } else {
                 if (report != null)
                     callback(report);
                 else
-                    callback("ERR: Could not find report for Student: " + userId + " and Test: " + testId + ".");
+                    callback(null, "ERR: Could not find report for Student: " + userId + " and Test: " + testId + ".");
             }
         });
     }
 
     this.findUserCourses = function (userId, callback) {
         User.findOne({_id: userId}).populate('courses', 'title').exec(function(err, user) {
-            if (err)
-                callback("ERR: Could not find user: " + userId + ".");
-            else {
+            if (err) {
+                callback(null, "ERR: Could not find user: " + userId + ".");
+            } else {
                 if (user != null)
                     callback(user.courses);
                 else
-                    callback("ERR: Could not find user: " + userId + ".");
+                    callback(null, "ERR: Could not find user: " + userId + ".");
             }
         });
     }
 
-    this.doesCategoryExist = function (categoryId, callback) {
+    this.checkIfNewCategoryIdIsValid = function (categoryId, callback) {
         Category.count({_id: categoryId}, function (err, count) {
-            if (count > 0) {
-                callback(true);
+            if (err) {
+                callback("An error occurred while validating the category ID. Please try again.");
+            } else if (count > 0) {
+                callback("This ID already exists. Please try a different ID.");
             } else {
-                callback(false);
+                callback("success");
             }
         });
     } 
@@ -312,12 +314,12 @@ function Database() {
 	this.findStudyTipsForCategory = function (categoryId, callback) {
         Category.findOne({_id: categoryId}).exec(function(err, category) {
             if (err)
-                callback("ERR: Could not find category: " + categoryId + ".");
+                callback(null, "ERR: Could not find category: " + categoryId + ".");
             else {
                 if (category != null)
                     callback(category.tips);
                 else
-                    callback("ERR: Could not find category: " + categoryId + ".");
+                    callback(null, "ERR: Could not find category: " + categoryId + ".");
             }
         });
 	}
@@ -326,7 +328,7 @@ function Database() {
 	this.findCategoriesForProfessor = function (profId, callback) {
 		Category.find({$or: [{'creator': profId}, {'_id': 'blooms'}]}).exec(function(err, categories) {
 			if (err)
-				callback("ERR: Could not find categories for " + profId + ".");
+				callback(null, "ERR: Could not find categories for " + profId + ".");
 			else
 				callback(categories);
 		});
@@ -334,6 +336,7 @@ function Database() {
 	
 
 	// finds a user with the given user id
+    // DEAD CODE?
 	this.findUID = function(uid, callback) {
         User.findOne({_id : uid}).exec(function(err, user) {
             if (err)
@@ -347,6 +350,7 @@ function Database() {
         });
     }	
 
+    // DEAD CODE?
     this.getUID = function(em, callback) {
         User.findOne({email : em}).exec(function(err, user) {
             if (err)
@@ -398,8 +402,7 @@ function Database() {
                     else
                         callback(null);
                 });
-            }
-            else {
+            } else {
                 callback("ERR: Could not save Course: " + course + " to User: " + userId + ".");
             }
         });
@@ -427,9 +430,9 @@ function Database() {
                                 else
                                     callback(null);
                             });
-            }
-            else
+            } else {
                 callback("ERR: Could not insert Student: " + student + "into Course: " + courseId + ".");
+            }
         });
     }
 	
@@ -443,10 +446,10 @@ function Database() {
 								else
 									callback(null);
 							});
-			}
-			else
+			} else {
 				callback("ERR: Could not insert Course: " + course + "into User" + userId + ".");
-		});
+            }
+        });
 	}
 
     this.deleteStudentFromCourse = function (courseId, student, callback) {

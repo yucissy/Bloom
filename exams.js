@@ -8,8 +8,6 @@ function Exams(db) {
 
 	this.makeExamHelper = function(validCategories, output) {
 		var test = [];
-		console.log(JSON.stringify(output));
-
 		for (var i=0; i<output.length; i++) {
 			var insert = {categories : []};
 			for (var key in output[i]) {
@@ -20,10 +18,9 @@ function Exams(db) {
 						return curr._id == key;
 					});
 					if (keyIsValid) {
-						console.log("key: " + key);
 						insert.categories.push({'main_cat_id': key, 'sub_cat_id': parseInt(output[i][key])});
 					} else {
-						//error
+						console.log("WARNING: invalid category key found in csv. Skipping category.");
 					}
 				}
 			}
@@ -59,19 +56,22 @@ function Exams(db) {
 				}
 				if (proper_input) {
 					db.findCategoriesForProfessor(user, function(validCategories){
+						if (validCategories == null) {
+							callback('fail');
+							return;
+						}
 						var test = make(validCategories, output);
 						db.insertTestForCourse(course, name, test, function(error){
 							if (error != null) {
-								console.log(error);
+								console.error(error);
 								callback('fail');
 							} else {
 								callback('success');
 							}
 						});
 					});
-				}
-				else {
-					console.log('ERROR: bad csv input, check for proper values');
+				} else {
+					console.error('ERROR: bad csv input, check for proper values');
 					callback('fail');
 					return;
 				}
@@ -84,7 +84,7 @@ function Exams(db) {
 	}
 
 	this.getExamById = function(examId, callback) {
-		db.findTest({_id : examId}, callback);
+		db.findTest(examId, callback);
 	}
 
 	this.getExamsByCourseId = function(courseId, callback) {
@@ -92,10 +92,18 @@ function Exams(db) {
 	}
 
 	this.getPendingExamsByStudentAndCourse = function(courseId, studentId, callback) {
-		db.findTestFromCourse(courseId, function(data) {
-			db.findReportForStudent(studentId, function(reports) {
-				var testsToReturn = [];
+		db.findTestFromCourse(courseId, function(data, error) {
+			if (data == null) {
+				callback(data, error);
+				return;
+			}
+			db.findReportForStudent(studentId, function(reports, error) {
+				if (reports == null) {
+					callback(reports, error);
+					return;
+				}
 
+				var testsToReturn = [];
 				for (var i = 0; i < data.length; i++) {
 					var flag = true;
 					for (var j = 0; j < reports.length; j++) {
@@ -108,7 +116,6 @@ function Exams(db) {
 						testsToReturn.push(data[i]);
 					}
 				}
-
 				callback(testsToReturn);
 			});
 		});

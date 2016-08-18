@@ -34,25 +34,33 @@ function Courses(db) {
 
 	this.getRoster = function(courseId, callback) {
 		db.getStudentsAndTestsFromCourse(courseId, function(students, tests) {
+			if (students == null) {
+				callback(students, tests);
+				return;
+			}
 			var toReturn = [];
 			students.forEach(function(stu, i){
 				var studentToAdd = {_id: stu._id, name: stu.name, exams: []}
-				db.findReportForStudent(stu._id, function(rts) {
-					for (var k=0; k < tests.length; k++) {
-						var flag = true;
-						for (var j=0; j < rts.length; j++) {
-							if (String(tests[k]._id) == String(rts[j].test_id)) {
-								var toPush = {};
-								toPush[tests[k].title] = true;
-								studentToAdd.exams.push(toPush);
-								flag = false;
-								break;
+				db.findReportForStudent(stu._id, function(rts, error) {
+					if (rts == null) {
+						console.error(error);
+					} else {
+						for (var k=0; k < tests.length; k++) {
+							var flag = true;
+							for (var j=0; j < rts.length; j++) {
+								if (String(tests[k]._id) == String(rts[j].test_id)) {
+									var toPush = {};
+									toPush[tests[k].title] = true;
+									studentToAdd.exams.push(toPush);
+									flag = false;
+									break;
+								}
 							}
-						}
-						if (flag) {
-							var toPush = {};
-							toPush[tests[k].title] = false;
-							studentToAdd.exams.push(toPush);
+							if (flag) {
+								var toPush = {};
+								toPush[tests[k].title] = false;
+								studentToAdd.exams.push(toPush);
+							}
 						}
 					}
 

@@ -55,7 +55,12 @@ function Reports(db) {
 
 	this.inputScoreCsv = function(examId, data, callback) {
 		var reportService = this;
-		db.findTest({_id : examId}, function(exam) {
+		db.findTest({_id : examId}, function(exam, error) {
+			if (exam == null) {
+				console.error(error);
+				callback('fail');
+				return;
+			}
 			csv.parse(data, {columns:true}, function(err, output) {
 				if (output == null) {
 					callback('fail');
@@ -77,6 +82,11 @@ function Reports(db) {
 	this.inputScore = function(userId, examId, scores, callback) {
 		var reportService = this;
 		db.findTest({_id : examId}, function(exam) {
+			if (exam == null) {
+				console.error(error);
+				callback('fail');
+				return;
+			}
 			reportService.calculateReport(userId, exam, scores, callback, reportService);
 		});
 	}
@@ -160,8 +170,18 @@ function Reports(db) {
 	}
 
 	this.getReportsByStudentAndCourse = function(studentId, courseId, callback) {
-		db.findTestFromCourse(courseId, function(exams) {
-			db.findReportForStudent(studentId, function(reports) {
+		db.findTestFromCourse(courseId, function(exams, error) {
+			if (exams == null) {
+				callback(exams, error);
+				return;
+			}
+			
+			db.findReportForStudent(studentId, function(reports, error) {
+				if (reports == null) {
+					callback(reports, error);
+					return;
+				}
+
 				var toReturn = [];
 				for (var i = 0; i < exams.length; i++) {
 					var toAppend = {test: exams[i], categories: null};
@@ -173,7 +193,6 @@ function Reports(db) {
 					}
 					toReturn.push(toAppend);
 				}
-
 				callback(toReturn);
 			});
 		});
@@ -184,7 +203,11 @@ function Reports(db) {
 	}
 
 	this.getAverageScore = function(examId, callback) {
-		db.findTest(examId, function(exam) {
+		db.findTest(examId, function(exam, error) {
+			if (exam == null) {
+				callback(exam, error);
+				return;
+			}
 			var avg = calculateAverageScore(exam);
 			callback(avg);
 		});
@@ -192,7 +215,12 @@ function Reports(db) {
 
 	this.getAllAggregate = function(courseId, callback) {
 		var reportService = this;
-		db.findPopulatedTestFromCourse(courseId, function(tests) {
+		db.findPopulatedTestFromCourse(courseId, function(tests, error) {
+			if (tests == null) {
+				callback(tests, error);
+				return;
+			}
+
 			var toReturn = [];
 			for (var i = 0; i < tests.length; i++) {
 				var result = reportService.calculateAggregate(tests[i], reportService);
@@ -201,17 +229,25 @@ function Reports(db) {
 									  count: tests[i].count}, 
 							   categories: result});
 			}
-
 			callback(toReturn);
 		});
 	}
 
 	this.getCumulativeReportForStudent = function(studentId, courseId, callback) {
 		var calculate = this.calculateCumulativeScore;
-		db.findTestFromCourse(courseId, function(tests) {
-			db.findReportForStudent(studentId, function(reports) {
-				var reportsToCalculate = [];
+		db.findTestFromCourse(courseId, function(tests, error) {
+			if (tests == null) {
+				callback(tests, error);
+				return;
+			}
 
+			db.findReportForStudent(studentId, function(reports, error) {
+				if (reports == null) {
+					callback(reports, error);
+					return;
+				}
+
+				var reportsToCalculate = [];
 				for (var i = 0; i < reports.length; i++) {
 					var flag = false;
 					for (var j = 0; j < tests.length; j++) {
@@ -224,7 +260,6 @@ function Reports(db) {
 						reportsToCalculate.push(reports[i]);
 					}
 				}
-
 				var toReturn = calculate(reportsToCalculate);
 				callback(toReturn);
 			});
@@ -236,7 +271,12 @@ function Reports(db) {
 	// test name, test avg score, test avg categories score
 	this.downloadCourseData = function(course, callback) {
 		var reportService = this;
-		db.findPopulatedTestFromCourse(course, function(tests) {
+		db.findPopulatedTestFromCourse(course, function(tests, error) {
+			if (tests == null) {
+				callback(tests, error);
+				return;
+			}
+
 			var date = Date.now();
 			var filePath = "./local_storage/" + course + "_" + date + ".txt";
 
@@ -257,7 +297,12 @@ function Reports(db) {
 	// should check if everyone submitted before generating this
 	this.downloadPublicData = function(examId, callback) {
 		var reportService = this;
-		db.findTest(examId, function(test) {
+		db.findTest(examId, function(test, error) {
+			if (test == null) {
+				callback(test, error);
+				return;
+			}
+
 			var date = Date.now();
 			var filePath = "./local_storage/" + test._id + "_PUBLIC_" + date + ".txt";
 
@@ -281,7 +326,12 @@ function Reports(db) {
 	// a csv file!!!
 	// student bloom0 bloom1 bloom2 ...
 	this.downloadExamData = function(test, callback) {
-		db.findReportForTest(exam, function(reports){
+		db.findReportForTest(exam, function(reports, error){
+			if (reports == null) {
+				callback(reports, error);
+				return;
+			}
+			
 			if (rts.length == 0) {
 				console.error('Should not be called. No reports to download.');
 			} else {
@@ -330,7 +380,18 @@ function Reports(db) {
 
 	this.checkIfAllReportsReady = function(courseId, examId, callback) {
 		db.getStudentsAndTestsFromCourse(courseId, function(students, t) {
-			db.findTest(examId, function(test) {
+			if (students == null) {
+				console.error(t);
+				callback("false");
+				return;
+			}
+
+			db.findTest(examId, function(test, error) {
+				if (test == null) {
+					console.error(error);
+					callback("false");
+					return;
+				}
 				var ready = "false";
 				if (students.length == test.count) {
 					ready = "true";
