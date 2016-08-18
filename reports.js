@@ -75,14 +75,11 @@ function Reports(db) {
 						var studentId = currentScores.id;
 						delete currentScores.id;
 						reportService.calculateReport(studentId, exam, currentScores, function(stat) {
-							console.log(stat);
 							if (stat == 'fail') {
 								status = stat;
 							}
 							countForCallback++;
 
-							console.log(countForCallback);
-							console.log(output.length);
 							if (countForCallback == output.length - 1) {
 								callback(status);
 							}
@@ -111,7 +108,7 @@ function Reports(db) {
 
 	this.calculateReport = function(userId, exam, scores, callback, reportService) {
 		var cats = reportService.calculateHelper(exam.questions, scores, 1);
-		console.log(cats);
+
 		db.insertStudentReport(userId, exam._id, cats, function(error) {
             if (error != null) {
                 console.log(error);
