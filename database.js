@@ -233,6 +233,19 @@ function Database() {
             }
         });
     }
+	
+	this.findCourse = function(cid, callback) {
+        Course.findOne({_id : cid}).exec(function(err, course) {
+            if (err)
+                callback("ERR: Could not find a course id: " + cid + ".");
+            else {
+                if (course != null)
+                    callback(course);
+                else
+                    callback("ERR: Could not find a course id: " + cid + ".");
+            }
+        });
+    }	
 
     this.findTest = function(testId, callback) {
         Test.findOne({_id: testId}).populate('questions.categories.main_cat_id').exec(function(err, test) {
@@ -545,6 +558,20 @@ function Database() {
             }
         });
     }
+	
+	this.isUserInCourse = function (userId, courseId, callback) {
+		User.findOne({_id: userId}, function(error, user) {
+            if (error || user == null) {
+                callback("ERR: Could not find a user associated with the id " + userId + ".", null);
+            }
+			else {
+				if (user.courses.indexOf(courseId) > -1)
+					callback(true, user);
+				else
+					callback(false, user);
+			}
+		});
+	}
 }
 
 module.exports = Database;
