@@ -75,8 +75,7 @@ var exports = function(app, reportService, examService, categoryService, courseS
 			//find if user exists and if course exists; if not insert into db
 			db.findUID (userId, function(us) {
 				//error message, set up new user account
-				console.log(us);
-				if (typeof user === "string") {
+				if (typeof us === "string") {
 					db.insertUser(userId, name, email, userType, function(newUser) {
 						db.findCourse(courseId, function(courseFound) {
 							//no course found, insert new course
