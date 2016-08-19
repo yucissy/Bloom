@@ -34,8 +34,7 @@ var exports = function(app, reportService, examService, categoryService, courseS
 	app.get('/forgot', function(req, res) {
 		res.render('forgot.html');
 	});
-	
-	//in progress; need to test out
+
 	app.post('/lti_launch', function(req, res) {		
 		var consumerKey = req.body.oauth_consumer_key; 
 		var consumerSecret = 'secret'; //change to canvas consumer secret
@@ -63,8 +62,10 @@ var exports = function(app, reportService, examService, categoryService, courseS
 			var userId = provider['userId'];
 			var student = provider['student'];
 			var userType = "";
-			if (true)
+			if (true) { //only for testing, change back later
+				student = true;
 				userType = "Student";
+			}
 			else
 				userType = "Professor";			
 			var email = provider['body']['lis_person_contact_email_primary'];
@@ -80,7 +81,7 @@ var exports = function(app, reportService, examService, categoryService, courseS
 						db.findCourse(courseId, function(courseFound) {
 							//no course found, insert new course
 							if (typeof courseFound === "string") {
-								db.insertCourse (courseId, courseTitle, "2017 Spring", [], [], [], function(err){
+								db.insertCourse (courseId, courseTitle, "2017 Spring", [], [], [], function(err){ //do we need semester still?
 									if (err === null) {
 										db.insertCourseIntoUser (userId, courseId, function(err) {
 											if (err === null) {
