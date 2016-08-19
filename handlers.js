@@ -59,10 +59,11 @@ var exports = function(app, reportService, examService, categoryService, courseS
 			});
 			
 			res.status(200).json(body); */
+			var admin = provider['admin'];
 			var userId = provider['userId'];
 			var student = provider['student'];
 			var userType = "";
-			if (student)
+			if (true)
 				userType = "Student";
 			else
 				userType = "Professor";			
@@ -74,9 +75,10 @@ var exports = function(app, reportService, examService, categoryService, courseS
 			//find if user exists and if course exists; if not insert into db
 			db.findUID (userId, function(us) {
 				//error message, set up new user account
+				console.log(us);
 				if (typeof user === "string") {
 					db.insertUser(userId, name, email, userType, function(newUser) {
-						db.findCourse(courseID, function(courseFound) {
+						db.findCourse(courseId, function(courseFound) {
 							//no course found, insert new course
 							if (typeof courseFound === "string") {
 								db.insertCourse (courseId, courseTitle, "2017 Spring", [], [], [], function(err){
@@ -128,7 +130,7 @@ var exports = function(app, reportService, examService, categoryService, courseS
 				}
 				else {
 					//user exists; check for course
-					db.findCourse(courseID, function(courseFound) {
+					db.findCourse(courseId, function(courseFound) {
 						//no course found, insert new course
 						if (typeof courseFound === "string") {
 							db.insertCourse (courseId, courseTitle, "2017 Spring", [], [], [], function(err){
