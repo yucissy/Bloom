@@ -87,14 +87,14 @@ var exports = function(app, reportService, examService, categoryService, courseS
 												if (student) {
 													db.insertStudentIntoCourse (courseId, userId, function(err) {
 														if (err === null) {
-															res.render('upload_questions.html', {user: us, course:[courseFound]});
+															res.render('upload_questions.html', {user: newUser, course:[courseFound]});
 														}
 													});
 												}
 												else {
 													db.insertProfessorIntoCourse (courseId, userId, function(err) {
 														if (err === null) {
-															res.render('upload_categories.html', {user: us, course:[courseFound]});
+															res.render('upload_categories.html', {user: newUser, course:[courseFound]});
 														}
 													});
 												}
@@ -110,14 +110,14 @@ var exports = function(app, reportService, examService, categoryService, courseS
 										if (student) {
 											db.insertStudentIntoCourse (courseId, userId, function(err) {
 												if (err === null) {
-													res.render('upload_questions.html', {user: us, course:[courseFound]});
+													res.render('upload_questions.html', {user: newUser, course:[courseFound]});
 												}
 											});
 										}
 										else {
 											db.insertProfessorIntoCourse (courseId, userId, function(err) {
 												if (err === null) {
-													res.render('upload_categories.html', {user: us, course:[courseFound]});
+													res.render('upload_categories.html', {user: newUser, course:[courseFound]});
 												}
 											});
 										}
