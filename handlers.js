@@ -62,10 +62,8 @@ var exports = function(app, reportService, examService, categoryService, courseS
 			var userId = provider['userId'];
 			var student = provider['student'];
 			var userType = "";
-			if (true) { //only for testing, change back later
-				student = true;
+			if (student) 
 				userType = "Student";
-			}
 			else
 				userType = "Professor";			
 			var email = provider['body']['lis_person_contact_email_primary'];
