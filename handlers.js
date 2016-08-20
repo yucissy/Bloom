@@ -147,7 +147,7 @@ var exports = function(app, reportService, examService, categoryService, courseS
 									}
 								}
 								else
-									insertCourseAndUser (userId, courseId, newUser, student, res);
+									insertCourseAndUser (userId, courseId, us, student, res);
 							});
 						}
 					});						
