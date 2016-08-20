@@ -9,6 +9,34 @@ var exports = function(app, reportService, examService, categoryService, courseS
 
 	var storm = new Stormpath();
 	var loggedIn = {};
+	
+	//insert course + user into each other and render appropriate page
+	function insertCourseAndUser (userId, courseId, user, student, res) {
+		db.insertCourseIntoUser (userId, courseId, function(err) {
+			if (err == null) {
+				if (student) {
+					db.insertStudentIntoCourse (courseId, userId, function(err) {
+						if (err == null) {
+							db.findUserCourses(userId, function(courses, err) {
+								if (courses != null)
+									res.render('upload_questions.html', {user: user, course: courses});
+							});
+						}
+					});
+				}
+				else {
+					db.insertProfessorIntoCourse (courseId, userId, function(err) {
+						if (err == null) {
+							db.findUserCourses(userId, function(courses, err) {
+								if(courses != null)
+									res.render('upload_categories.html', {user: user, course: courses});
+							});
+						}
+					});
+				}
+			}
+		});
+	}
 
 	function generateSessionID() {
 		var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -81,48 +109,12 @@ var exports = function(app, reportService, examService, categoryService, courseS
 							if (typeof courseFound === "string") {
 								db.insertCourse (courseId, courseTitle, "2017 Spring", [], [], [], function(err){ //do we need semester still?
 									if (err === null) {
-										db.insertCourseIntoUser (userId, courseId, function(err) {
-											if (err === null) {
-												if (student) {
-													db.insertStudentIntoCourse (courseId, userId, function(err) {
-														if (err === null) {
-															res.render('upload_questions.html', {user: newUser, course:[courseFound]});
-														}
-													});
-												}
-												else {
-													db.insertProfessorIntoCourse (courseId, userId, function(err) {
-														if (err === null) {
-															res.render('upload_categories.html', {user: newUser, course:[courseFound]});
-														}
-													});
-												}
-											}
-										});
+										insertCourseAndUser (userId, courseId, newUser, student, res);
 									}
 								});
 							}
-							else {
-								//course found; insert into user's course list and vice versa
-								db.insertCourseIntoUser (userId, courseId, function(err) {
-									if (err === null) {
-										if (student) {
-											db.insertStudentIntoCourse (courseId, userId, function(err) {
-												if (err === null) {
-													res.render('upload_questions.html', {user: newUser, course:[courseFound]});
-												}
-											});
-										}
-										else {
-											db.insertProfessorIntoCourse (courseId, userId, function(err) {
-												if (err === null) {
-													res.render('upload_categories.html', {user: newUser, course:[courseFound]});
-												}
-											});
-										}
-									}
-								});
-							}
+							else 
+								insertCourseAndUser (userId, courseId, newUser, student, res);
 						});
 					});
 				}
@@ -133,24 +125,7 @@ var exports = function(app, reportService, examService, categoryService, courseS
 						if (typeof courseFound === "string") {
 							db.insertCourse (courseId, courseTitle, "2017 Spring", [], [], [], function(err){
 								if (err === null) {
-									db.insertCourseIntoUser (userId, courseId, function(err) {
-										if (err === null) {
-											if (student) {
-												db.insertStudentIntoCourse (courseId, userId, function(err) {
-													if (err === null) {
-														res.render('upload_questions.html', {user: us, course:[courseFound]});
-													}
-												});
-											}
-											else {
-												db.insertProfessorIntoCourse (courseId, userId, function(err) {
-													if (err === null) {
-														res.render('upload_categories.html', {user: us, course:[courseFound]});
-													}
-												});
-											}
-										}
-									});
+									insertCourseAndUser (userId, courseId, us, student, res);
 								}
 							});
 						}
@@ -158,31 +133,21 @@ var exports = function(app, reportService, examService, categoryService, courseS
 						else {
 							db.isUserInCourse (userId, courseId, function(inCourse, user) {
 								if (inCourse) {
-									if (student)
-										res.render('upload_questions.html', {user: us, course:[courseFound]});
-									else
-										res.render('upload_categories.html', {user: us, course:[courseFound]});
+									if (student) {
+										db.findUserCourses(userId, function(courses, err) {
+											if (courses != null)
+												res.render('upload_questions.html', {user: us, course: courses});
+										});
+									}
+									else {
+										db.findUserCourses(userId, function(courses, err) {
+											if (courses != null)
+												res.render('upload_categories.html', {user: us, course: courses});
+										});
+									}
 								}
-								else {
-									db.insertCourseIntoUser (userId, courseId, function(err) {
-										if (err === null) {
-											if (student) {
-												db.insertStudentIntoCourse (courseId, userId, function(err) {
-													if (err === null) {
-														res.render('upload_questions.html', {user: us, course:[courseFound]});
-													}
-												});
-											}
-											else {
-												db.insertProfessorIntoCourse (courseId, userId, function(err) {
-													if (err === null) {
-														res.render('upload_categories.html', {user: us, course:[courseFound]});
-													}
-												});
-											}
-										}
-									});
-								}
+								else
+									insertCourseAndUser (userId, courseId, newUser, student, res);
 							});
 						}
 					});						
