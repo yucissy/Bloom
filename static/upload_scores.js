@@ -111,8 +111,6 @@ function visualizeAreas() {
                         .style('border', '2px solid ' + getCategoryColor(sub_cat.percentage))
                         .on('click', function() {
                             if ($(this).siblings('.studyTips').length > 0) {
-                                console.log('siblings');
-                                console.log($(this).siblings('.studyTips'));
                                 var that = d3.select(this.parentNode.childNodes[3]);
                                 that.transition()
                                     .duration(1000)
@@ -159,7 +157,6 @@ function visualizeAreas() {
 
                 
             $('.more').hover(function() {
-                console.log($(this).siblings());
                 $(this).siblings('.category_name').css('background-color', 'white');
                 $(this).siblings('.category_name').css('color', '#4D4D4D');
                 $(this).parent().css('background-color', 'lightgrey');
@@ -176,24 +173,6 @@ function visualizeAreas() {
 $(document).ready(function() {
 
     //array to hold max possible points for each question
-    
-
-    function getScores(exam_ID) {
-    	var user_ID = $("meta[name='user_id']").attr("content");
-        var toSend = {userID: user_ID, examID: exam_ID};
-
-        var request = new XMLHttpRequest();
-        request.open('POST', '/getScoreReportForExam', true);
-        request.setRequestHeader('Content-Type', 'application/json');
-        request.send(JSON.stringify(toSend));
-        request.onreadystatechange = function() {
- 
-           if (request.readyState == 4 && request.status == 200) {
-                var response = JSON.parse(request.responseText);
-            } 
-        }
-    }
-
 
 
     $('#user_settings').hover(
@@ -243,11 +222,12 @@ $(document).ready(function() {
                         $('#newExam1').modal('hide');
                         var user = $("meta[name='user_id']").attr("content");
                         visualizeScores(false, user, '#part3');
-                        visualizeRoster();
+                        if (typeof visualizeRoster == 'function') {
+                            visualizeRoster();  // only call for profs; function defined in upload.js
+                        }
                     } else {
                         $('#error').text('Something went wrong :(');
                     }
-                    getScores(examID);
                 }
             }
             $("#error").empty();

@@ -36,7 +36,6 @@ function visualizeScores(aggregate, userID, scoresDiv) {
 
 	       if (request.readyState == 4 && request.status == 200) {
 	            var response = JSON.parse(request.responseText);
-              console.log(response);
 		
 					$('.score').css('display', 'none');
 					if (aggregate) {
@@ -92,7 +91,6 @@ function makeButton(div, examID, count) {
 
 //actual code
 function makeBarChart(data, agg, scoresDiv) {
-  console.log(data);
 
   var newDiv = d3.select(scoresDiv)
             .append("div")
