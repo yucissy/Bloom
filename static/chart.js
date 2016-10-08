@@ -36,7 +36,6 @@ function visualizeScores(aggregate, userID, scoresDiv) {
 
 	       if (request.readyState == 4 && request.status == 200) {
 	            var response = JSON.parse(request.responseText);
-              console.log(response);
 		
 					$('.score').css('display', 'none');
 					if (aggregate) {
@@ -143,7 +142,8 @@ function makeBarChart(data, agg, scoresDiv) {
       .style('margin-top', '-5px');
 
     } else {
-      var categoryTitle = data.categories[0].main_cat_id.name;
+      $.each(data.categories, function(i, category) {
+        var categoryTitle = category.main_cat_id.name;
       var par = chartArea.append("div");
       par.append("h2")
         .attr("class", "left")
@@ -157,8 +157,8 @@ function makeBarChart(data, agg, scoresDiv) {
   
       var gap = 20;
 
-      var labels = data.categories[0].main_cat_id.sub_categories;
-      var data1 = data.categories[0].sub_cats;
+      var labels = category.main_cat_id.sub_categories;
+      var data1 = category.sub_cats;
       var percent = Array.apply(null, Array(labels.length)).map(Number.prototype.valueOf,0);
       $.each(data1, function(i, v) {
         percent[v._id] = v.percentage;
@@ -186,48 +186,51 @@ function makeBarChart(data, agg, scoresDiv) {
 
       var left_width = 200;
 
-    chart = chartArea
-      .append('svg')
-      .attr('class', 'chart')
-      .attr('width', left_width + width)
-      .attr('height', height);
+      chart = chartArea
+        .append('svg')
+        .attr('class', 'chart')
+        .attr('width', left_width + width)
+        .attr('height', height);
 
-    chart.selectAll("rect")
-      .data(percent)
-      .enter().append("rect")
-      .attr("x", left_width)
-      .attr("y", function(v, i) { return y(i)})
-      .attr("width", 0)
-      .attr("height", y.rangeBand())
-      .attr("fill", function (d) { return getColor(d);})
-      .transition()
-      .duration(1000)
-      .attr("width", x)
-      .attr("x", left_width);
+      chart.selectAll("rect")
+        .data(percent)
+        .enter().append("rect")
+        .attr("x", left_width)
+        .attr("y", function(v, i) { return y(i)})
+        .attr("width", 0)
+        .attr("height", y.rangeBand())
+        .attr("fill", function (d) { return getColor(d);})
+        .transition()
+        .duration(1000)
+        .attr("width", x)
+        .attr("x", left_width);
 
-    chart.selectAll("text.name")
-      .data(labels)
-      .enter().append("text")
-      .attr("x", left_width / 2)
-      .attr("y", function(d){ return y2(d) + y2.rangeBand()/2; } )
-      .attr("dy", ".36em")
-      .attr("text-anchor", "middle")
-      .attr('class', 'name')
-      .text(String);
+      chart.selectAll("text.name")
+        .data(labels)
+        .enter().append("text")
+        .attr("x", left_width / 2)
+        .attr("y", function(d){ return y2(d) + y2.rangeBand()/2; } )
+        .attr("dy", ".36em")
+        .attr("text-anchor", "middle")
+        .attr('class', 'name')
+        .text(String);
 
-      chart.selectAll("text.score")
-      .data(percent)
-      .enter().append("text")
-      .attr("x", function(d) { return x(d) + left_width; })
-      .attr("y", function(d, i){ return y(i) + y.rangeBand()/2; } )
-      .attr("dx", -5)
-      .attr("dy", ".36em")
-      .attr("text-anchor", "end")
-      .attr('class', 'score')
-      .text(function(d) {
-        if (d != 0)
-        return d;
-      return '';}); 
+        chart.selectAll("text.score")
+        .data(percent)
+        .enter().append("text")
+        .attr("x", function(d) { return x(d) + left_width; })
+        .attr("y", function(d, i){ return y(i) + y.rangeBand()/2; } )
+        .attr("dx", -5)
+        .attr("dy", ".36em")
+        .attr("text-anchor", "end")
+        .attr('class', 'score')
+        .text(function(d) {
+          if (d != 0)
+          return d;
+        return '';}); 
+      });
+
+      
     }
 }
 
